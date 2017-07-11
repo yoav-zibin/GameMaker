@@ -1,2 +1,2 @@
-# UniversalGameSpec
-UniversalGameSpec
+# GameMaker
+GameMaker
