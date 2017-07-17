@@ -1,0 +1,8 @@
+{
+    "apiKey": "",
+    "authDomain": "universalgamemaker.firebaseapp.com",
+    "databaseURL": "https://universalgamemaker.firebaseio.com",
+    "projectId": "universalgamemaker",
+    "storageBucket": "universalgamemaker.appspot.com",
+    "messagingSenderId": ""
+}
