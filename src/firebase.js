@@ -1,6 +1,13 @@
 import firebase from 'firebase';
-import config from '../config.json';
+import config from './config.json';
+import constants from './constants';
 
-let fire = firebase.initializeApp(config);
+export const firebaseApp = firebase.initializeApp(config);
+export const db = firebaseApp.database();
+export const auth = firebaseApp.auth();
 
-export default fire;
+export const storageKey = constants.AUTHENTICATION_LOCAL_STORAGE_KEY;
+
+export const isAuthenticated = () => {
+  return !!auth.currentUser || !!localStorage.getItem(storageKey);
+}

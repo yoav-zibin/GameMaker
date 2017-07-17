@@ -1,3 +1,5 @@
+import spacing from 'material-ui/styles/spacing';
+
 const styles = {
   block: {
     maxWidth: 250,
@@ -7,7 +9,11 @@ const styles = {
     position: 'fixed',
     // Needed to overlap the examples
     zIndex: 2
-  }
+  },
+  root: {
+    paddingTop: spacing.desktopKeylineIncrement,
+    minHeight: 400,
+  },
 };
 
 export default styles;
