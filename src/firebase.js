@@ -8,6 +8,8 @@ export const auth = firebaseApp.auth();
 
 export const storageKey = constants.AUTHENTICATION_LOCAL_STORAGE_KEY;
 
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+
 export const isAuthenticated = () => {
   return !!auth.currentUser || !!localStorage.getItem(storageKey);
 }
