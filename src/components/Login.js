@@ -1,10 +1,11 @@
 import React from 'react';
-import { auth, googleProvider } from '../firebase';
+import { auth, googleProvider, isAuthenticated } from '../firebase';
 import Redirect from 'react-router-dom/Redirect';
 import Card from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
+import { red500 } from 'material-ui/styles/colors';
 
 const raisedButtonStyle = {
   margin: 16
@@ -46,6 +47,10 @@ class Login extends React.Component {
     const {from} = this.props.location.state || '/';
     const {redirectToReferrer} = this.state;
 
+    if (isAuthenticated()) {
+      return (<Redirect to="/"/>);
+    }
+
     return (
       <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
         <Card>
@@ -64,7 +69,8 @@ class Login extends React.Component {
                 <RaisedButton
                 onClick={this.loginWithGoogle}
                 label="Sign in with Google"
-                secondary={true}
+                backgroundColor={red500}
+                labelColor="#fff"
                 style={raisedButtonStyle}
                 icon={<FontIcon className="muidocs-icon-custom-github" />}
                 />

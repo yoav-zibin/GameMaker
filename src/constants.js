@@ -8,7 +8,8 @@ const constants = {
   IMAGE_ID_FLOATING_LABEL: 'Enter image id',
   IMAGE_ID_HINT_TEXT: 'Image id',
   NAV_UPLOAD_IMAGE_TEXT: 'Upload Image',
-  TITLE_TEXT: 'Game Builder'
+  TITLE_TEXT: 'Game Builder',
+  AUTHENTICATION_LOCAL_STORAGE_KEY: 'GAME_BUILDER_LOCAL_STORAGE_$UID'
 }
 
 export default constants;

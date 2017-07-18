@@ -4,6 +4,7 @@ import {List, ListItem, makeSelectable} from 'material-ui/List';
 import constants from '../../constants';
 import {blue500} from 'material-ui/styles/colors';
 import Avatar from 'material-ui/Avatar';
+import Logout from './Logout';
 import ImageAddAPhoto from 'material-ui/svg-icons/image/add-a-photo';
 
 
@@ -20,6 +21,7 @@ const Sidebar = (props) => {
         <ListItem
           leftAvatar={<Avatar icon={<ImageAddAPhoto />} backgroundColor={blue500}/>}
           primaryText={constants.NAV_UPLOAD_IMAGE_TEXT} />
+        <Logout isAuthenticated={props.isAuthenticated} handleClick={props.onLogoutClick}/>
       </SelectableList>
     </Drawer>
   )

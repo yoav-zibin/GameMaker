@@ -6,6 +6,7 @@ import withWidth, {MEDIUM, LARGE} from 'material-ui/utils/withWidth';
 
 import Sidebar from './Sidebar';
 
+import { auth, isAuthenticated } from '../../firebase';
 import constants from '../../constants';
 import styles from '../../styles';
 
@@ -24,6 +25,10 @@ class NavigationMaster extends React.Component {
     this.setState({
       navDrawerOpen: open,
     });
+  };
+
+  handleLogoutClick = () => {
+    auth.signOut();
   };
 
   render() {
@@ -55,7 +60,9 @@ class NavigationMaster extends React.Component {
         <Sidebar
           docked={docked}
           onRequestChangeNavDrawer={this.handleChangeRequestNavDrawer}
-          open={navDrawerOpen}/>
+          open={navDrawerOpen}
+          isAuthenticated={isAuthenticated()}
+          onLogoutClick={this.handleLogoutClick.bind(this)}/>
       </div>
     )
   }

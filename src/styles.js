@@ -14,6 +14,9 @@ const styles = {
     paddingTop: spacing.desktopKeylineIncrement,
     minHeight: 400,
   },
+  raisedButtonStyle: {
+    margin: 16
+  }
 };
 
 export default styles;
