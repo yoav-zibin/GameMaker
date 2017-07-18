@@ -12,6 +12,7 @@ import Checkbox from 'material-ui/Checkbox';
 import Snackbar from 'material-ui/Snackbar';
 import constants from '../constants';
 import styles from '../styles';
+import { boardImagesRef, otherImagesRef } from '../firebase';
 
 class ImageUploader extends React.Component {
 
@@ -19,7 +20,8 @@ class ImageUploader extends React.Component {
     finished: false,
     stepIndex: 0,
     imagePath: false,
-    shouldDisplayWarningSnackBar: false
+    shouldDisplayWarningSnackBar: false,
+    file: false
   };
 
   vars = {
@@ -33,11 +35,23 @@ class ImageUploader extends React.Component {
 
   handleNext = () => {
     const {stepIndex} = this.state;
+    let that = this;
     if (stepIndex === 1) {
       if (!this.vars.isImageCertified) {
         this.vars.snackbarWarning = constants.NOT_CERTIFIED_WARNING;
         this.setState({shouldDisplayWarningSnackBar: true});
         return;
+      } else {
+        let ref = this.vars.isBoardImage ? boardImagesRef : otherImagesRef;
+        let extension = this.vars.imageLabel.split('.').pop();
+
+        ref.child(this.vars.imageId + '.' + extension).put(this.state.file).then(function () {
+          that.vars.snackbarWarning = "Image uploaded succesfully";
+          that.setState({shouldDisplayWarningSnackBar: true});
+        }, function () {
+          that.vars.snackbarWarning = "Image upload failed";
+          that.setState({shouldDisplayWarningSnackBar: true});
+        });
       }
     }
     this.setState({
@@ -56,9 +70,11 @@ class ImageUploader extends React.Component {
   handleImageUploaderChange = (element, e, newValue) => {
     switch (element) {
       case constants.IMAGE_PATH_IDENTIFIER: {
-        this.vars.imageLabel = e.target.value.split('/').pop();
+        let file = e.target.files[0];
+        this.vars.imageLabel = file.name.split('/').pop();
         this.setState({
-          imagePath: e.target.value
+          imagePath: file.name,
+          file: file
         });
         break;
       }
@@ -121,15 +137,12 @@ class ImageUploader extends React.Component {
         <div style={contentStyle}>
           {finished ? (
             <p>
-              <a
-                href="#"
-                onClick={(event) => {
-                  event.preventDefault();
-                  this.setState({stepIndex: 0, finished: false});
-                }}
-              >
-                Click here
-              </a> to reset the example.
+                <RaisedButton label="Reset" primary={true}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    this.vars.imageLabel = 'Select image';
+                    this.setState({stepIndex: 0, finished: false});
+                  }}/>
             </p>
           ) : (
             <div>

@@ -5,6 +5,10 @@ import constants from './constants';
 export const firebaseApp = firebase.initializeApp(config);
 export const db = firebaseApp.database();
 export const auth = firebaseApp.auth();
+export const storage = firebaseApp.storage();
+
+export const boardImagesRef = storage.ref().child(constants.BOARD_IMAGES_PATH);
+export const otherImagesRef = storage.ref().child(constants.OTHER_IMAGES_PATH);
 
 export const storageKey = constants.AUTHENTICATION_LOCAL_STORAGE_KEY;
 

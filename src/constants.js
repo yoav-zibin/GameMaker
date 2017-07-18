@@ -9,7 +9,9 @@ const constants = {
   IMAGE_ID_HINT_TEXT: 'Image id',
   NAV_UPLOAD_IMAGE_TEXT: 'Upload Image',
   TITLE_TEXT: 'Game Builder',
-  AUTHENTICATION_LOCAL_STORAGE_KEY: 'GAME_BUILDER_LOCAL_STORAGE_$UID'
+  AUTHENTICATION_LOCAL_STORAGE_KEY: 'GAME_BUILDER_LOCAL_STORAGE_$UID',
+  BOARD_IMAGES_PATH: 'images/board_images',
+  OTHER_IMAGES_PATH: 'images/others'
 }
 
 export default constants;
