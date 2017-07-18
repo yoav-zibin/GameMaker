@@ -6,6 +6,7 @@ GameBuilder is created using React for Social Multiplayer Games course at NYU.
 
 - Clone the repo
 - Do `npm install` or `yarn install`
+- Copy `src/sample.config.json` to `src/config.json` and update the config with credentials that you get from firebase console's web setup
 
 
 ## Running
