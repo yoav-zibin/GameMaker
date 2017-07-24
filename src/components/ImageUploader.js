@@ -12,7 +12,7 @@ import Checkbox from 'material-ui/Checkbox';
 import Snackbar from 'material-ui/Snackbar';
 import constants from '../constants';
 import styles from '../styles';
-import { boardImagesRef, otherImagesRef } from '../firebase';
+import { boardImagesRef, otherImagesRef, auth } from '../firebase';
 
 class ImageUploader extends React.Component {
 
@@ -45,7 +45,15 @@ class ImageUploader extends React.Component {
         let ref = this.vars.isBoardImage ? boardImagesRef : otherImagesRef;
         let extension = this.vars.imageLabel.split('.').pop();
 
-        ref.child(this.vars.imageId + '.' + extension).put(this.state.file).then(function () {
+        let metadata = {
+          contentType: 'image/' + extension,
+          customMetadata: {
+            'uploader_uid': auth.currentUser.uid,
+            'uploader_email': auth.currentUser.email
+          }
+        };
+
+        ref.child(this.vars.imageId + '.' + extension).put(this.state.file, metadata).then(function () {
           that.vars.snackbarWarning = "Image uploaded succesfully";
           that.setState({shouldDisplayWarningSnackBar: true});
         }, function () {
@@ -72,6 +80,9 @@ class ImageUploader extends React.Component {
       case constants.IMAGE_PATH_IDENTIFIER: {
         let file = e.target.files[0];
         this.vars.imageLabel = file.name.split('/').pop();
+        this.vars.imageId = this.vars.imageLabel.split('.');
+        this.vars.imageId.pop();
+        this.vars.imageId = this.vars.imageId.join(".");
         this.setState({
           imagePath: file.name,
           file: file
@@ -102,7 +113,7 @@ class ImageUploader extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <ImageSelector label={this.vars.imageLabel} handleChange={this.handleImageUploaderChange.bind(this)}/>;
+        return <ImageSelector label={this.vars.imageLabel} imageId={this.vars.imageId} handleChange={this.handleImageUploaderChange.bind(this)}/>;
       case 1:
         return <Checkbox
                 defaultChecked={this.vars.isImageCertified}
@@ -136,14 +147,14 @@ class ImageUploader extends React.Component {
         </Stepper>
         <div style={contentStyle}>
           {finished ? (
-            <p>
+            <div>
                 <RaisedButton label="Reset" primary={true}
                   onClick={(event) => {
                     event.preventDefault();
                     this.vars.imageLabel = 'Select image';
                     this.setState({stepIndex: 0, finished: false});
                   }}/>
-            </p>
+            </div>
           ) : (
             <div>
               <div>{this.getStepContent(stepIndex)}</div>

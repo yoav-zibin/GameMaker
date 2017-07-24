@@ -23,6 +23,7 @@ const ImageSelector = (props) => {
           floatingLabelFixed={true}
           hintText={constants.IMAGE_ID_HINT_TEXT}
           errorText={props.imageIdErrorText}
+          value={props.imageId}
           onChange={(e, newValue) => {
             props.handleChange(constants.IMAGE_ID_IDENTIFIER, e, newValue)}}/>
       </div>
