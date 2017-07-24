@@ -1,5 +1,5 @@
 import React from 'react';
-import { auth, googleProvider, isAuthenticated } from '../firebase';
+import { auth, googleProvider, isAuthenticated, db } from '../firebase';
 import Redirect from 'react-router-dom/Redirect';
 import Card from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
@@ -23,9 +23,32 @@ class Login extends React.Component {
     signInWithEmailActive: false
   }
 
+  createUserIfNotExists = () => {
+    if (isAuthenticated()) {
+      let user = auth.currentUser;
+      let usersRef = db.ref("users");
+      let userData = {
+        'privateFields': {
+
+        },
+        'publicFields': {
+          'avatarImageUrl': user.photoURL || '',
+          'displayName': user.displayName || user.email
+        }
+      };
+
+      usersRef.child(user.uid).transaction(function(currentUserData) {
+        if (currentUserData === null) {
+          return userData;
+        }
+      });
+    }
+  }
+
   handleSubmit = (evt) => {
     evt.preventDefault();
     auth.signInWithEmailAndPassword(this.state.email, this.state.password).then(() => {
+      this.createUserIfNotExists();
       this.setState({redirectToReferrer: true});
     });
   }
@@ -39,7 +62,8 @@ class Login extends React.Component {
   loginWithGoogle = () => {
     auth.signInWithPopup(googleProvider).then(function (result) {
       let token = result.credential.accessToken;
-      console.log(result);
+      this.createUserIfNotExists();
+      this.setState({redirectToReferrer: true});
     }.bind(this));
   }
 
@@ -47,7 +71,7 @@ class Login extends React.Component {
     const {from} = this.props.location.state || '/';
     const {redirectToReferrer} = this.state;
 
-    if (isAuthenticated()) {
+    if (isAuthenticated() && !this.state.redirectToReferrer) {
       return (<Redirect to="/"/>);
     }
 
