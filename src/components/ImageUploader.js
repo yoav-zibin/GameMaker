@@ -202,10 +202,10 @@ class ImageUploader extends React.Component {
 
   render() {
     const {finished, stepIndex} = this.state;
-    const contentStyle = {margin: '0 16px'};
+
 
     return (
-      <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
+      <div style={styles.container}>
         <Snackbar
           open={this.state.shouldDisplayWarningSnackBar}
           message={this.vars.snackbarWarning}
@@ -221,7 +221,7 @@ class ImageUploader extends React.Component {
             <StepLabel>Certify rights to use the image</StepLabel>
           </Step>
         </Stepper>
-        <div style={contentStyle}>
+        <div style={styles.content}>
           {finished ? (
             <div>
                 <RaisedButton label="Reset" primary={true}
