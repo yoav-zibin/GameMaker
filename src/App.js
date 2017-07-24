@@ -11,7 +11,7 @@ import NavigationMaster from './components/navigation/NavigationMaster';
 
 import { storageKey, auth } from './firebase';
 import styles from './styles';
-import logo from './logo.svg';
+import Build from 'material-ui/svg-icons/action/build';
 
 import './App.css';
 
