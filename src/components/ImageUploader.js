@@ -40,61 +40,100 @@ class ImageUploader extends React.Component {
     snackbarWarning: ''
   };
 
-  uploadFailedNotify = () => {
-    this.vars.snackbarWarning = "Image upload failed";
+  notify = (message) => {
+    this.vars.snackbarWarning = message;
     this.setState({shouldDisplayWarningSnackBar: true});
   }
 
-  handleNext = () => {
-    const {stepIndex} = this.state;
+  checkImageDimensions = (file) => {
     let that = this;
+    return new Promise((resolve, reject) => {
+      if (!that.vars.isBoardImage) {
+        resolve();
+        return;
+      }
+      window.URL = window.URL || window.webkitURL;
+
+      let img = new Image();
+      img.src = window.URL.createObjectURL(file);
+      img.onload = function() {
+          var width = img.naturalWidth,
+              height = img.naturalHeight;
+
+          window.URL.revokeObjectURL( img.src );
+
+          if(Math.max(width, height) === 1024) {
+              resolve();
+          } else {
+              reject();
+          }
+      };
+    });
+  }
+
+  handleUpload = (stepIndex) => {
+    let that = this;
+    let ref = this.vars.isBoardImage ? boardImagesRef : otherImagesRef;
+    let dbRef = this.vars.isBoardImage ? boardImagesDbRef : otherImagesDbRef;
+    let extension = this.vars.imageLabel.split('.').pop().toLowerCase();
+
+    let metadata = {
+      customMetadata: {
+        'uploader_uid': auth.currentUser.uid,
+        'uploader_email': auth.currentUser.email
+      }
+    };
+
+    ref.child(this.vars.imageId + '.' + extension).put(this.state.file, metadata).then(function (snapshot) {
+      snapshot.ref.getDownloadURL().then(function (url) {
+        let imageMetadataForDb = {
+          downloadURL: url,
+          id: that.vars.imageId,
+          ...metadata.customMetadata
+        };
+
+        let childKey = dbRef.push().key;
+        dbRef.child(childKey).set(imageMetadataForDb);
+        that.vars.snackbarWarning = "Image uploaded succesfully";
+        that.setState({
+          shouldDisplayWarningSnackBar: true,
+          stepIndex: stepIndex + 1,
+          finished: stepIndex >= 1,
+        });
+
+      }, function () {
+        snapshot.ref.delete();
+        this.notify("Image upload failed");
+      });
+    }, function () {
+      this.notify("Image upload failed");
+    })
+  }
+
+  handleNext = () => {
+    let that = this;
+    const {stepIndex} = this.state;
     if (stepIndex === 1) {
       if (!this.vars.isImageCertified) {
-        this.vars.snackbarWarning = constants.NOT_CERTIFIED_WARNING;
-        this.setState({shouldDisplayWarningSnackBar: true});
+        this.notify(constants.NOT_CERTIFIED_WARNING);
         return;
       } else {
         if (!this.state.file) {
-          this.vars.snackbarWarning = "No file selected";
-          this.setState({shouldDisplayWarningSnackBar: true});
+          this.notify("No file selected");
         }
-        let ref = this.vars.isBoardImage ? boardImagesRef : otherImagesRef;
-        let dbRef = this.vars.isBoardImage ? boardImagesDbRef : otherImagesDbRef;
-        let extension = this.vars.imageLabel.split('.').pop().toLowerCase();
 
-        let metadata = {
-          customMetadata: {
-            'uploader_uid': auth.currentUser.uid,
-            'uploader_email': auth.currentUser.email
-          }
-        };
-
-        ref.child(this.vars.imageId + '.' + extension).put(this.state.file, metadata).then(function (snapshot) {
-          snapshot.ref.getDownloadURL().then(function (url) {
-            let imageMetadataForDb = {
-              downloadURL: url,
-              id: that.vars.imageId,
-              ...metadata.customMetadata
-            };
-
-            let childKey = dbRef.push().key;
-            dbRef.child(childKey).set(imageMetadataForDb);
-            that.vars.snackbarWarning = "Image uploaded succesfully";
-            that.setState({shouldDisplayWarningSnackBar: true});
-
-          }, function () {
-            snapshot.ref.delete();
-            this.uploadFailedNotify();
-          });
+        this.checkImageDimensions(this.state.file).then(function () {
+          that.handleUpload.call(that, stepIndex);
         }, function () {
-          this.uploadFailedNotify();
+          that.notify("Max of width and height for board image should be 1024");
         });
       }
+    } else {
+      this.setState({
+        stepIndex: stepIndex + 1,
+        finished: stepIndex >= 1
+      });
     }
-    this.setState({
-      stepIndex: stepIndex + 1,
-      finished: stepIndex >= 1,
-    });
   };
 
   handlePrev = () => {
