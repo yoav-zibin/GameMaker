@@ -6,6 +6,7 @@ import {blue500} from 'material-ui/styles/colors';
 import Avatar from 'material-ui/Avatar';
 import Logout from './Logout';
 import ImageAddAPhoto from 'material-ui/svg-icons/image/add-a-photo';
+import Build from 'material-ui/svg-icons/action/build';
 
 
 const SelectableList = makeSelectable(List);
@@ -17,10 +18,17 @@ const Sidebar = (props) => {
       open={props.open}
       onRequestChange={props.onRequestChangeNavDrawer}
       >
-      <SelectableList>
+      <SelectableList
+        value={props.location.pathname}
+        onChange={props.onChangeList}>
         <ListItem
           leftAvatar={<Avatar icon={<ImageAddAPhoto />} backgroundColor={blue500}/>}
-          primaryText={constants.NAV_UPLOAD_IMAGE_TEXT} />
+          primaryText={constants.NAV_UPLOAD_IMAGE_TEXT}
+          value="/" />
+        <ListItem
+          leftAvatar={<Avatar icon={<Build />} backgroundColor={blue500}/>}
+          primaryText={constants.NAV_GAME_SPEC_BUILDER_TEXT}
+          value="/build" />
         <Logout isAuthenticated={props.isAuthenticated} handleClick={props.onLogoutClick}/>
       </SelectableList>
     </Drawer>

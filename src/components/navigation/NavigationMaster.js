@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
@@ -11,6 +12,10 @@ import constants from '../../constants';
 import styles from '../../styles';
 
 class NavigationMaster extends React.Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
   state = {
     navDrawerOpen: false
   };
@@ -19,6 +24,15 @@ class NavigationMaster extends React.Component {
     this.setState({
       navDrawerOpen: !this.state.navDrawerOpen,
     });
+  };
+
+  handleChangeList = (event, value) => {
+    if (value) {
+      this.context.router.history.push(value);
+      this.setState({
+        navDrawerOpen: false,
+      });
+    }
   };
 
   handleChangeRequestNavDrawer = (open) => {
@@ -59,7 +73,9 @@ class NavigationMaster extends React.Component {
         />
         <Sidebar
           docked={docked}
+          location={this.props.location}
           onRequestChangeNavDrawer={this.handleChangeRequestNavDrawer}
+          onChangeList={this.handleChangeList.bind(this)}
           open={navDrawerOpen}
           isAuthenticated={isAuthenticated()}
           onLogoutClick={this.handleLogoutClick.bind(this)}/>

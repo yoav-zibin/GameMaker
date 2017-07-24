@@ -4,6 +4,7 @@ import Route from 'react-router-dom/Route';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import ImageUploader from './components/ImageUploader';
+import GameSpecBuilder from './components/GameSpecBuilder';
 import Login from './components/Login';
 import RouteWhenAuthenticated from './components/RouteWhenAuthenticated';
 import NavigationMaster from './components/navigation/NavigationMaster';
@@ -35,11 +36,16 @@ class App extends Component {
     return (
       <MuiThemeProvider>
         <div className="App">
-          <NavigationMaster />
-          <div style={styles.root}>
-            <RouteWhenAuthenticated path="/" component={ImageUploader}/>
-            <Route path="/login" component={Login} />
-          </div>
+          <Route path="/">
+            <div>
+              <NavigationMaster location={this.props.location}/>
+              <div style={styles.root}>
+                <RouteWhenAuthenticated path="/build" component={GameSpecBuilder}/>
+                <RouteWhenAuthenticated exact path="/" component={ImageUploader}/>
+                <Route path="/login" component={Login} />
+              </div>
+            </div>
+          </Route>
         </div>
       </MuiThemeProvider>
     );
