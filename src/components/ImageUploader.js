@@ -12,7 +12,14 @@ import Checkbox from 'material-ui/Checkbox';
 import Snackbar from 'material-ui/Snackbar';
 import constants from '../constants';
 import styles from '../styles';
-import { boardImagesRef, otherImagesRef, auth } from '../firebase';
+
+import {
+  boardImagesRef,
+  otherImagesRef,
+  boardImagesDbRef,
+  otherImagesDbRef,
+  auth
+} from '../firebase';
 
 class ImageUploader extends React.Component {
 
@@ -33,6 +40,11 @@ class ImageUploader extends React.Component {
     snackbarWarning: ''
   };
 
+  uploadFailedNotify = () => {
+    this.vars.snackbarWarning = "Image upload failed";
+    this.setState({shouldDisplayWarningSnackBar: true});
+  }
+
   handleNext = () => {
     const {stepIndex} = this.state;
     let that = this;
@@ -47,22 +59,35 @@ class ImageUploader extends React.Component {
           this.setState({shouldDisplayWarningSnackBar: true});
         }
         let ref = this.vars.isBoardImage ? boardImagesRef : otherImagesRef;
+        let dbRef = this.vars.isBoardImage ? boardImagesDbRef : otherImagesDbRef;
         let extension = this.vars.imageLabel.split('.').pop().toLowerCase();
 
         let metadata = {
-          contentType: 'image/' + extension,
           customMetadata: {
             'uploader_uid': auth.currentUser.uid,
             'uploader_email': auth.currentUser.email
           }
         };
 
-        ref.child(this.vars.imageId + '.' + extension).put(this.state.file, metadata).then(function () {
-          that.vars.snackbarWarning = "Image uploaded succesfully";
-          that.setState({shouldDisplayWarningSnackBar: true});
+        ref.child(this.vars.imageId + '.' + extension).put(this.state.file, metadata).then(function (snapshot) {
+          snapshot.ref.getDownloadURL().then(function (url) {
+            let imageMetadataForDb = {
+              downloadURL: url,
+              id: that.vars.imageId,
+              ...metadata.customMetadata
+            };
+
+            let childKey = dbRef.push().key;
+            dbRef.child(childKey).set(imageMetadataForDb);
+            that.vars.snackbarWarning = "Image uploaded succesfully";
+            that.setState({shouldDisplayWarningSnackBar: true});
+
+          }, function () {
+            snapshot.ref.delete();
+            this.uploadFailedNotify();
+          });
         }, function () {
-          that.vars.snackbarWarning = "Image upload failed";
-          that.setState({shouldDisplayWarningSnackBar: true});
+          this.uploadFailedNotify();
         });
       }
     }
