@@ -42,8 +42,12 @@ class ImageUploader extends React.Component {
         this.setState({shouldDisplayWarningSnackBar: true});
         return;
       } else {
+        if (!this.state.file) {
+          this.vars.snackbarWarning = "No file selected";
+          this.setState({shouldDisplayWarningSnackBar: true});
+        }
         let ref = this.vars.isBoardImage ? boardImagesRef : otherImagesRef;
-        let extension = this.vars.imageLabel.split('.').pop();
+        let extension = this.vars.imageLabel.split('.').pop().toLowerCase();
 
         let metadata = {
           contentType: 'image/' + extension,
@@ -79,10 +83,18 @@ class ImageUploader extends React.Component {
     switch (element) {
       case constants.IMAGE_PATH_IDENTIFIER: {
         let file = e.target.files[0];
-        this.vars.imageLabel = file.name.split('/').pop();
-        this.vars.imageId = this.vars.imageLabel.split('.');
-        this.vars.imageId.pop();
-        this.vars.imageId = this.vars.imageId.join(".");
+        let imageLabel = file.name.split('/').pop();
+        let imageId = imageLabel.split('.');
+        let extension = imageId.pop().toLowerCase();
+
+        if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
+            this.vars.snackbarWarning = "Upload proper format, accepted formats are " +
+            constants.ACCEPTED_IMAGE_FORMATS;
+            this.setState({shouldDisplayWarningSnackBar: true});
+            break;
+        }
+        this.vars.imageLabel = imageLabel;
+        this.vars.imageId = imageId.join(".");
         this.setState({
           imagePath: file.name,
           file: file

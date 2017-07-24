@@ -11,7 +11,8 @@ const constants = {
   TITLE_TEXT: 'Game Builder',
   AUTHENTICATION_LOCAL_STORAGE_KEY: 'GAME_BUILDER_LOCAL_STORAGE_$UID',
   BOARD_IMAGES_PATH: 'images/board_images',
-  OTHER_IMAGES_PATH: 'images/others'
+  OTHER_IMAGES_PATH: 'images/others',
+  ACCEPTED_IMAGE_FORMATS: '.png,.jpg,.jpeg,.svg,.gif'
 }
 
 export default constants;

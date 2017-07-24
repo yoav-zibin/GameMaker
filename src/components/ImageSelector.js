@@ -14,7 +14,7 @@ const ImageSelector = (props) => {
          <RaisedButton containerElement="label" label={props.label}
          onChange={e => {
            props.handleChange(constants.IMAGE_PATH_IDENTIFIER, e)}}>
-            <input type="file"  style={{ display: 'none' }}/>
+            <input type="file"  style={{ display: 'none' }} accept="image/*"/>
          </RaisedButton>
       </div>
       <div>
