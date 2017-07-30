@@ -35,7 +35,7 @@ const styles = {
    height: 450,
    overflowY: 'auto',
   },
-  hoverCursoPointer: {
+  hoverCursorPointer: {
     cursor: 'pointer'
   }
 };
