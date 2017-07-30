@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Piece from './BoardTile';
+import Piece from './Piece';
 import GridListCustom from '../GridListCustom';
 
 export default GridListCustom(Piece);

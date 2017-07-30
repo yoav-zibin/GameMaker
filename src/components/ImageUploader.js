@@ -23,7 +23,7 @@ import {
 
 class ImageUploader extends React.Component {
 
-  state = {
+  initialState = {
     finished: false,
     stepIndex: 0,
     imagePath: false,
@@ -31,7 +31,9 @@ class ImageUploader extends React.Component {
     file: false
   };
 
-  vars = {
+  state = Object.assign({}, this.initialState);
+
+  initialVars = {
     imageLabel: 'Select image',
     errorText: '',
     isBoardImage: false,
@@ -39,6 +41,8 @@ class ImageUploader extends React.Component {
     isImageCertified: false,
     snackbarWarning: ''
   };
+
+  vars = Object.assign({}, this.initialVars);
 
   notify = (message) => {
     this.vars.snackbarWarning = message;
@@ -205,7 +209,7 @@ class ImageUploader extends React.Component {
 
 
     return (
-      <div style={styles.container}>
+      <div style={{...styles.container, ...styles.containerWidth700}}>
         <Snackbar
           open={this.state.shouldDisplayWarningSnackBar}
           message={this.vars.snackbarWarning}
@@ -227,7 +231,8 @@ class ImageUploader extends React.Component {
                 <RaisedButton label="Reset" primary={true}
                   onClick={(event) => {
                     event.preventDefault();
-                    this.vars.imageLabel = 'Select image';
+                    this.vars = Object.assign({}, this.initialVars);
+                    this.setState(this.initialState);
                     this.setState({stepIndex: 0, finished: false});
                   }}/>
             </div>

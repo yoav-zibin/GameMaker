@@ -50,7 +50,7 @@ class NavigationMaster extends React.Component {
     let docked = false;
     let showMenuIconButton = true;
 
-    if (this.props.width === LARGE) {
+    if (this.props.width === LARGE && this.props.location.pathname !== '/build') {
       docked = true;
       navDrawerOpen = true;
       showMenuIconButton = false;

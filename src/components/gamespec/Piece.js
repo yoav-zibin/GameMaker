@@ -6,9 +6,12 @@ import ItemTypes from './ItemTypes';
 import styles from '../../styles';
 
 const pieceSource = {
-  beginDrag(props) {
+  beginDrag(props, monitor, component) {
+    let imageRef = new Image();
+    imageRef.src = props.image.downloadURL;
     return {
-      pieceImage: props.pieceImage
+      image: props.image,
+      imageRef
     };
   },
 
@@ -17,39 +20,34 @@ const pieceSource = {
     const dropResult = monitor.getDropResult();
 
     if (dropResult) {
-      window.alert( // eslint-disable-line no-alert
-        `You dropped ${item.name} into ${dropResult.name}!`,
-      );
     }
   },
 };
 
 class Piece extends Component {
+  imageRef;
   static propTypes = {
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
-    name: PropTypes.string.isRequired,
-    pieceImage: PropType.object.isRequired
-    key: PropType.number.isRequired
+    image: PropTypes.object.isRequired,
+    keyProp: PropTypes.string.isRequired
   };
 
   render() {
     const { isDragging, connectDragSource } = this.props;
-    const { pieceImage, key } = this.props;
+    const { image } = this.props;
     const opacity = isDragging ? 0.4 : 1;
-
-    return (
-      connectDragSource(
-        <div style={{ opacity }}>
+    const height = 'inherit';
+    let that = this;
+    return connectDragSource(
+        <div style={{ opacity, height }}>
           <GridTile
-            key={key}
             style={styles.hoverCursorPointer}
-            title={pieceImage.id}>
-            <img src={pieceImage.downloadURL} alt={tile.id}/>
+            title={image.id}>
+            <img src={image.downloadURL} alt={image.id}/>
           </GridTile>
         </div>,
-      )
-    );
+      );
   }
 }
 

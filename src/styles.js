@@ -20,10 +20,15 @@ const styles = {
   content: {
     margin: '0 16px'
   },
+  clearBoth: {
+    clear: 'both'
+  },
   container: {
     width: '100%',
-    maxWidth: 700,
     margin: 'auto'
+  },
+  containerWidth700: {
+    maxWidth: 700,
   },
   gridListContainer: {
    display: 'flex',
@@ -37,6 +42,13 @@ const styles = {
   },
   hoverCursorPointer: {
     cursor: 'pointer'
+  },
+  leftFloat: {
+    float: 'left',
+    position: 'relative'
+  },
+  center: {
+    margin: '0 auto'
   }
 };
 

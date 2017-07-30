@@ -38,7 +38,7 @@ class App extends Component {
         <div className="App">
           <Route path="/">
             <div>
-              <NavigationMaster location={this.props.location}/>
+              <NavigationMaster specBuilderOn={this.state.specBuilderOn} location={this.props.location}/>
               <div style={styles.root}>
                 <RouteWhenAuthenticated path="/build" component={GameSpecBuilderContainer}/>
                 <RouteWhenAuthenticated exact path="/" component={ImageUploader}/>

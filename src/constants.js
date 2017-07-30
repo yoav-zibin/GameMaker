@@ -7,6 +7,8 @@ const constants = {
   BOARD_IMAGE_TOGGLE_LABEL: 'Is this a board image?',
   IMAGE_ID_FLOATING_LABEL: 'Enter image id',
   IMAGE_ID_HINT_TEXT: 'Image id',
+  PIECE_SIZE_FLOATING_LABEL: 'Enter piece image size',
+  PIECE_SIZE_HINT_TEXT: 'Piece Image Size',
   NAV_UPLOAD_IMAGE_TEXT: 'Upload Image',
   NAV_GAME_SPEC_BUILDER_TEXT: 'Spec Builder',
   TITLE_TEXT: 'Game Builder',
