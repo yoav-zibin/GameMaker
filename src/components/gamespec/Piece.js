@@ -7,11 +7,8 @@ import styles from '../../styles';
 
 const pieceSource = {
   beginDrag(props, monitor, component) {
-    let imageRef = new Image();
-    imageRef.src = props.image.downloadURL;
     return {
-      image: props.image,
-      imageRef
+      image: props.image
     };
   },
 
@@ -34,13 +31,13 @@ class Piece extends Component {
   };
 
   render() {
-    const { isDragging, connectDragSource } = this.props;
+    const { isDragging, connectDragSource, keyProp } = this.props;
     const { image } = this.props;
     const opacity = isDragging ? 0.4 : 1;
     const height = 'inherit';
     let that = this;
     return connectDragSource(
-        <div style={{ opacity, height }}>
+        <div key={keyProp} style={{ opacity, height }}>
           <GridTile
             style={styles.hoverCursorPointer}
             title={image.id}>
