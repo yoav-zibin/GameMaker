@@ -5,7 +5,7 @@ import constants from '../constants';
 import { boardImagesDbRef, otherImagesDbRef } from '../firebase';
 import BoardList from './gamespec/BoardList';
 import GameSpecBuilder from './GameSpecBuilder';
-
+import SpecViewer from './gamespec/SpecViewer';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
@@ -30,7 +30,8 @@ class GameSpecBuilderContainer extends React.Component {
   };
   vars = {
     pieceImageSize: 50,
-    snackbarWarning: ''
+    snackbarWarning: '',
+    boardSize: 0
   };
 
   componentDidMount() {
@@ -56,6 +57,10 @@ class GameSpecBuilderContainer extends React.Component {
     this.setState({items});
   }
 
+  setBoardSize(num) {
+    this.vars.boardSize = num;
+  }
+
   notify = (message) => {
     this.vars.snackbarWarning = message;
     this.setState({shouldDisplayWarningSnackBar: true});
@@ -64,7 +69,7 @@ class GameSpecBuilderContainer extends React.Component {
   updateStepIndex(stepIndex) {
     this.setState({
       stepIndex: stepIndex + 1,
-      finished: stepIndex >= 1
+      finished: stepIndex >= 2
     });
   }
 
@@ -98,12 +103,22 @@ class GameSpecBuilderContainer extends React.Component {
       case 1: {
         return (
           <GameSpecBuilder
+            setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
             pieceImageSize={this.vars.pieceImageSize}
             images={this.state.otherImages}
             boardImage={this.state.boardImages[this.state.selectedBoard]}/>
         );
+      }
+
+      case 2: {
+        return (
+          <SpecViewer
+            items={this.state.items}
+            boardSize={this.vars.boardSize}
+            boardImage={this.state.boardImages[this.state.selectedBoard]}/>
+        )
       }
 
       default: {
@@ -174,7 +189,7 @@ class GameSpecBuilderContainer extends React.Component {
                   style={{marginRight: 12}}
                 />
                 <RaisedButton
-                  label={stepIndex === 1 ? 'Upload' : 'Next'}
+                  label={stepIndex === 2 ? 'Upload' : 'Next'}
                   primary={true}
                   onTouchTap={this.handleNext}
                 />

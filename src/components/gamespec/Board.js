@@ -51,6 +51,10 @@ class Board extends React.Component {
     items: []
   }
 
+  componentDidMount() {
+    this.props.setBoardSize(this.width);
+  }
+
   handleDragEnd = (index) => {
     let items = this.props.getItems();
     let item = items[index];

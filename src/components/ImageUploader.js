@@ -97,6 +97,7 @@ class ImageUploader extends React.Component {
         };
 
         let childKey = dbRef.push().key;
+        imageMetadataForDb['key'] = childKey;
         dbRef.child(childKey).set(imageMetadataForDb);
         that.vars.snackbarWarning = "Image uploaded succesfully";
         that.setState({
