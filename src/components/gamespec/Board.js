@@ -50,6 +50,17 @@ class Board extends React.Component {
     items: []
   }
 
+  handleDragEnd = (index) => {
+    let items = this.state.items;
+    let item = items[index];
+    let position = this.refs["canvasImage" + index].refs.image.getAbsolutePosition();
+    item.offset.x = position.x;
+    item.offset.y = position.y;
+    items[index] = item;
+
+    this.setState({items});
+  }
+
   render() {
     const { canDrop, isOver, connectDropTarget, style } = this.props;
     const isActive = canDrop && isOver;
@@ -64,7 +75,16 @@ class Board extends React.Component {
           {
             this.state.items.map((item, index) => {
               return (
-                <CanvasImage key={index} width={25} height={25} src={item.image.downloadURL} x={item.offset.x} y={item.offset.y}/>
+                <CanvasImage
+                  ref={"canvasImage" + index}
+                  key={index}
+                  width={this.props.pieceImageSize}
+                  height={this.props.pieceImageSize}
+                  src={item.image.downloadURL}
+                  x={item.offset.x}
+                  y={item.offset.y}
+                  draggable={true}
+                  onDragEnd={() => { this.handleDragEnd(index) }}/>
               );
             })
           }

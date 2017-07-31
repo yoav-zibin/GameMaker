@@ -28,7 +28,7 @@ class GameSpecBuilderContainer extends React.Component {
 
   };
   vars = {
-    pieceImageSize: 180,
+    pieceImageSize: 50,
     snackbarWarning: ''
   };
 

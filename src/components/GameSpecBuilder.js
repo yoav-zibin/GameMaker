@@ -23,9 +23,9 @@ class GameSpecBuilder extends React.Component {
       <DragDropContextProvider backend={HTML5Backend}>
         <div style={flexStyle}>
           <div style={flexElement}>
-            <PieceList header="Pieces" cellHeight={this.props.pieceImageSize} data={this.props.images}/>
+            <PieceList header="Pieces" data={this.props.images}/>
           </div>
-          <Board boardImage={this.props.boardImage}/>
+          <Board boardImage={this.props.boardImage} pieceImageSize={this.props.pieceImageSize}/>
         </div>
       </DragDropContextProvider>
     );

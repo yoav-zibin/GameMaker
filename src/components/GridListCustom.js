@@ -7,11 +7,10 @@ import styles from '../styles';
 
 function GridListCustom(Component) {
   return (props) => {
-    let cellHeight = parseInt(props.cellHeight, 10);
     return (
       <div style={styles.gridListContainer}>
         <GridList
-          cellHeight={cellHeight}
+          cellHeight={180}
           style={styles.gridList}>
           <Subheader>{props.header}</Subheader>
           {Object.keys(props.data).map((key, index) => {
