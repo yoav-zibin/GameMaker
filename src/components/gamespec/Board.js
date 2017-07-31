@@ -12,13 +12,14 @@ const boxTarget = {
       let offset = monitor.getClientOffset(),
           item = monitor.getItem();
 
-      let items = component.state.items || [];
+      let items = props.getItems();
       let rect = component.refs.stage.getStage().getContainer().getBoundingClientRect();
       offset.x = offset.x - rect.left;
       offset.y = offset.y - rect.top;
       let image = item.image;
       items.push({image, offset});
-      component.setState({items});
+      props.setItems(items);
+
     return { name: 'Board' };
   },
 };
@@ -51,14 +52,13 @@ class Board extends React.Component {
   }
 
   handleDragEnd = (index) => {
-    let items = this.state.items;
+    let items = this.props.getItems();
     let item = items[index];
     let position = this.refs["canvasImage" + index].refs.image.getAbsolutePosition();
     item.offset.x = position.x;
     item.offset.y = position.y;
     items[index] = item;
-
-    this.setState({items});
+    this.props.setItems(items);
   }
 
   render() {
@@ -73,7 +73,7 @@ class Board extends React.Component {
           </Layer>
           <Layer>
           {
-            this.state.items.map((item, index) => {
+            this.props.getItems().map((item, index) => {
               return (
                 <CanvasImage
                   ref={"canvasImage" + index}

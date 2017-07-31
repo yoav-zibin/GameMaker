@@ -24,7 +24,8 @@ class GameSpecBuilderContainer extends React.Component {
     selectedBoard: "",
     stepIndex: 0,
     finished: false,
-    shouldDisplayWarningSnackBar: false
+    shouldDisplayWarningSnackBar: false,
+    items: []
 
   };
   vars = {
@@ -45,6 +46,14 @@ class GameSpecBuilderContainer extends React.Component {
         otherImages: data.val()
       });
     });
+  }
+
+  getItems() {
+    return this.state.items;
+  }
+
+  setItems(items) {
+    this.setState({items});
   }
 
   notify = (message) => {
@@ -89,6 +98,8 @@ class GameSpecBuilderContainer extends React.Component {
       case 1: {
         return (
           <GameSpecBuilder
+            setItems={this.setItems.bind(this)}
+            getItems={this.getItems.bind(this)}
             pieceImageSize={this.vars.pieceImageSize}
             images={this.state.otherImages}
             boardImage={this.state.boardImages[this.state.selectedBoard]}/>

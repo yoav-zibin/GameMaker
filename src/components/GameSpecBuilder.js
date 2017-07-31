@@ -17,19 +17,22 @@ const flexElement = {
   float: 'left'
 };
 
-class GameSpecBuilder extends React.Component {
-  render() {
-    return (
-      <DragDropContextProvider backend={HTML5Backend}>
-        <div style={flexStyle}>
-          <div style={flexElement}>
-            <PieceList header="Pieces" data={this.props.images}/>
-          </div>
-          <Board boardImage={this.props.boardImage} pieceImageSize={this.props.pieceImageSize}/>
+const GameSpecBuilder = (props) => {
+  let { images, setItems, getItems, boardImage, pieceImageSize} = props;
+  return (
+    <DragDropContextProvider backend={HTML5Backend}>
+      <div style={flexStyle}>
+        <div style={flexElement}>
+          <PieceList header="Pieces" data={images}/>
         </div>
-      </DragDropContextProvider>
-    );
-  }
+        <Board
+          setItems={setItems}
+          getItems={getItems}
+          boardImage={boardImage}
+          pieceImageSize={pieceImageSize}/>
+      </div>
+    </DragDropContextProvider>
+  );
 }
 
 export default GameSpecBuilder;
