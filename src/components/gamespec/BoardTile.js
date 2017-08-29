@@ -13,7 +13,7 @@ const BoardTile = (props) => {
       style={styles.hoverCursorPointer}
       titleBackground={selectedKey === keyProp ?
         blue500 : originalBackgroundTitle}
-      title={image.id}
+      title={image.name}
       onClick={(e) => {handleGridTileClick(keyProp, image)}}>
       <img src={image.downloadURL} alt={image.id}/>
     </GridTile>

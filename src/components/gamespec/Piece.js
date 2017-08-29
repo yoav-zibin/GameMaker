@@ -40,7 +40,7 @@ class Piece extends Component {
         <div key={keyProp} style={{ opacity, height }}>
           <GridTile
             style={styles.hoverCursorPointer}
-            title={image.id}>
+            title={image.name}>
             <img src={image.downloadURL} alt={image.id}/>
           </GridTile>
         </div>,

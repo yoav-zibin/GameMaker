@@ -27,6 +27,7 @@ class ImageUploader extends React.Component {
     finished: false,
     stepIndex: 0,
     imagePath: false,
+    imageName: '',
     shouldDisplayWarningSnackBar: false,
     file: false
   };
@@ -37,7 +38,6 @@ class ImageUploader extends React.Component {
     imageLabel: 'Select image',
     errorText: '',
     isBoardImage: false,
-    imageId: '',
     isImageCertified: false,
     snackbarWarning: ''
   };
@@ -83,20 +83,20 @@ class ImageUploader extends React.Component {
 
     let metadata = {
       customMetadata: {
+        'name': that.state.imageName,
         'uploader_uid': auth.currentUser.uid,
         'uploader_email': auth.currentUser.email
       }
     };
 
-    ref.child(this.vars.imageId + '.' + extension).put(this.state.file, metadata).then(function (snapshot) {
+    let childKey = dbRef.push().key;
+    ref.child(childKey + '.' + extension).put(this.state.file, metadata).then(function (snapshot) {
       snapshot.ref.getDownloadURL().then(function (url) {
         let imageMetadataForDb = {
           downloadURL: url,
-          id: that.vars.imageId,
           ...metadata.customMetadata
         };
 
-        let childKey = dbRef.push().key;
         imageMetadataForDb['key'] = childKey;
         dbRef.child(childKey).set(imageMetadataForDb);
         that.vars.snackbarWarning = "Image uploaded succesfully";
@@ -153,8 +153,8 @@ class ImageUploader extends React.Component {
       case constants.IMAGE_PATH_IDENTIFIER: {
         let file = e.target.files[0];
         let imageLabel = file.name.split('/').pop();
-        let imageId = imageLabel.split('.');
-        let extension = imageId.pop().toLowerCase();
+        let imageName = imageLabel.split('.');
+        let extension = imageName.pop().toLowerCase();
 
         if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
             this.vars.snackbarWarning = "Upload proper format, accepted formats are " +
@@ -163,10 +163,10 @@ class ImageUploader extends React.Component {
             break;
         }
         this.vars.imageLabel = imageLabel;
-        this.vars.imageId = imageId.join(".");
         this.setState({
           imagePath: file.name,
-          file: file
+          file: file,
+          imageName: imageName.join(".")
         });
         break;
       }
@@ -177,7 +177,7 @@ class ImageUploader extends React.Component {
       }
 
       case constants.IMAGE_ID_IDENTIFIER: {
-        this.vars.imageId = newValue;
+        this.setState({imageName: newValue});
         break;
       }
 
@@ -194,7 +194,7 @@ class ImageUploader extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <ImageSelector label={this.vars.imageLabel} imageId={this.vars.imageId} handleChange={this.handleImageUploaderChange.bind(this)}/>;
+        return <ImageSelector label={this.vars.imageLabel} imageName={this.state.imageName} handleChange={this.handleImageUploaderChange.bind(this)}/>;
       case 1:
         return <Checkbox
                 defaultChecked={this.vars.isImageCertified}
