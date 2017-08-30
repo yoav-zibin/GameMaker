@@ -17,6 +17,7 @@ const constants = {
   AUTHENTICATION_LOCAL_STORAGE_KEY: 'GAME_BUILDER_LOCAL_STORAGE_$UID',
   BOARD_IMAGES_PATH: 'images/board_images',
   OTHER_IMAGES_PATH: 'images/others',
+  SPECS_PATH: 'specs',
   ACCEPTED_IMAGE_FORMATS: '.png,.jpg,.jpeg,.svg,.gif'
 }
 

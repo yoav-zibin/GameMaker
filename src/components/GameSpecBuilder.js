@@ -29,8 +29,7 @@ const GameSpecBuilder = (props) => {
           setBoardSize={setBoardSize}
           setItems={setItems}
           getItems={getItems}
-          boardImage={boardImage}
-          pieceImageSize={pieceImageSize}/>
+          boardImage={boardImage}/>
       </div>
     </DragDropContextProvider>
   );

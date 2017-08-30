@@ -36,6 +36,7 @@ const SpecViewer = (props) => {
         floatingLabelText={constants.SPEC_NAME_FLOATING_LABEL}
         floatingLabelFixed={true}
         hintText={constants.SPEC_NAME_HINT_TEXT}
+        errorText={props.specNameErrorText}
         value={props.specName}
         onChange={props.setSpecName}/>
       <ContentEditable

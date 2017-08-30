@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from '../styles';
 import constants from '../constants';
-import { boardImagesDbRef, otherImagesDbRef } from '../firebase';
+import { boardImagesDbRef, otherImagesDbRef, specsRef } from '../firebase';
 import BoardList from './gamespec/BoardList';
 import GameSpecBuilder from './GameSpecBuilder';
 import SpecViewer from './gamespec/SpecViewer';
@@ -18,22 +18,27 @@ import {
 } from 'material-ui/Stepper';
 
 class GameSpecBuilderContainer extends React.Component {
-  state = {
+  initialState = {
     boardImages: [],
     otherImages: [],
+    allSpecs: [],
     selectedBoard: "",
     stepIndex: 0,
     finished: false,
     shouldDisplayWarningSnackBar: false,
     items: [],
+    specName: '',
+    specNameErrorText: ''
   };
 
-  vars = {
-    pieceImageSize: 50,
+  initialVars = {
     snackbarWarning: '',
     boardSize: 0,
     spec: ''
   };
+
+  state = Object.assign({}, this.initialState);
+  vars = Object.assign({}, this.initialVars);
 
   componentDidMount() {
     let that = this;
@@ -48,6 +53,12 @@ class GameSpecBuilderContainer extends React.Component {
         otherImages: data.val()
       });
     });
+
+    specsRef.once('value').then(function (data) {
+      that.setState({
+        allSpecs: data.val()
+      })
+    })
   }
 
   getItems() {
@@ -64,6 +75,20 @@ class GameSpecBuilderContainer extends React.Component {
 
   setInitialSpec(spec) {
     this.vars.spec = JSON.stringify(spec);
+  }
+
+  setSpecName(e, newValue) {
+    if (this.state.allSpecs && this.state.allSpecs[newValue]) {
+      this.setState({
+        specNameErrorText: 'Spec name already exists',
+        specName: newValue
+      });
+    } else {
+      this.setState({
+        specNameErrorText: '',
+        specName: newValue
+      });
+    }
   }
 
   handleSpecChange(e) {
@@ -98,12 +123,6 @@ class GameSpecBuilderContainer extends React.Component {
       case 0: {
         return (
           <div>
-            <TextField
-              floatingLabelText={constants.PIECE_SIZE_FLOATING_LABEL}
-              floatingLabelFixed={true}
-              hintText={constants.PIECE_SIZE_HINT_TEXT}
-              onChange={(e, newValue) => {
-                this.vars.pieceImageSize = newValue}}/>
             <BoardList
               cellHeight={180}
               header="Boards"
@@ -120,7 +139,6 @@ class GameSpecBuilderContainer extends React.Component {
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
-            pieceImageSize={this.vars.pieceImageSize}
             images={this.state.otherImages}
             boardImage={this.state.boardImages[this.state.selectedBoard]}/>
         );
@@ -129,6 +147,9 @@ class GameSpecBuilderContainer extends React.Component {
       case 2: {
         return (
           <SpecViewer
+            specName={this.state.specName}
+            setSpecName={this.setSpecName.bind(this)}
+            specNameErrorText={this.state.specNameErrorText}
             items={this.state.items}
             boardSize={this.vars.boardSize}
             setInitialSpec={this.setInitialSpec.bind(this)}
@@ -158,6 +179,13 @@ class GameSpecBuilderContainer extends React.Component {
         return;
       }
       this.updateStepIndex(stepIndex);
+    } else if (stepIndex == 2) {
+      specsRef.child(this.state.specName).set(this.vars.spec).then(() => {
+        this.notify("Spec uploaded successfully");
+        this.updateStepIndex(stepIndex);
+      }, () => {
+        this.notify("Spec Upload failed");
+      });
     } else {
       this.updateStepIndex(stepIndex);
     }
@@ -190,8 +218,9 @@ class GameSpecBuilderContainer extends React.Component {
             <div>
                 <RaisedButton label="Reset" primary={true}
                   onClick={(event) => {
-                    event.preventDefault();;
-                    this.setState({stepIndex: 0, finished: false});
+                    event.preventDefault();
+                    this.vars = Object.assign({}, this.initialVars);
+                    this.setState(this.initialState);
                   }}/>
             </div>
           ) : (
