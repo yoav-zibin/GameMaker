@@ -39,6 +39,8 @@ let collect = (connect, monitor) => ({
 class Board extends React.Component {
   width = '512';
   height = '512';
+  imageWidthRatio = 1;
+  imageHeightRatio = 1;
   canvasDiv;
   static propTypes = {
     connectDropTarget: PropTypes.func.isRequired,
@@ -69,6 +71,9 @@ class Board extends React.Component {
     const { canDrop, isOver, connectDropTarget, style } = this.props;
     const isActive = canDrop && isOver;
 
+    this.imageWidthRatio = this.props.boardImage.width / parseInt(this.width, 10);
+    this.imageHeightRatio = this.props.boardImage.height / parseInt(this.height, 10);
+
     return connectDropTarget(
       <div style={flexElement}>
         <Stage ref="stage" width={this.width} height={this.height}>
@@ -82,8 +87,8 @@ class Board extends React.Component {
                 <CanvasImage
                   ref={"canvasImage" + index}
                   key={index}
-                  width={this.props.pieceImageSize}
-                  height={this.props.pieceImageSize}
+                  width={item.image.width / this.imageWidthRatio}
+                  height={item.image.height / this.imageHeightRatio}
                   src={item.image.downloadURL}
                   x={item.offset.x}
                   y={item.offset.y}

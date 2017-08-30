@@ -52,10 +52,6 @@ class ImageUploader extends React.Component {
   checkImageDimensions = (file) => {
     let that = this;
     return new Promise((resolve, reject) => {
-      if (!that.vars.isBoardImage) {
-        resolve();
-        return;
-      }
       window.URL = window.URL || window.webkitURL;
 
       let img = new Image();
@@ -64,18 +60,20 @@ class ImageUploader extends React.Component {
           var width = img.naturalWidth,
               height = img.naturalHeight;
 
-          window.URL.revokeObjectURL( img.src );
+          window.URL.revokeObjectURL(img.src);
 
-          if(Math.max(width, height) === 1024) {
-              resolve();
+          if (!that.vars.isBoardImage) {
+            resolve({width, height});
+          } else if(Math.max(width, height) === 1024) {
+            resolve({width, height});
           } else {
-              reject();
+            reject();
           }
       };
     });
   }
 
-  handleUpload = (stepIndex) => {
+  handleUpload = (stepIndex, width, height) => {
     let that = this;
     let ref = this.vars.isBoardImage ? boardImagesRef : otherImagesRef;
     let dbRef = this.vars.isBoardImage ? boardImagesDbRef : otherImagesDbRef;
@@ -83,6 +81,8 @@ class ImageUploader extends React.Component {
 
     let metadata = {
       customMetadata: {
+        'width': width,
+        'height': height,
         'name': that.state.imageName,
         'uploader_uid': auth.currentUser.uid,
         'uploader_email': auth.currentUser.email
@@ -116,7 +116,6 @@ class ImageUploader extends React.Component {
   }
 
   handleNext = () => {
-    let that = this;
     const {stepIndex} = this.state;
     if (stepIndex === 1) {
       if (!this.vars.isImageCertified) {
@@ -127,10 +126,10 @@ class ImageUploader extends React.Component {
           this.notify("No file selected");
         }
 
-        this.checkImageDimensions(this.state.file).then(function () {
-          that.handleUpload.call(that, stepIndex);
-        }, function () {
-          that.notify("Max of width and height for board image should be 1024");
+        this.checkImageDimensions(this.state.file).then(({width, height}) => {
+          this.handleUpload(stepIndex, width, height);
+        }, () => {
+          this.notify("Max of width and height for board image should be 1024");
         });
       }
     } else {
