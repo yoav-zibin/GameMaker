@@ -25,13 +25,14 @@ class GameSpecBuilderContainer extends React.Component {
     stepIndex: 0,
     finished: false,
     shouldDisplayWarningSnackBar: false,
-    items: []
-
+    items: [],
   };
+
   vars = {
     pieceImageSize: 50,
     snackbarWarning: '',
-    boardSize: 0
+    boardSize: 0,
+    spec: ''
   };
 
   componentDidMount() {
@@ -59,6 +60,19 @@ class GameSpecBuilderContainer extends React.Component {
 
   setBoardSize(num) {
     this.vars.boardSize = num;
+  }
+
+  setInitialSpec(spec) {
+    this.vars.spec = JSON.stringify(spec);
+  }
+
+  handleSpecChange(e) {
+    // From 4 spaces to none
+    try {
+      this.vars.spec = JSON.stringify(JSON.parse(e.target.value));
+    } catch (e) {
+      this.notify("Current JSON is malformed: " + e.message);
+    }
   }
 
   notify = (message) => {
@@ -117,6 +131,8 @@ class GameSpecBuilderContainer extends React.Component {
           <SpecViewer
             items={this.state.items}
             boardSize={this.vars.boardSize}
+            setInitialSpec={this.setInitialSpec.bind(this)}
+            handleSpecChange={this.handleSpecChange.bind(this)}
             boardImage={this.state.boardImages[this.state.selectedBoard]}/>
         )
       }

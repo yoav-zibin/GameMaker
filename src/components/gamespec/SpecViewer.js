@@ -1,9 +1,11 @@
 import React from 'react';
+import ContentEditable from 'react-contenteditable';
+import TextField from 'material-ui/TextField';
+import constants from '../../constants';
 import styles from '../../styles';
 
 const flexStyle = {
   width: '50%',
-  backgroundColor: '#eee',
   ...styles.center
 };
 
@@ -26,11 +28,23 @@ const SpecViewer = (props) => {
     });
   });
 
+  props.setInitialSpec(specJson);
+
   return (
     <div style={flexStyle}>
-      <pre contentEditable={true} style={{textAlign: 'left'}}>
-      {JSON.stringify(specJson, null, 2)}
-      </pre>
+      <TextField
+        floatingLabelText={constants.SPEC_NAME_FLOATING_LABEL}
+        floatingLabelFixed={true}
+        hintText={constants.SPEC_NAME_HINT_TEXT}
+        value={props.specName}
+        onChange={props.setSpecName}/>
+      <ContentEditable
+        html={JSON.stringify(specJson, null, 2)}
+        disabled={false}
+        onChange={props.handleSpecChange}
+        tagName="pre"
+        style={{textAlign: 'left', backgroundColor: '#eee'}}
+        />
     </div>
   )
 }
