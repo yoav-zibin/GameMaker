@@ -99,7 +99,7 @@ class ImageUploader extends React.Component {
 
         imageMetadataForDb['key'] = childKey;
         dbRef.child(childKey).set(imageMetadataForDb);
-        that.vars.snackbarWarning = "Image uploaded succesfully";
+        that.vars.snackbarWarning = constants.IMAGE_UPLOAD_SUCCESSFUL;
         that.setState({
           shouldDisplayWarningSnackBar: true,
           stepIndex: stepIndex + 1,
@@ -108,10 +108,10 @@ class ImageUploader extends React.Component {
 
       }, function () {
         snapshot.ref.delete();
-        this.notify("Image upload failed");
+        this.notify(constants.IMAGE_UPLOAD_FAILED);
       });
     }, function () {
-      this.notify("Image upload failed");
+      this.notify(constants.IMAGE_UPLOAD_FAILED);
     })
   }
 
@@ -123,13 +123,13 @@ class ImageUploader extends React.Component {
         return;
       } else {
         if (!this.state.file) {
-          this.notify("No file selected");
+          this.notify(constants.NO_FILE_SELECTED_WARNING);
         }
 
         this.checkImageDimensions(this.state.file).then(({width, height}) => {
           this.handleUpload(stepIndex, width, height);
         }, () => {
-          this.notify("Max of width and height for board image should be 1024");
+          this.notify(constants.MAX_WIDTH_HEIGHT_WARNING);
         });
       }
     } else {
@@ -156,7 +156,7 @@ class ImageUploader extends React.Component {
         let extension = imageName.pop().toLowerCase();
 
         if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
-            this.vars.snackbarWarning = "Upload proper format, accepted formats are " +
+            this.vars.snackbarWarning = constants.PROPER_FORMAT_ACCEPTED_WARNING +
             constants.ACCEPTED_IMAGE_FORMATS;
             this.setState({shouldDisplayWarningSnackBar: true});
             break;

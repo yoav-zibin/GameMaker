@@ -19,9 +19,6 @@ import {
 
 class GameSpecBuilderContainer extends React.Component {
   initialState = {
-    boardImages: [],
-    otherImages: [],
-    allSpecs: [],
     selectedBoard: "",
     stepIndex: 0,
     finished: false,
@@ -31,13 +28,19 @@ class GameSpecBuilderContainer extends React.Component {
     specNameErrorText: ''
   };
 
+  initialBoardState = {
+    boardImages: [],
+    otherImages: [],
+    allSpecs: []
+  };
+
   initialVars = {
     snackbarWarning: '',
     boardSize: 0,
     spec: ''
   };
 
-  state = Object.assign({}, this.initialState);
+  state = Object.assign({}, this.initialState, this.initialBoardState);
   vars = Object.assign({}, this.initialVars);
 
   componentDidMount() {
@@ -96,7 +99,7 @@ class GameSpecBuilderContainer extends React.Component {
     try {
       this.vars.spec = JSON.stringify(JSON.parse(e.target.value));
     } catch (e) {
-      this.notify("Current JSON is malformed: " + e.message);
+      this.notify(constants.JSON_MALFORMED_ERROR + e.message);
     }
   }
 
@@ -175,16 +178,20 @@ class GameSpecBuilderContainer extends React.Component {
     const { stepIndex } = this.state;
     if (stepIndex === 0) {
       if (!this.state.selectedBoard.length) {
-        this.notify("You must select a board");
+        this.notify(constants.NO_BOARD_SELECTED_ERROR);
         return;
       }
       this.updateStepIndex(stepIndex);
     } else if (stepIndex === 2) {
+      if (this.state.specNameErrorText.length !== 0) {
+        this.notify(constants.EXISTING_SPEC_NAME_ERROR);
+        return;
+      }
       specsRef.child(this.state.specName).set(this.vars.spec).then(() => {
-        this.notify("Spec uploaded successfully");
+        this.notify(constants.SPEC_UPLOAD_SUCCESSFUL);
         this.updateStepIndex(stepIndex);
       }, () => {
-        this.notify("Spec Upload failed");
+        this.notify(constants.SPEC_UPLOAD_FAILED);
       });
     } else {
       this.updateStepIndex(stepIndex);
@@ -221,6 +228,7 @@ class GameSpecBuilderContainer extends React.Component {
                     event.preventDefault();
                     this.vars = Object.assign({}, this.initialVars);
                     this.setState(this.initialState);
+                    this.setState({items: []});
                   }}/>
             </div>
           ) : (
