@@ -1,8 +1,7 @@
 import React from 'react';
 
-import {GridList, GridTile} from 'material-ui/GridList';
+import {GridList} from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
-import IconButton from 'material-ui/IconButton';
 import styles from '../styles';
 
 function GridListCustom(Component) {

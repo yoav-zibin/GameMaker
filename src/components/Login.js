@@ -61,7 +61,6 @@ class Login extends React.Component {
 
   loginWithGoogle = () => {
     auth.signInWithPopup(googleProvider).then(function (result) {
-      let token = result.credential.accessToken;
       this.createUserIfNotExists();
       this.setState({redirectToReferrer: true});
     }.bind(this));

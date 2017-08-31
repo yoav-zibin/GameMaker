@@ -32,7 +32,6 @@ class ImageUploader extends React.Component {
     file: false
   };
 
-  state = Object.assign({}, this.initialState);
 
   initialVars = {
     imageLabel: 'Select image',
@@ -42,6 +41,7 @@ class ImageUploader extends React.Component {
     snackbarWarning: ''
   };
 
+  state = Object.assign({}, this.initialState);
   vars = Object.assign({}, this.initialVars);
 
   notify = (message) => {

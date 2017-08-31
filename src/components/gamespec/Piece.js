@@ -10,15 +10,7 @@ const pieceSource = {
     return {
       image: props.image
     };
-  },
-
-  endDrag(props, monitor) {
-    const item = monitor.getItem();
-    const dropResult = monitor.getDropResult();
-
-    if (dropResult) {
-    }
-  },
+  }
 };
 
 class Piece extends Component {
@@ -35,7 +27,6 @@ class Piece extends Component {
     const { image } = this.props;
     const opacity = isDragging ? 0.4 : 1;
     const height = 'inherit';
-    let that = this;
     return connectDragSource(
         <div key={keyProp} style={{ opacity, height }}>
           <GridTile

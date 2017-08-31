@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import withWidth, {MEDIUM, LARGE} from 'material-ui/utils/withWidth';
+import withWidth, {LARGE} from 'material-ui/utils/withWidth';
 
 import Sidebar from './Sidebar';
 

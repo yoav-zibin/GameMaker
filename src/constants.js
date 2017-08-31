@@ -9,6 +9,7 @@ const constants = {
   IMAGE_ID_HINT_TEXT: 'Image name',
   SPEC_NAME_FLOATING_LABEL: 'Enter spec\'s name',
   SPEC_NAME_HINT_TEXT: 'Spec\'s name',
+  EXISTING_SPEC_NAME_ERROR: 'Spec name already exists',
   PIECE_SIZE_FLOATING_LABEL: 'Enter piece image size',
   PIECE_SIZE_HINT_TEXT: 'Piece Image Size',
   NAV_UPLOAD_IMAGE_TEXT: 'Upload Image',

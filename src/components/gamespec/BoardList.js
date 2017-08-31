@@ -1,5 +1,3 @@
-import React from 'react';
-
 import BoardTile from './BoardTile';
 import GridListCustom from '../GridListCustom';
 

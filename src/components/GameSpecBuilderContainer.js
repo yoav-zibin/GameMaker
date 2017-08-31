@@ -10,7 +10,7 @@ import SpecViewer from './gamespec/SpecViewer';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
+
 import {
   Step,
   Stepper,
@@ -80,7 +80,7 @@ class GameSpecBuilderContainer extends React.Component {
   setSpecName(e, newValue) {
     if (this.state.allSpecs && this.state.allSpecs[newValue]) {
       this.setState({
-        specNameErrorText: 'Spec name already exists',
+        specNameErrorText: constants.EXISTING_SPEC_NAME_ERROR,
         specName: newValue
       });
     } else {
@@ -179,7 +179,7 @@ class GameSpecBuilderContainer extends React.Component {
         return;
       }
       this.updateStepIndex(stepIndex);
-    } else if (stepIndex == 2) {
+    } else if (stepIndex === 2) {
       specsRef.child(this.state.specName).set(this.vars.spec).then(() => {
         this.notify("Spec uploaded successfully");
         this.updateStepIndex(stepIndex);

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
 import ItemTypes from './ItemTypes';
-import {Card, CardMedia} from 'material-ui/Card';
 import { Layer, Stage } from 'react-konva';
 
 import CanvasImage from './CanvasImage';
@@ -68,8 +67,7 @@ class Board extends React.Component {
   }
 
   render() {
-    const { canDrop, isOver, connectDropTarget, style } = this.props;
-    const isActive = canDrop && isOver;
+    const { connectDropTarget } = this.props;
 
     this.imageWidthRatio = this.props.boardImage.width / parseInt(this.width, 10);
     this.imageHeightRatio = this.props.boardImage.height / parseInt(this.height, 10);
