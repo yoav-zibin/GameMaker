@@ -4,5 +4,6 @@
     "databaseURL": "https://universalgamemaker.firebaseio.com",
     "projectId": "universalgamemaker",
     "storageBucket": "universalgamemaker.appspot.com",
-    "messagingSenderId": ""
+    "messagingSenderId": "",
+    "basename": "."
 }

@@ -7,7 +7,7 @@ GameBuilder is created using React for Social Multiplayer Games course at NYU.
 - Clone the repo
 - Do `npm install` or `yarn install`
 - Copy `sample.config.json` to `src/config.json` and update the config with credentials that you get from firebase console's web setup
-
+- In config, also set `basename` to the subfolder in which you are deploying the app. For e.g. for our github pages, project is deployed at `/GameBuilder` so `basename` is set to `GameBuilder`.
 
 ## Running
 

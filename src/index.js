@@ -6,11 +6,12 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { Route, BrowserRouter } from 'react-router-dom';
 
+import config from './config.json';
 
 injectTapEventPlugin();
 
 ReactDOM.render(
-  <BrowserRouter>
+  <BrowserRouter basename={config.basename || '/'}>
     <div>
       <Route path="/" component={App}>
       </Route>
