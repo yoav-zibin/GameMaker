@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from '../styles';
 import constants from '../constants';
-import { imagesDbRef, specsRef } from '../firebase';
+import { imagesDbRef, specsRef, auth } from '../firebase';
 import BoardList from './gamespec/BoardList';
 import GameSpecBuilder from './GameSpecBuilder';
 import SpecViewer from './gamespec/SpecViewer';
@@ -189,7 +189,13 @@ class GameSpecBuilderContainer extends React.Component {
         this.notify(constants.EXISTING_SPEC_NAME_ERROR);
         return;
       }
-      specsRef.child(this.state.specName).set(this.vars.spec).then(() => {
+
+      let value = {
+        spec: this.vars.spec,
+        uploader_uid: auth.currentUser.uid
+      }
+
+      specsRef.child(this.state.specName).set(value).then(() => {
         this.notify(constants.SPEC_UPLOAD_SUCCESSFUL);
         this.updateStepIndex(stepIndex);
       }, () => {
