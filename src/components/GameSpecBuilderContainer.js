@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from '../styles';
 import constants from '../constants';
-import { boardImagesDbRef, otherImagesDbRef, specsRef } from '../firebase';
+import { imagesDbRef, specsRef } from '../firebase';
 import BoardList from './gamespec/BoardList';
 import GameSpecBuilder from './GameSpecBuilder';
 import SpecViewer from './gamespec/SpecViewer';
@@ -45,13 +45,15 @@ class GameSpecBuilderContainer extends React.Component {
 
   componentDidMount() {
     let that = this;
-    boardImagesDbRef.once('value').then(function (data) {
+    let images = imagesDbRef.orderByChild('is_board_image')
+
+    images.equalTo(true).once('value').then(function (data) {
       that.setState({
         boardImages: data.val()
       });
     });
 
-    otherImagesDbRef.once('value').then(function (data) {
+    images.equalTo(false).once('value').then(function (data) {
       that.setState({
         otherImages: data.val()
       });

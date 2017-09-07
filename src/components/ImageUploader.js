@@ -14,10 +14,8 @@ import constants from '../constants';
 import styles from '../styles';
 
 import {
-  boardImagesRef,
-  otherImagesRef,
-  boardImagesDbRef,
-  otherImagesDbRef,
+  imagesRef,
+  imagesDbRef,
   auth
 } from '../firebase';
 
@@ -75,14 +73,15 @@ class ImageUploader extends React.Component {
 
   handleUpload = (stepIndex, width, height) => {
     let that = this;
-    let ref = this.vars.isBoardImage ? boardImagesRef : otherImagesRef;
-    let dbRef = this.vars.isBoardImage ? boardImagesDbRef : otherImagesDbRef;
+    let ref = imagesRef;
+    let dbRef = imagesDbRef;
     let extension = this.vars.imageLabel.split('.').pop().toLowerCase();
 
     let metadata = {
       customMetadata: {
         'width': width,
         'height': height,
+        'is_board_image': this.vars.isBoardImage,
         'name': that.state.imageName,
         'uploader_uid': auth.currentUser.uid,
         'uploader_email': auth.currentUser.email
