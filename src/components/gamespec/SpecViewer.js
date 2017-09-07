@@ -10,25 +10,28 @@ const flexStyle = {
 };
 
 const SpecViewer = (props) => {
-  let specJson = {};
-  specJson['@board'] = {
-    '@imageId': props.boardImage.id,
-    '@imageKey': props.boardImage.key
-  };
+  let specJson = props.spec.length !== 0 ? JSON.parse(props.spec) : {};
 
-  specJson['@initialPositions'] = {
-    '@pieces': []
-  };
-  props.items.forEach((item, index) => {
-    specJson['@initialPositions']['@pieces'].push({
-      '@imageId': item.image.id,
-      '@imageKey': item.image.key,
-      '@positionX': Math.round(item.offset.x / props.boardSize * 10000) / 100,
-      '@positionY': Math.round(item.offset.y / props.boardSize * 10000) / 100
+  if (Object.keys(specJson).length === 0) {
+    specJson['@board'] = {
+      '@imageId': props.boardImage.id,
+      '@imageKey': props.boardImage.key
+    };
+
+    specJson['@initialPositions'] = {
+      '@pieces': []
+    };
+    props.items.forEach((item, index) => {
+      specJson['@initialPositions']['@pieces'].push({
+        '@imageId': item.image.id,
+        '@imageKey': item.image.key,
+        '@positionX': Math.round(item.offset.x / props.boardSize * 10000) / 100,
+        '@positionY': Math.round(item.offset.y / props.boardSize * 10000) / 100
+      });
     });
-  });
 
-  props.setInitialSpec(specJson);
+    props.setInitialSpec(specJson);
+  }
 
   return (
     <div style={flexStyle}>

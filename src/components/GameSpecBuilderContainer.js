@@ -96,7 +96,7 @@ class GameSpecBuilderContainer extends React.Component {
     }
   }
 
-  handleSpecChange(e) {
+  handleSpecChange = (e) => {
     // From 4 spaces to none
     try {
       this.vars.spec = JSON.stringify(JSON.parse(e.target.value));
@@ -156,6 +156,7 @@ class GameSpecBuilderContainer extends React.Component {
             setSpecName={this.setSpecName.bind(this)}
             specNameErrorText={this.state.specNameErrorText}
             items={this.state.items}
+            spec={this.vars.spec}
             boardSize={this.vars.boardSize}
             setInitialSpec={this.setInitialSpec.bind(this)}
             handleSpecChange={this.handleSpecChange.bind(this)}
@@ -187,6 +188,9 @@ class GameSpecBuilderContainer extends React.Component {
     } else if (stepIndex === 2) {
       if (this.state.specNameErrorText.length !== 0) {
         this.notify(constants.EXISTING_SPEC_NAME_ERROR);
+        return;
+      } else if (this.state.specName.length === 0) {
+        this.notify(constants.NO_SPEC_NAME_ERROR);
         return;
       }
 

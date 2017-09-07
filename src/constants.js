@@ -17,6 +17,7 @@ const constants = {
   SPEC_UPLOAD_SUCCESSFUL: 'Spec uploaded successfully',
   SPEC_UPLOAD_FAILED: 'Spec Upload failed',
   EXISTING_SPEC_NAME_ERROR: 'Spec name already exists',
+  NO_SPEC_NAME_ERROR: 'No spec name specified',
   PIECE_SIZE_FLOATING_LABEL: 'Enter piece image size',
   PIECE_SIZE_HINT_TEXT: 'Piece Image Size',
   NAV_UPLOAD_IMAGE_TEXT: 'Upload Image',
