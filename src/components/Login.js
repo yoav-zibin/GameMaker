@@ -33,12 +33,13 @@ class Login extends React.Component {
         },
         'publicFields': {
           'avatarImageUrl': user.photoURL || '',
-          'displayName': user.displayName || user.email
+          'displayName': user.displayName || user.email,
+          'email': user.email
         }
       };
 
       usersRef.child(user.uid).transaction(function(currentUserData) {
-        if (currentUserData === null) {
+        if (currentUserData === null || !currentUserData.email) {
           return userData;
         }
       });
