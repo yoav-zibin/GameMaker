@@ -69,6 +69,17 @@ class Board extends React.Component {
   render() {
     const { connectDropTarget } = this.props;
 
+    let boardPic = this.props.boardImage
+    if (boardPic.width > boardPic.height) {
+      this.width = '512';
+      let ratio = boardPic.height / boardPic.width;
+      this.height = (512 * ratio).toString()
+    } else {
+      this.height = '512';
+      let ratio = boardPic.width / boardPic.height;
+      this.width = (512 * ratio).toString()
+    }
+
     this.imageWidthRatio = this.props.boardImage.width / parseInt(this.width, 10);
     this.imageHeightRatio = this.props.boardImage.height / parseInt(this.height, 10);
 
