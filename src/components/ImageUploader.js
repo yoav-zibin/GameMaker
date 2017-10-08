@@ -1,4 +1,6 @@
 import React from 'react';
+import firebase from 'firebase';
+
 import {
   Step,
   Stepper,
@@ -93,6 +95,7 @@ class ImageUploader extends React.Component {
       snapshot.ref.getDownloadURL().then(function (url) {
         let imageMetadataForDb = {
           downloadURL: url,
+          createdOn: firebase.database.ServerValue.TIMESTAMP,
           ...metadata.customMetadata
         };
 
