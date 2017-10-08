@@ -7,6 +7,8 @@ import BoardList from './gamespec/BoardList';
 import GameSpecBuilder from './GameSpecBuilder';
 import SpecViewer from './gamespec/SpecViewer';
 
+import firebase from 'firebase';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import FlatButton from 'material-ui/FlatButton';
@@ -196,7 +198,8 @@ class GameSpecBuilderContainer extends React.Component {
 
       let value = {
         spec: this.vars.spec,
-        uploader_uid: auth.currentUser.uid
+        uploader_uid: auth.currentUser.uid,
+        createdOn: firebase.database.ServerValue.TIMESTAMP
       }
 
       specsRef.child(this.state.specName).set(value).then(() => {
