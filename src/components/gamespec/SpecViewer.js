@@ -3,6 +3,7 @@ import ContentEditable from 'react-contenteditable';
 import TextField from 'material-ui/TextField';
 import constants from '../../constants';
 import styles from '../../styles';
+import { piecesRef } from '../../firebase';
 
 const flexStyle = {
   width: '50%',
@@ -17,17 +18,26 @@ const SpecViewer = (props) => {
     '@imageKey': props.boardImage.key
   };
 
-  specJson['@initialPositions'] = {
-    '@pieces': []
-  };
-  props.items.forEach((item, index) => {
-    specJson['@initialPositions']['@pieces'].push({
-      '@imageId': item.image.id,
-      '@imageKey': item.image.key,
-      '@positionX': Math.round(item.offset.x / props.boardSize * 10000) / 100,
-      '@positionY': Math.round(item.offset.y / props.boardSize * 10000) / 100
+    specJson['@initialPositions'] = {
+      '@pieces': []
+    };
+    props.pieces.forEach((piece, index) => {
+      let images = [];
+      let positions = [];
+      piece.itemIndex.forEach((idx, num) => {
+        let positionX = Math.round(props.items[idx].offset.x / props.boardSize * 10000) / 100
+        let positionY = Math.round(props.items[idx].offset.y / props.boardSize * 10000) / 100
+        images.push(props.items[idx].image.key)
+        positions.push({positionX, positionY})
+      })
+      if(piece.itemIndex.length !== 0){
+        let childKey = piecesRef.push().key
+        piecesRef.child(childKey).set({images, positions})
+        specJson['@initialPositions']['@pieces'].push({
+          '@pieceKey': childKey
+        });
+      }
     });
-  });
 
   props.setInitialSpec(specJson);
 

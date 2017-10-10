@@ -12,6 +12,7 @@ import firebase from 'firebase';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import FlatButton from 'material-ui/FlatButton';
+import firebase from 'firebase';
 
 import {
   Step,
@@ -39,7 +40,8 @@ class GameSpecBuilderContainer extends React.Component {
   initialVars = {
     snackbarWarning: '',
     boardSize: 0,
-    spec: ''
+    spec: '',
+    pieces: []
   };
 
   state = Object.assign({}, this.initialState, this.initialBoardState);
@@ -66,6 +68,14 @@ class GameSpecBuilderContainer extends React.Component {
         allSpecs: data.val()
       })
     })
+  }
+
+  getPieces(){
+    return this.vars.pieces;
+  }
+
+  setPieces(pieces){
+    this.vars.pieces = pieces;
   }
 
   getItems() {
@@ -144,9 +154,11 @@ class GameSpecBuilderContainer extends React.Component {
         return (
           <GameSpecBuilder
             setBoardSize={this.setBoardSize.bind(this)}
+            images={this.state.otherImages}
+            setPieces={this.setPieces.bind(this)}
+            getPieces={this.getPieces.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
-            images={this.state.otherImages}
             boardImage={this.state.boardImages[this.state.selectedBoard]}/>
         );
       }
@@ -157,8 +169,9 @@ class GameSpecBuilderContainer extends React.Component {
             specName={this.state.specName}
             setSpecName={this.setSpecName.bind(this)}
             specNameErrorText={this.state.specNameErrorText}
-            items={this.state.items}
             spec={this.vars.spec}
+            items={this.state.items}
+            pieces={this.vars.pieces}
             boardSize={this.vars.boardSize}
             setInitialSpec={this.setInitialSpec.bind(this)}
             handleSpecChange={this.handleSpecChange.bind(this)}

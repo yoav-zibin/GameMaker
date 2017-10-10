@@ -26,6 +26,7 @@ const constants = {
   AUTHENTICATION_LOCAL_STORAGE_KEY: 'GAME_BUILDER_LOCAL_STORAGE_$UID',
   IMAGES_PATH: 'images',
   SPECS_PATH: 'specs',
+  PIECES_PATH: 'pieces',
   JSON_MALFORMED_ERROR: 'Current JSON is malformed: ',
   PROPER_FORMAT_ACCEPTED_WARNING: 'Upload proper format, accepted formats are ',
   ACCEPTED_IMAGE_FORMATS: '.png,.jpg,.jpeg,.svg,.gif'

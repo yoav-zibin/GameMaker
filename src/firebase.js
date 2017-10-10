@@ -10,6 +10,7 @@ export const storage = firebaseApp.storage();
 export const imagesDbRef = db.ref(constants.IMAGES_PATH);
 export const imagesRef = storage.ref().child(constants.IMAGES_PATH);
 export const specsRef = db.ref(constants.SPECS_PATH);
+export const piecesRef = db.ref(constants.PIECES_PATH);
 
 export const storageKey = constants.AUTHENTICATION_LOCAL_STORAGE_KEY;
 
