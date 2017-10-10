@@ -12,7 +12,6 @@ import firebase from 'firebase';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import FlatButton from 'material-ui/FlatButton';
-import firebase from 'firebase';
 
 import {
   Step,
