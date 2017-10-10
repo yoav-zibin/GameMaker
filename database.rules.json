@@ -1,9 +1,180 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null",
+    ".read": "false",
+    ".write": "false",
     "images": {
-      ".indexOn": ["is_board_image"]
+      "$image_id": {
+        ".read": "auth != null",
+        ".write": "!data.exists() || data.child('uploader_uid').val() == auth.uid",
+        "downloadURL": {
+          ".validate": "newData.isString() && newData.val().beginsWith(\"https://\") && newData.val().length >= 10 && newData.val().length < 500"
+        },
+        "width": {
+          ".validate": "newData.isNumber() && newData.val() >= 10 && newData.val() <= 1024"
+        },
+        "height": {
+          ".validate": "newData.isNumber() && newData.val() >= 10 && newData.val() <= 1024"
+        },
+        "is_board_image": {
+          ".validate": "newData.isBoolean()"
+        },
+        "key": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length < 100"
+        },
+        "name": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length < 100"
+        },
+        "uploader_email": {
+          ".validate": "newData.isString() && newData.val().matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$/i)"
+        },
+        "uploader_uid": {
+          ".validate": "newData.isString() && newData.val() === auth.uid"
+        },
+        "createdOn": {
+          ".validate": "newData.isNumber() && newData.val() == now"
+        },
+        "$other": {
+          ".validate": false
+        },
+        ".validate": "newData.hasChildren(['downloadURL', 'width', 'height', 'is_board_image', 'key', 'name', 'uploader_email', 'uploader_uid', 'createdOn'])"
+      }
+    },
+    "users": {
+      "$user_id": {
+        ".read": "$user_id === auth.uid",
+        ".write": "$user_id === auth.uid",
+        "publicFields": {
+          ".read": "auth != null",
+          "avatarImageUrl": {
+            ".validate": "newData.isString() && newData.val().beginsWith(\"https://\") && newData.val().length >= 10 && newData.val().length < 500"
+          },
+          "displayName": {
+            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length < 100"
+          },
+          "isConnected": {
+            ".validate": "newData.isBoolean()"
+          },
+          "lastSeen": {
+            ".validate": "newData.isNumber() && newData.val() == now"
+          },
+          "$other": {
+            ".validate": false
+          },
+          ".validate": "newData.hasChildren(['avatarImageUrl', 'displayName', 'isConnected', 'lastSeen'])"
+        },
+        "privateFields": {
+          "email": {
+            ".validate": "newData.isString() && newData.val().matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$/i)"
+          },
+          "createdOn": {
+            ".validate": "newData.isNumber() && newData.val() == now"
+          },
+          "$other": {
+            ".validate": false
+          },
+          ".validate": "newData.hasChildren(['email', 'createdOn'])"
+        },
+        "privateButAddable": {
+          "chats": {
+            "$chat_id": {
+              ".write": "!data.exists()",
+              "addedByUid": {
+                ".validate": "newData.isString() && newData.val() === auth.uid"
+              },
+              "timestamp": {
+                ".validate": "newData.isNumber() && newData.val() == now"
+              },
+              "$other": {
+                ".validate": false
+              },
+              ".validate": "newData.hasChildren(['addedByUid', 'timestamp'])"
+            }
+          },
+          "$other": {
+            ".validate": false
+          },
+          ".validate": "newData.hasChildren(['chats'])"
+        },
+        "$other": {
+          ".validate": false
+        },
+        ".validate": "newData.hasChildren(['publicFields', 'privateFields'])"
+      }
+    },
+    "recentlyConnected": {
+      "$push_key_id": {
+        ".write": "!data.exists() || !newData.exists()",
+        "uid": {
+          ".validate": "newData.isString() && newData.val() === auth.uid"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber() && newData.val() == now"
+        },
+        "$other": {
+          ".validate": false
+        },
+        ".validate": "newData.hasChildren(['uid', 'timestamp'])"
+      }
+    },
+    "chats": {
+      "$chat_id": {
+        ".read": "data.child('participants').child(auth.uid).exists()",
+        ".write": "!data.exists() || data.child('participants').child(auth.uid).exists()",
+        "participants": {
+          "$uid": {
+            ".validate": "newData.isBoolean()"
+          }
+        },
+        "groupName": {
+          ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length < 100"
+        },
+        "createdOn": {
+          ".validate": "newData.isNumber() && newData.val() == now"
+        },
+        "messages": {
+          "$push_key_id": {
+            "senderUid": {
+              ".validate": "newData.isString() && newData.val() === auth.uid"
+            },
+            "message": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length < 1000"
+            },
+            "timestamp": {
+              ".validate": "newData.isNumber() && newData.val() == now"
+            },
+            "$other": {
+              ".validate": false
+            },
+            ".validate": "newData.hasChildren(['senderUid', 'message', 'timestamp'])"
+          }
+        },
+        "$other": {
+          ".validate": false
+        },
+        ".validate": "newData.hasChildren(['participants', 'groupName', 'createdOn'])"
+      }
+    },
+    "specs": {
+      "$game_name": {
+        ".read": "auth != null",
+        ".write": "!data.exists() || data.child('uploader_uid').val() == auth.uid",
+        "uploader_uid": {
+          ".validate": "newData.isString() && newData.val() === auth.uid"
+        },
+        "spec": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length < 5000"
+        },
+        "createdOn": {
+          ".validate": "newData.isNumber() && newData.val() == now"
+        },
+        "$other": {
+          ".validate": false
+        },
+        ".validate": "newData.hasChildren(['uploader_uid', 'spec', 'createdOn'])"
+      }
+    },
+    "$other": {
+      ".validate": false
     }
   }
 }
