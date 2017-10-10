@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import { red500 } from 'material-ui/styles/colors';
-
+import firebase from 'firebase';
 const raisedButtonStyle = {
   margin: 16
 };
@@ -29,12 +29,14 @@ class Login extends React.Component {
       let usersRef = db.ref("users");
       let userData = {
         'privateFields': {
-
+        'email': user.email,
+        'createdOn': firebase.database.ServerValue.TIMESTAMP
         },
         'publicFields': {
           'avatarImageUrl': user.photoURL || '',
           'displayName': user.displayName || user.email,
-          'email': user.email
+          'isConnected': true,
+          'lastSeen': firebase.database.ServerValue.TIMESTAMP
         }
       };
 
