@@ -13,15 +13,11 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import FlatButton from 'material-ui/FlatButton';
 
-import {
-  Step,
-  Stepper,
-  StepLabel,
-} from 'material-ui/Stepper';
+import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
 class GameSpecBuilderContainer extends React.Component {
   initialState = {
-    selectedBoard: "",
+    selectedBoard: '',
     stepIndex: 0,
     finished: false,
     shouldDisplayWarningSnackBar: false,
@@ -47,25 +43,31 @@ class GameSpecBuilderContainer extends React.Component {
 
   componentDidMount() {
     let that = this;
-    let images = imagesDbRef.orderByChild('is_board_image')
+    let images = imagesDbRef.orderByChild('is_board_image');
 
-    images.equalTo(true).once('value').then(function (data) {
-      that.setState({
-        boardImages: data.val()
+    images
+      .equalTo(true)
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          boardImages: data.val()
+        });
       });
-    });
 
-    images.equalTo(false).once('value').then(function (data) {
-      that.setState({
-        otherImages: data.val()
+    images
+      .equalTo(false)
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          otherImages: data.val()
+        });
       });
-    });
 
-    specsRef.once('value').then(function (data) {
+    specsRef.once('value').then(function(data) {
       that.setState({
         allSpecs: data.val()
-      })
-    })
+      });
+    });
   }
 
   getItems() {
@@ -73,7 +75,7 @@ class GameSpecBuilderContainer extends React.Component {
   }
 
   setItems(items) {
-    this.setState({items});
+    this.setState({ items });
   }
 
   setBoardSize(num) {
@@ -98,19 +100,19 @@ class GameSpecBuilderContainer extends React.Component {
     }
   }
 
-  handleSpecChange = (e) => {
+  handleSpecChange = e => {
     // From 4 spaces to none
     try {
       this.vars.spec = JSON.stringify(JSON.parse(e.target.value));
     } catch (e) {
       this.notify(constants.JSON_MALFORMED_ERROR + e.message);
     }
-  }
+  };
 
-  notify = (message) => {
+  notify = message => {
     this.vars.snackbarWarning = message;
-    this.setState({shouldDisplayWarningSnackBar: true});
-  }
+    this.setState({ shouldDisplayWarningSnackBar: true });
+  };
 
   updateStepIndex(stepIndex) {
     this.setState({
@@ -135,7 +137,8 @@ class GameSpecBuilderContainer extends React.Component {
               header="Boards"
               handleGridTileClick={this.handleGridTileClickBoard.bind(this)}
               data={this.state.boardImages}
-              selectedKey={this.state.selectedBoard}/>
+              selectedKey={this.state.selectedBoard}
+            />
           </div>
         );
       }
@@ -147,7 +150,8 @@ class GameSpecBuilderContainer extends React.Component {
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
             images={this.state.otherImages}
-            boardImage={this.state.boardImages[this.state.selectedBoard]}/>
+            boardImage={this.state.boardImages[this.state.selectedBoard]}
+          />
         );
       }
 
@@ -162,8 +166,9 @@ class GameSpecBuilderContainer extends React.Component {
             boardSize={this.vars.boardSize}
             setInitialSpec={this.setInitialSpec.bind(this)}
             handleSpecChange={this.handleSpecChange.bind(this)}
-            boardImage={this.state.boardImages[this.state.selectedBoard]}/>
-        )
+            boardImage={this.state.boardImages[this.state.selectedBoard]}
+          />
+        );
       }
 
       default: {
@@ -175,7 +180,7 @@ class GameSpecBuilderContainer extends React.Component {
   handlePrev = () => {
     const { stepIndex } = this.state;
     if (stepIndex > 0) {
-      this.setState({stepIndex: stepIndex - 1});
+      this.setState({ stepIndex: stepIndex - 1 });
     }
   };
 
@@ -200,31 +205,41 @@ class GameSpecBuilderContainer extends React.Component {
         spec: this.vars.spec,
         uploader_uid: auth.currentUser.uid,
         createdOn: firebase.database.ServerValue.TIMESTAMP
-      }
+      };
 
-      specsRef.child(this.state.specName).set(value).then(() => {
-        this.notify(constants.SPEC_UPLOAD_SUCCESSFUL);
-        this.updateStepIndex(stepIndex);
-      }, () => {
-        this.notify(constants.SPEC_UPLOAD_FAILED);
-      });
+      specsRef
+        .child(this.state.specName)
+        .set(value)
+        .then(
+          () => {
+            this.notify(constants.SPEC_UPLOAD_SUCCESSFUL);
+            this.updateStepIndex(stepIndex);
+          },
+          () => {
+            this.notify(constants.SPEC_UPLOAD_FAILED);
+          }
+        );
     } else {
       this.updateStepIndex(stepIndex);
     }
-  }
+  };
 
   render() {
     const { stepIndex, finished } = this.state;
     return (
-      <div style={{...styles.container}}>
+      <div style={{ ...styles.container }}>
         <Snackbar
           open={this.state.shouldDisplayWarningSnackBar}
           message={this.vars.snackbarWarning}
           autoHideDuration={4000}
-          onRequestClose={(e) => {
-            this.setState({shouldDisplayWarningSnackBar: false})
-          }}/>
-        <Stepper activeStep={stepIndex} style={{...styles.container, ...styles.containerWidth700}}>
+          onRequestClose={e => {
+            this.setState({ shouldDisplayWarningSnackBar: false });
+          }}
+        />
+        <Stepper
+          activeStep={stepIndex}
+          style={{ ...styles.container, ...styles.containerWidth700 }}
+        >
           <Step>
             <StepLabel>Select the board</StepLabel>
           </Step>
@@ -238,23 +253,28 @@ class GameSpecBuilderContainer extends React.Component {
         <div style={styles.content}>
           {finished ? (
             <div>
-                <RaisedButton label="Reset" primary={true}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    this.vars = Object.assign({}, this.initialVars);
-                    this.setState(this.initialState);
-                    this.setState({items: []});
-                  }}/>
+              <RaisedButton
+                label="Reset"
+                primary={true}
+                onClick={event => {
+                  event.preventDefault();
+                  this.vars = Object.assign({}, this.initialVars);
+                  this.setState(this.initialState);
+                  this.setState({ items: [] });
+                }}
+              />
             </div>
           ) : (
             <div>
-              <div style={{overflowY: 'auto'}}>{this.getStepContent(stepIndex)}</div>
-              <div style={{marginTop: 12}}>
+              <div style={{ overflowY: 'auto' }}>
+                {this.getStepContent(stepIndex)}
+              </div>
+              <div style={{ marginTop: 12 }}>
                 <FlatButton
                   label="Back"
                   disabled={stepIndex === 0}
                   onTouchTap={this.handlePrev}
-                  style={{marginRight: 12}}
+                  style={{ marginRight: 12 }}
                 />
                 <RaisedButton
                   label={stepIndex === 2 ? 'Upload' : 'Next'}
@@ -266,7 +286,7 @@ class GameSpecBuilderContainer extends React.Component {
           )}
         </div>
       </div>
-    )
+    );
   }
 }
 

@@ -17,4 +17,4 @@ export const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 export const isAuthenticated = () => {
   return !!auth.currentUser || !!localStorage.getItem(storageKey);
-}
+};

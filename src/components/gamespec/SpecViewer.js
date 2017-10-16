@@ -9,7 +9,7 @@ const flexStyle = {
   ...styles.center
 };
 
-const SpecViewer = (props) => {
+const SpecViewer = props => {
   let specJson = props.spec.length !== 0 ? JSON.parse(props.spec) : {};
 
   specJson['@board'] = {
@@ -39,16 +39,17 @@ const SpecViewer = (props) => {
         hintText={constants.SPEC_NAME_HINT_TEXT}
         errorText={props.specNameErrorText}
         value={props.specName}
-        onChange={props.setSpecName}/>
+        onChange={props.setSpecName}
+      />
       <ContentEditable
         html={JSON.stringify(specJson, null, 2)}
         disabled={false}
         onChange={props.handleSpecChange}
         tagName="pre"
-        style={{textAlign: 'left', backgroundColor: '#eee'}}
-        />
+        style={{ textAlign: 'left', backgroundColor: '#eee' }}
+      />
     </div>
-  )
-}
+  );
+};
 
 export default SpecViewer;

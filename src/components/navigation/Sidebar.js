@@ -1,38 +1,45 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
-import {List, ListItem, makeSelectable} from 'material-ui/List';
+import { List, ListItem, makeSelectable } from 'material-ui/List';
 import constants from '../../constants';
-import {blue500} from 'material-ui/styles/colors';
+import { blue500 } from 'material-ui/styles/colors';
 import Avatar from 'material-ui/Avatar';
 import Logout from './Logout';
 import ImageAddAPhoto from 'material-ui/svg-icons/image/add-a-photo';
 import Build from 'material-ui/svg-icons/action/build';
 
-
 const SelectableList = makeSelectable(List);
 
-const Sidebar = (props) => {
+const Sidebar = props => {
   return (
     <Drawer
       docked={props.docked}
       open={props.open}
       onRequestChange={props.onRequestChangeNavDrawer}
-      >
+    >
       <SelectableList
         value={props.location.pathname}
-        onChange={props.onChangeList}>
+        onChange={props.onChangeList}
+      >
         <ListItem
-          leftAvatar={<Avatar icon={<ImageAddAPhoto />} backgroundColor={blue500}/>}
+          leftAvatar={
+            <Avatar icon={<ImageAddAPhoto />} backgroundColor={blue500} />
+          }
           primaryText={constants.NAV_UPLOAD_IMAGE_TEXT}
-          value="/" />
+          value="/"
+        />
         <ListItem
-          leftAvatar={<Avatar icon={<Build />} backgroundColor={blue500}/>}
+          leftAvatar={<Avatar icon={<Build />} backgroundColor={blue500} />}
           primaryText={constants.NAV_GAME_SPEC_BUILDER_TEXT}
-          value="/build" />
-        <Logout isAuthenticated={props.isAuthenticated} handleClick={props.onLogoutClick}/>
+          value="/build"
+        />
+        <Logout
+          isAuthenticated={props.isAuthenticated}
+          handleClick={props.onLogoutClick}
+        />
       </SelectableList>
     </Drawer>
-  )
-}
+  );
+};
 
 export default Sidebar;

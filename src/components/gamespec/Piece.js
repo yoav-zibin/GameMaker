@@ -28,20 +28,18 @@ class Piece extends Component {
     const opacity = isDragging ? 0.4 : 1;
     const height = 'inherit';
     return connectDragSource(
-        <div key={keyProp} style={{ opacity, height }}>
-          <GridTile
-            style={styles.hoverCursorPointer}
-            title={image.name}>
-            <img src={image.downloadURL} alt={image.id}/>
-          </GridTile>
-        </div>,
-      );
+      <div key={keyProp} style={{ opacity, height }}>
+        <GridTile style={styles.hoverCursorPointer} title={image.name}>
+          <img src={image.downloadURL} alt={image.id} />
+        </GridTile>
+      </div>
+    );
   }
 }
 
 let collect = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging(),
+  isDragging: monitor.isDragging()
 });
 
 export default DragSource(ItemTypes.PIECE, pieceSource, collect)(Piece);

@@ -23,10 +23,10 @@ class App extends Component {
     auth.onAuthStateChanged(user => {
       if (user) {
         window.localStorage.setItem(storageKey, user.uid);
-        this.setState({uid: user.uid});
+        this.setState({ uid: user.uid });
       } else {
         window.localStorage.removeItem(storageKey);
-        this.setState({uid: null});
+        this.setState({ uid: null });
       }
     });
   }
@@ -37,10 +37,20 @@ class App extends Component {
         <div className="App">
           <Route path="/">
             <div>
-              <NavigationMaster specBuilderOn={this.state.specBuilderOn} location={this.props.location}/>
+              <NavigationMaster
+                specBuilderOn={this.state.specBuilderOn}
+                location={this.props.location}
+              />
               <div style={styles.root}>
-                <RouteWhenAuthenticated path="/build" component={GameSpecBuilderContainer}/>
-                <RouteWhenAuthenticated exact path="/" component={ImageUploader}/>
+                <RouteWhenAuthenticated
+                  path="/build"
+                  component={GameSpecBuilderContainer}
+                />
+                <RouteWhenAuthenticated
+                  exact
+                  path="/"
+                  component={ImageUploader}
+                />
                 <Route path="/login" component={Login} />
               </div>
             </div>

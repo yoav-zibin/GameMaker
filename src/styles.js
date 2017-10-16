@@ -3,7 +3,7 @@ import spacing from 'material-ui/styles/spacing';
 const styles = {
   block: {
     maxWidth: 250,
-    margin: '0 auto',
+    margin: '0 auto'
   },
   appBar: {
     position: 'fixed',
@@ -12,7 +12,7 @@ const styles = {
   },
   root: {
     paddingTop: spacing.desktopKeylineIncrement,
-    minHeight: 400,
+    minHeight: 400
   },
   raisedButtonStyle: {
     margin: 16
@@ -28,17 +28,17 @@ const styles = {
     margin: 'auto'
   },
   containerWidth700: {
-    maxWidth: 700,
+    maxWidth: 700
   },
   gridListContainer: {
-   display: 'flex',
-   flexWrap: 'wrap',
-   justifyContent: 'space-around',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around'
   },
   gridList: {
-   width: 500,
-   height: 450,
-   overflowY: 'auto',
+    width: 500,
+    height: 450,
+    overflowY: 'auto'
   },
   hoverCursorPointer: {
     cursor: 'pointer'

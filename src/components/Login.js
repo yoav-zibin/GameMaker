@@ -21,22 +21,22 @@ class Login extends React.Component {
     password: '',
     redirectToReferrer: false,
     signInWithEmailActive: false
-  }
+  };
 
   createUserIfNotExists = () => {
     if (isAuthenticated()) {
       let user = auth.currentUser;
-      let usersRef = db.ref("users");
+      let usersRef = db.ref('users');
       let userData = {
-        'privateFields': {
-        'email': user.email,
-        'createdOn': firebase.database.ServerValue.TIMESTAMP
+        privateFields: {
+          email: user.email,
+          createdOn: firebase.database.ServerValue.TIMESTAMP
         },
-        'publicFields': {
-          'avatarImageUrl': user.photoURL || '',
-          'displayName': user.displayName || user.email,
-          'isConnected': true,
-          'lastSeen': firebase.database.ServerValue.TIMESTAMP
+        publicFields: {
+          avatarImageUrl: user.photoURL || '',
+          displayName: user.displayName || user.email,
+          isConnected: true,
+          lastSeen: firebase.database.ServerValue.TIMESTAMP
         }
       };
 
@@ -46,80 +46,92 @@ class Login extends React.Component {
         }
       });
     }
-  }
+  };
 
-  handleSubmit = (evt) => {
+  handleSubmit = evt => {
     evt.preventDefault();
-    auth.signInWithEmailAndPassword(this.state.email, this.state.password).then(() => {
-      this.createUserIfNotExists();
-      this.setState({redirectToReferrer: true});
-    });
-  }
+    auth
+      .signInWithEmailAndPassword(this.state.email, this.state.password)
+      .then(() => {
+        this.createUserIfNotExists();
+        this.setState({ redirectToReferrer: true });
+      });
+  };
 
   toggleSignInWithEmail = () => {
     this.setState({
       signInWithEmailActive: !this.state.signInWithEmailActive
     });
-  }
+  };
 
   loginWithGoogle = () => {
-    auth.signInWithPopup(googleProvider).then(function (result) {
-      this.createUserIfNotExists();
-      this.setState({redirectToReferrer: true});
-    }.bind(this));
-  }
+    auth.signInWithPopup(googleProvider).then(
+      function(result) {
+        this.createUserIfNotExists();
+        this.setState({ redirectToReferrer: true });
+      }.bind(this)
+    );
+  };
 
   render() {
-    const {from} = this.props.location.state || '/';
-    const {redirectToReferrer} = this.state;
+    const { from } = this.props.location.state || '/';
+    const { redirectToReferrer } = this.state;
 
     if (isAuthenticated() && !this.state.redirectToReferrer) {
-      return (<Redirect to="/"/>);
+      return <Redirect to="/" />;
     }
 
     return (
-      <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
+      <div style={{ width: '100%', maxWidth: 700, margin: 'auto' }}>
         <Card>
-          {redirectToReferrer && (
-            <Redirect to={from || '/protected'}/>
-          )}
+          {redirectToReferrer && <Redirect to={from || '/protected'} />}
           {from && (
-            <p style={attentionTextStyle}>You must log in to view the page at {from.pathname}</p>
+            <p style={attentionTextStyle}>
+              You must log in to view the page at {from.pathname}
+            </p>
           )}
-          { !this.state.signInWithEmailActive ?
-            (
-              <div>
-                <RaisedButton label="Sign in with Email" onClick={this.toggleSignInWithEmail}
-                style={raisedButtonStyle}/>
-                <br/>
-                <RaisedButton
+          {!this.state.signInWithEmailActive ? (
+            <div>
+              <RaisedButton
+                label="Sign in with Email"
+                onClick={this.toggleSignInWithEmail}
+                style={raisedButtonStyle}
+              />
+              <br />
+              <RaisedButton
                 onClick={this.loginWithGoogle}
                 label="Sign in with Google"
                 backgroundColor={red500}
                 labelColor="#fff"
                 style={raisedButtonStyle}
                 icon={<FontIcon className="muidocs-icon-custom-github" />}
-                />
-              </div>
-            ) : (
-              <form onSubmit={this.handleSubmit}>
-                <TextField
-                  value={this.state.email}
-                  errorText=""
-                  floatingLabelText="Email"
-                  onChange={e => this.setState({email: e.target.value})}
-                /><br/>
-                <TextField
-                  value={this.state.password}
-                  errorText=""
-                  floatingLabelText="Password"
-                  onChange={e => this.setState({password: e.target.value})}
-                /><br/>
-                <RaisedButton label="Back" onClick={this.toggleSignInWithEmail}/>
-                <RaisedButton label="Sign In" primary={true} onClick={this.handleSubmit} style={raisedButtonStyle} />
-              </form>
-            )
-        }
+              />
+            </div>
+          ) : (
+            <form onSubmit={this.handleSubmit}>
+              <TextField
+                value={this.state.email}
+                errorText=""
+                floatingLabelText="Email"
+                onChange={e => this.setState({ email: e.target.value })}
+              />
+              <br />
+              <TextField
+                value={this.state.password}
+                errorText=""
+                floatingLabelText="Password"
+                onChange={e => this.setState({ password: e.target.value })}
+              />
+              <br />
+              <RaisedButton label="Back" onClick={this.toggleSignInWithEmail} />
+              <RaisedButton
+                label="Sign In"
+                primary={true}
+                onClick={this.handleSubmit}
+                style={raisedButtonStyle}
+              />
+            </form>
+          )}
         </Card>
       </div>
     );

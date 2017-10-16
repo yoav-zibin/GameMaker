@@ -7,15 +7,19 @@ import styles from '../styles';
 
 import './ImageSelector.css';
 
-const ImageSelector = (props) => {
-   return (
-     <div style={styles.block} className="image-selector-div">
+const ImageSelector = props => {
+  return (
+    <div style={styles.block} className="image-selector-div">
       <div>
-         <RaisedButton containerElement="label" label={props.label}
-         onChange={e => {
-           props.handleChange(constants.IMAGE_PATH_IDENTIFIER, e)}}>
-            <input type="file"  style={{ display: 'none' }} accept="image/*"/>
-         </RaisedButton>
+        <RaisedButton
+          containerElement="label"
+          label={props.label}
+          onChange={e => {
+            props.handleChange(constants.IMAGE_PATH_IDENTIFIER, e);
+          }}
+        >
+          <input type="file" style={{ display: 'none' }} accept="image/*" />
+        </RaisedButton>
       </div>
       <div>
         <TextField
@@ -25,16 +29,24 @@ const ImageSelector = (props) => {
           errorText={props.imageIdErrorText}
           value={props.imageName}
           onChange={(e, newValue) => {
-            props.handleChange(constants.IMAGE_ID_IDENTIFIER, e, newValue)}}/>
+            props.handleChange(constants.IMAGE_ID_IDENTIFIER, e, newValue);
+          }}
+        />
       </div>
       <div>
         <Toggle
           label={constants.BOARD_IMAGE_TOGGLE_LABEL}
           onToggle={(e, newValue) => {
-            props.handleChange(constants.IS_BOARD_IMAGE_IDENTIFIER, e, newValue)}}/>
+            props.handleChange(
+              constants.IS_BOARD_IMAGE_IDENTIFIER,
+              e,
+              newValue
+            );
+          }}
+        />
       </div>
-     </div>
-   );
-}
+    </div>
+  );
+};
 
 export default ImageSelector;

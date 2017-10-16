@@ -13,8 +13,7 @@ injectTapEventPlugin();
 ReactDOM.render(
   <BrowserRouter basename={config.basename || '/'}>
     <div>
-      <Route path="/" component={App}>
-      </Route>
+      <Route path="/" component={App} />
     </div>
   </BrowserRouter>,
   document.getElementById('root')

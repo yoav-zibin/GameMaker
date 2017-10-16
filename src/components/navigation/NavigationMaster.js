@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import withWidth, {LARGE} from 'material-ui/utils/withWidth';
+import withWidth, { LARGE } from 'material-ui/utils/withWidth';
 
 import Sidebar from './Sidebar';
 
@@ -22,7 +22,7 @@ class NavigationMaster extends React.Component {
 
   handleTouchTapLeftIconButton = () => {
     this.setState({
-      navDrawerOpen: !this.state.navDrawerOpen,
+      navDrawerOpen: !this.state.navDrawerOpen
     });
   };
 
@@ -30,14 +30,14 @@ class NavigationMaster extends React.Component {
     if (value) {
       this.context.router.history.push(value);
       this.setState({
-        navDrawerOpen: false,
+        navDrawerOpen: false
       });
     }
   };
 
-  handleChangeRequestNavDrawer = (open) => {
+  handleChangeRequestNavDrawer = open => {
     this.setState({
-      navDrawerOpen: open,
+      navDrawerOpen: open
     });
   };
 
@@ -50,7 +50,10 @@ class NavigationMaster extends React.Component {
     let docked = false;
     let showMenuIconButton = true;
 
-    if (this.props.width === LARGE && this.props.location.pathname !== '/build') {
+    if (
+      this.props.width === LARGE &&
+      this.props.location.pathname !== '/build'
+    ) {
       docked = true;
       navDrawerOpen = true;
       showMenuIconButton = false;
@@ -63,10 +66,7 @@ class NavigationMaster extends React.Component {
           title={constants.TITLE_TEXT}
           zDepth={0}
           iconElementRight={
-            <IconButton
-              iconClassName="muidocs-icon-custom-github"
-              href="/"
-            />
+            <IconButton iconClassName="muidocs-icon-custom-github" href="/" />
           }
           style={styles.appBar}
           showMenuIconButton={showMenuIconButton}
@@ -78,9 +78,10 @@ class NavigationMaster extends React.Component {
           onChangeList={this.handleChangeList.bind(this)}
           open={navDrawerOpen}
           isAuthenticated={isAuthenticated()}
-          onLogoutClick={this.handleLogoutClick.bind(this)}/>
+          onLogoutClick={this.handleLogoutClick.bind(this)}
+        />
       </div>
-    )
+    );
   }
 }
 

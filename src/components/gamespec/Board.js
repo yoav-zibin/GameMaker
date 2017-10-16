@@ -8,19 +8,22 @@ import CanvasImage from './CanvasImage';
 
 const boxTarget = {
   drop(props, monitor, component) {
-      let offset = monitor.getClientOffset(),
-          item = monitor.getItem();
+    let offset = monitor.getClientOffset(),
+      item = monitor.getItem();
 
-      let items = props.getItems();
-      let rect = component.refs.stage.getStage().getContainer().getBoundingClientRect();
-      offset.x = offset.x - rect.left;
-      offset.y = offset.y - rect.top;
-      let image = item.image;
-      items.push({image, offset});
-      props.setItems(items);
+    let items = props.getItems();
+    let rect = component.refs.stage
+      .getStage()
+      .getContainer()
+      .getBoundingClientRect();
+    offset.x = offset.x - rect.left;
+    offset.y = offset.y - rect.top;
+    let image = item.image;
+    items.push({ image, offset });
+    props.setItems(items);
 
     return { name: 'Board' };
-  },
+  }
 };
 
 const flexElement = {
@@ -32,7 +35,7 @@ const flexElement = {
 let collect = (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
   isOver: monitor.isOver(),
-  canDrop: monitor.canDrop(),
+  canDrop: monitor.canDrop()
 });
 
 class Board extends React.Component {
@@ -45,45 +48,52 @@ class Board extends React.Component {
     connectDropTarget: PropTypes.func.isRequired,
     isOver: PropTypes.bool.isRequired,
     canDrop: PropTypes.bool.isRequired,
-    boardImage: PropTypes.object.isRequired,
+    boardImage: PropTypes.object.isRequired
   };
 
   state = {
     items: []
-  }
+  };
 
   componentDidMount() {
     this.props.setBoardSize(this.width);
   }
 
-  handleDragEnd = (index) => {
+  handleDragEnd = index => {
     let items = this.props.getItems();
     let item = items[index];
-    let position = this.refs["canvasImage" + index].refs.image.getAbsolutePosition();
+    let position = this.refs[
+      'canvasImage' + index
+    ].refs.image.getAbsolutePosition();
     item.offset.x = position.x;
     item.offset.y = position.y;
     items[index] = item;
     this.props.setItems(items);
-  }
+  };
 
   render() {
     const { connectDropTarget } = this.props;
 
-    this.imageWidthRatio = this.props.boardImage.width / parseInt(this.width, 10);
-    this.imageHeightRatio = this.props.boardImage.height / parseInt(this.height, 10);
+    this.imageWidthRatio =
+      this.props.boardImage.width / parseInt(this.width, 10);
+    this.imageHeightRatio =
+      this.props.boardImage.height / parseInt(this.height, 10);
 
     return connectDropTarget(
       <div style={flexElement}>
         <Stage ref="stage" width={this.width} height={this.height}>
           <Layer>
-            <CanvasImage width={this.width} height={this.height} src={this.props.boardImage.downloadURL} />
+            <CanvasImage
+              width={this.width}
+              height={this.height}
+              src={this.props.boardImage.downloadURL}
+            />
           </Layer>
           <Layer>
-          {
-            this.props.getItems().map((item, index) => {
+            {this.props.getItems().map((item, index) => {
               return (
                 <CanvasImage
-                  ref={"canvasImage" + index}
+                  ref={'canvasImage' + index}
                   key={index}
                   width={item.image.width / this.imageWidthRatio}
                   height={item.image.height / this.imageHeightRatio}
@@ -91,10 +101,12 @@ class Board extends React.Component {
                   x={item.offset.x}
                   y={item.offset.y}
                   draggable={true}
-                  onDragEnd={() => { this.handleDragEnd(index) }}/>
+                  onDragEnd={() => {
+                    this.handleDragEnd(index);
+                  }}
+                />
               );
-            })
-          }
+            })}
           </Layer>
         </Stage>
       </div>
