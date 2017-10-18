@@ -56,6 +56,8 @@ class ImageUploader extends React.Component {
           resolve({ width, height });
         } else if (Math.max(width, height) === 1024) {
           resolve({ width, height });
+        } else if (file.size <= 2 * 1024 * 1024) {
+          resolve({ width, height });
         } else {
           reject();
         }
@@ -79,6 +81,7 @@ class ImageUploader extends React.Component {
         is_board_image: this.vars.isBoardImage,
         name: that.state.imageName,
         uploader_uid: auth.currentUser.uid,
+        sizeInBytes: that.state.file.size,
         uploader_email: auth.currentUser.email
       }
     };
@@ -94,6 +97,8 @@ class ImageUploader extends React.Component {
               let imageMetadataForDb = {
                 downloadURL: url,
                 createdOn: firebase.database.ServerValue.TIMESTAMP,
+                cloudStoragePath:
+                  constants.IMAGES_PATH + '/' + childKey + '.' + extension,
                 ...metadata.customMetadata
               };
 

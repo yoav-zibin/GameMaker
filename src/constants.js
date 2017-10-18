@@ -26,11 +26,16 @@ const constants = {
   NAV_GAME_SPEC_BUILDER_TEXT: 'Spec Builder',
   TITLE_TEXT: 'Game Builder',
   AUTHENTICATION_LOCAL_STORAGE_KEY: 'GAME_BUILDER_LOCAL_STORAGE_$UID',
+  GAMEBUILDER_PATH: 'gameBuilder',
   IMAGES_PATH: 'images',
   SPECS_PATH: 'specs',
   JSON_MALFORMED_ERROR: 'Current JSON is malformed: ',
   PROPER_FORMAT_ACCEPTED_WARNING: 'Upload proper format, accepted formats are ',
-  ACCEPTED_IMAGE_FORMATS: '.png,.jpg,.jpeg,.svg,.gif'
+  ACCEPTED_IMAGE_FORMATS: '.png,.jpg,.jpeg,.svg,.gif',
+  MAX_IMAGES_IN_ELEMENT: 256,
+  MAX_IMAGES_IN_DECK: 256,
+  MAX_PIECES: 256,
+  MAX_USERS_IN_GROUP: 10
 };
 
 export default constants;
