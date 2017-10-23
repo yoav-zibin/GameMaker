@@ -10,6 +10,7 @@ const constants = {
   NO_BOARD_SELECTED_ERROR: 'You must select a board',
   MAX_WIDTH_HEIGHT_WARNING:
     'Max of width and height for board image should be 1024',
+  MAX_SIZE_WARNING: 'Size of the image must be in between 100 bytes and 2MB',
   NOT_CERTIFIED_WARNING: 'Certification is necessary to move forward',
   BOARD_IMAGE_TOGGLE_LABEL: 'Is this a board image?',
   IMAGE_ID_FLOATING_LABEL: 'Enter image name',
@@ -26,6 +27,7 @@ const constants = {
   NAV_GAME_SPEC_BUILDER_TEXT: 'Spec Builder',
   TITLE_TEXT: 'Game Builder',
   AUTHENTICATION_LOCAL_STORAGE_KEY: 'GAME_BUILDER_LOCAL_STORAGE_$UID',
+  GAME_BUILDER_PATH: 'gameBuilder',
   IMAGES_PATH: 'images',
   SPECS_PATH: 'specs',
   JSON_MALFORMED_ERROR: 'Current JSON is malformed: ',

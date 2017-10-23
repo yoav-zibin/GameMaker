@@ -39,7 +39,7 @@ class ImageUploader extends React.Component {
     this.setState({ shouldDisplayWarningSnackBar: true });
   };
 
-  checkImageDimensions = file => {
+  checkImageDimensionsAndSize = file => {
     let that = this;
     return new Promise((resolve, reject) => {
       window.URL = window.URL || window.webkitURL;
@@ -56,8 +56,10 @@ class ImageUploader extends React.Component {
           resolve({ width, height });
         } else if (Math.max(width, height) === 1024) {
           resolve({ width, height });
+        } else if (file.size > 2 * 1024 * 1024 && file.size < 100) {
+          reject({ type: constants.MAX_SIZE_WARNING });
         } else {
-          reject();
+          reject({ type: constants.MAX_WIDTH_HEIGHT_WARNING });
         }
       };
     });
@@ -76,10 +78,11 @@ class ImageUploader extends React.Component {
       customMetadata: {
         width: width,
         height: height,
-        is_board_image: this.vars.isBoardImage,
+        isBoardImage: this.vars.isBoardImage,
         name: that.state.imageName,
-        uploader_uid: auth.currentUser.uid,
-        uploader_email: auth.currentUser.email
+        uploaderUid: auth.currentUser.uid,
+        uploaderEmail: auth.currentUser.email,
+        sizeInBytes: this.state.file.size
       }
     };
 
@@ -92,7 +95,7 @@ class ImageUploader extends React.Component {
           snapshot.ref.getDownloadURL().then(
             function(url) {
               let imageMetadataForDb = {
-                downloadURL: url,
+                cloudStoragePath: url,
                 createdOn: firebase.database.ServerValue.TIMESTAMP,
                 ...metadata.customMetadata
               };
@@ -108,12 +111,12 @@ class ImageUploader extends React.Component {
             },
             function() {
               snapshot.ref.delete();
-              this.notify(constants.IMAGE_UPLOAD_FAILED);
+              that.notify(constants.IMAGE_UPLOAD_FAILED);
             }
           );
         },
         function() {
-          this.notify(constants.IMAGE_UPLOAD_FAILED);
+          that.notify(constants.IMAGE_UPLOAD_FAILED);
         }
       );
   };
@@ -129,12 +132,12 @@ class ImageUploader extends React.Component {
           this.notify(constants.NO_FILE_SELECTED_WARNING);
         }
 
-        this.checkImageDimensions(this.state.file).then(
+        this.checkImageDimensionsAndSize(this.state.file).then(
           ({ width, height }) => {
             this.handleUpload(stepIndex, width, height);
           },
-          () => {
-            this.notify(constants.MAX_WIDTH_HEIGHT_WARNING);
+          ({ type }) => {
+            this.notify(type);
           }
         );
       }
