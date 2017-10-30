@@ -80,18 +80,22 @@ class Board extends React.Component {
     this.props.setItems(items);
   };
 
-  handleClickElement = index => {
+  handleClickOn = index => {
     let items = this.props.getItems();
     let item = items[index];
-    if (item.element.elementKind === 'toggable') {
+    if (item !== null && item.element.elementKind === 'toggable') {
       item.curruntImage = (item.curruntImage + 1) % item.element.images.length;
+      items[index] = item;
+      this.props.setItems(items);
+    } else if (item !== null && item.element.elementKind === 'dice') {
+      let num = Math.floor(Math.random() * item.element.images.length);
+      item.curruntImage = num;
+      items[index] = item;
+      this.props.setItems(items);
     }
-    items[index] = item;
-    this.props.setItems(items);
   };
 
   render() {
-    //console.log('re-render')
     const { connectDropTarget } = this.props;
     this.imageWidthRatio =
       this.props.boardImage.width / parseInt(this.width, 10);
@@ -115,8 +119,9 @@ class Board extends React.Component {
                   ref={'canvasImage' + index}
                   key={index}
                   onClick={() => {
-                    this.handleClickElement(index);
+                    this.handleClickOn(index);
                   }}
+                  item={item}
                   width={
                     this.state.images[
                       item.element.images[item.curruntImage].imageId
