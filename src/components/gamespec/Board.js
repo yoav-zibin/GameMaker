@@ -20,7 +20,9 @@ const boxTarget = {
     offset.x = offset.x - rect.left;
     offset.y = offset.y - rect.top;
     let element = item.element;
-    items.push({ element, offset });
+    let eleKey = item.key;
+    let curruntImage = 0;
+    items.push({ element, offset, eleKey, curruntImage });
     props.setItems(items);
     return { name: 'Board' };
   }
@@ -78,7 +80,18 @@ class Board extends React.Component {
     this.props.setItems(items);
   };
 
+  handleClickElement = index => {
+    let items = this.props.getItems();
+    let item = items[index];
+    if (item.element.elementKind === 'toggable') {
+      item.curruntImage = (item.curruntImage + 1) % item.element.images.length;
+    }
+    items[index] = item;
+    this.props.setItems(items);
+  };
+
   render() {
+    //console.log('re-render')
     const { connectDropTarget } = this.props;
     this.imageWidthRatio =
       this.props.boardImage.width / parseInt(this.width, 10);
@@ -101,17 +114,23 @@ class Board extends React.Component {
                 <CanvasImage
                   ref={'canvasImage' + index}
                   key={index}
+                  onClick={() => {
+                    this.handleClickElement(index);
+                  }}
                   width={
-                    this.state.images[item.element.images[0].imageId].width /
-                    this.imageWidthRatio
+                    this.state.images[
+                      item.element.images[item.curruntImage].imageId
+                    ].width / this.imageWidthRatio
                   }
                   height={
-                    this.state.images[item.element.images[0].imageId].height /
-                    this.imageHeightRatio
+                    this.state.images[
+                      item.element.images[item.curruntImage].imageId
+                    ].height / this.imageHeightRatio
                   }
                   src={
-                    this.state.images[item.element.images[0].imageId]
-                      .downloadURL
+                    this.state.images[
+                      item.element.images[item.curruntImage].imageId
+                    ].downloadURL
                   }
                   x={item.offset.x}
                   y={item.offset.y}
