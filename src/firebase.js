@@ -11,6 +11,7 @@ export const gameBuilderRef = db.ref(constants.GAMEBUILDER_PATH);
 export const imagesDbRef = gameBuilderRef.child(constants.IMAGES_PATH);
 export const imagesRef = storage.ref().child(constants.IMAGES_PATH);
 export const specsRef = db.ref(constants.SPECS_PATH);
+export const elementsRef = gameBuilderDbRef.child(constants.ELEMENTS_PATH);
 
 export const storageKey = constants.AUTHENTICATION_LOCAL_STORAGE_KEY;
 
