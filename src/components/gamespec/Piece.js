@@ -9,7 +9,8 @@ import { imagesDbRef } from '../../firebase';
 const pieceSource = {
   beginDrag(props, monitor, component) {
     return {
-      element: props.image
+      element: props.image,
+      key: props.keyProp
     };
   }
 };
@@ -32,8 +33,8 @@ class Piece extends Component {
   componentDidMount() {
     const { image } = this.props;
     let that = this;
-    let key = image.images[0].imageId;
-    let img = imagesDbRef.child(key);
+    let imageKey = image.images[0].imageId;
+    let img = imagesDbRef.child(imageKey);
     img.on('value', function(snap) {
       that.setState({
         imageURL: snap.val().downloadURL

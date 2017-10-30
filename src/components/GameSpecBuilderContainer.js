@@ -36,7 +36,7 @@ class GameSpecBuilderContainer extends React.Component {
   initialVars = {
     snackbarWarning: '',
     boardSize: 0,
-    spec: {}
+    spec: []
   };
 
   state = Object.assign({}, this.initialState, this.initialBoardState);
@@ -90,7 +90,6 @@ class GameSpecBuilderContainer extends React.Component {
   }
 
   setInitialSpec(spec) {
-    //this.vars.spec = JSON.stringify(spec);
     this.vars.spec = spec;
   }
 
@@ -111,7 +110,6 @@ class GameSpecBuilderContainer extends React.Component {
   handleSpecChange = e => {
     // From 4 spaces to none
     try {
-      //this.vars.spec = JSON.stringify(JSON.parse(e.target.value));
       this.vars.spec = e.target.value;
     } catch (e) {
       this.notify(constants.JSON_MALFORMED_ERROR + e.message);
@@ -176,7 +174,6 @@ class GameSpecBuilderContainer extends React.Component {
             setInitialSpec={this.setInitialSpec.bind(this)}
             handleSpecChange={this.handleSpecChange.bind(this)}
             boardImage={this.state.boardImages[this.state.selectedBoard]}
-            selectedKey={this.state.selectedBoard}
           />
         );
       }
@@ -212,13 +209,26 @@ class GameSpecBuilderContainer extends React.Component {
       }
 
       let value = {
-        spec: this.vars.spec,
-        uploader_uid: auth.currentUser.uid,
-        createdOn: firebase.database.ServerValue.TIMESTAMP
+        board: {
+          backgroundColor: 'FFFFFF',
+          imageId: this.state.selectedBoard,
+          maxScale: 1
+        },
+        gameIcon50x50: '-KwqEPnE2xzAON9V2mcP',
+        gameIcon512x512: '-KwqEjlZ_sv95XrfTn5z',
+        gameName: this.state.specName,
+        tutorialYoutubeVideo: 'no_vid_here',
+        uploaderEmail: auth.currentUser.email,
+        pieces: this.vars.spec,
+        uploaderUid: auth.currentUser.uid,
+        createdOn: firebase.database.ServerValue.TIMESTAMP,
+        wikipediaUrl: 'https://no-wiki.com'
       };
 
+      let key = specsRef.push().key;
+
       specsRef
-        .child(this.state.specName)
+        .child(key)
         .set(value)
         .then(
           () => {

@@ -3,8 +3,6 @@ import ContentEditable from 'react-contenteditable';
 import TextField from 'material-ui/TextField';
 import constants from '../../constants';
 import styles from '../../styles';
-import firebase from 'firebase';
-import { auth } from '../../firebase';
 
 const flexStyle = {
   width: '50%',
@@ -12,42 +10,30 @@ const flexStyle = {
 };
 
 const SpecViewer = props => {
-  let spec = {
-    board: {
-      backgroundColor: 'FFFFFF',
-      imageId: props.selectedKey,
-      maxScale: 1
-    },
-    createdOn: firebase.database.ServerValue.TIMESTAMP,
-    gameIcon50x50: '-KwqEPnE2xzAON9V2mcP',
-    gameIcon512x512: '-KwqEjlZ_sv95XrfTn5z',
-    gameName: props.specName,
-    pieces: [],
-    tutorialYoutubeVideo: 'no_vid_here',
-    uploaderEmail: auth.currentUser.email,
-    uploaderUid: auth.currentUser.uid,
-    wikipediaUrl: 'https://no-wiki.com'
-  };
-  /*let specJson = props.spec.length !== 0 ? JSON.parse(props.spec) : {};
+  let pieces = [];
 
-  specJson['@board'] = {
-    '@imageId': props.boardImage.id,
-    '@imageKey': props.boardImage.key
-  };
-
-  specJson['@initialPositions'] = {
-    '@pieces': []
-  };
   props.items.forEach((item, index) => {
-    specJson['@initialPositions']['@pieces'].push({
-      '@imageId': item.image.id,
-      '@imageKey': item.image.key,
-      '@positionX': Math.round(item.offset.x / props.boardSize * 10000) / 100,
-      '@positionY': Math.round(item.offset.y / props.boardSize * 10000) / 100
-    });
+    let deckIndex = -1;
+    if (
+      item.element.elementKind === 'card' ||
+      item.element.elementKind.endsWith('Deck')
+    ) {
+      deckIndex = 1;
+    }
+    let piece = {
+      deckPieceIndex: deckIndex,
+      initialState: {
+        currentImageIndex: 0,
+        x: Math.round(item.offset.x / props.boardSize * 10000) / 100,
+        y: Math.round(item.offset.y / props.boardSize * 10000) / 100,
+        zDepth: index + 1
+      },
+      pieceElementId: item.eleKey
+    };
+    pieces.push(piece);
   });
-*/
-  props.setInitialSpec(spec);
+
+  props.setInitialSpec(pieces);
 
   return (
     <div style={flexStyle}>
@@ -61,7 +47,7 @@ const SpecViewer = props => {
       />
       <ContentEditable
         //html={JSON.stringify(specJson, null, 2)}
-        html={spec}
+        html={JSON.stringify(pieces, null, 2)}
         disabled={false}
         onChange={props.handleSpecChange}
         tagName="pre"
