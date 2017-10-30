@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from '../styles';
 import constants from '../constants';
-import { imagesDbRef, specsRef, auth } from '../firebase';
+import { elementsRef, imagesDbRef, specsRef, auth } from '../firebase';
 import BoardList from './gamespec/BoardList';
 import GameSpecBuilder from './GameSpecBuilder';
 import SpecViewer from './gamespec/SpecViewer';
@@ -29,13 +29,14 @@ class GameSpecBuilderContainer extends React.Component {
   initialBoardState = {
     boardImages: [],
     otherImages: [],
+    playElements: [],
     allSpecs: []
   };
 
   initialVars = {
     snackbarWarning: '',
     boardSize: 0,
-    spec: ''
+    spec: {}
   };
 
   state = Object.assign({}, this.initialState, this.initialBoardState);
@@ -63,6 +64,12 @@ class GameSpecBuilderContainer extends React.Component {
         });
       });
 
+    elementsRef.once('value').then(function(data) {
+      that.setState({
+        playElements: data.val()
+      });
+    });
+
     specsRef.once('value').then(function(data) {
       that.setState({
         allSpecs: data.val()
@@ -83,7 +90,8 @@ class GameSpecBuilderContainer extends React.Component {
   }
 
   setInitialSpec(spec) {
-    this.vars.spec = JSON.stringify(spec);
+    //this.vars.spec = JSON.stringify(spec);
+    this.vars.spec = spec;
   }
 
   setSpecName(e, newValue) {
@@ -103,7 +111,8 @@ class GameSpecBuilderContainer extends React.Component {
   handleSpecChange = e => {
     // From 4 spaces to none
     try {
-      this.vars.spec = JSON.stringify(JSON.parse(e.target.value));
+      //this.vars.spec = JSON.stringify(JSON.parse(e.target.value));
+      this.vars.spec = e.target.value;
     } catch (e) {
       this.notify(constants.JSON_MALFORMED_ERROR + e.message);
     }
@@ -149,7 +158,7 @@ class GameSpecBuilderContainer extends React.Component {
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
-            images={this.state.otherImages}
+            elements={this.state.playElements}
             boardImage={this.state.boardImages[this.state.selectedBoard]}
           />
         );
@@ -167,6 +176,7 @@ class GameSpecBuilderContainer extends React.Component {
             setInitialSpec={this.setInitialSpec.bind(this)}
             handleSpecChange={this.handleSpecChange.bind(this)}
             boardImage={this.state.boardImages[this.state.selectedBoard]}
+            selectedKey={this.state.selectedBoard}
           />
         );
       }
