@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
 import ItemTypes from './ItemTypes';
 import { Layer, Stage } from 'react-konva';
+import { imagesDbRef } from '../../firebase';
 
 import CanvasImage from './CanvasImage';
 
@@ -18,10 +19,9 @@ const boxTarget = {
       .getBoundingClientRect();
     offset.x = offset.x - rect.left;
     offset.y = offset.y - rect.top;
-    let image = item.image;
-    items.push({ image, offset });
+    let element = item.element;
+    items.push({ element, offset });
     props.setItems(items);
-
     return { name: 'Board' };
   }
 };
@@ -52,11 +52,18 @@ class Board extends React.Component {
   };
 
   state = {
-    items: []
+    items: [],
+    images: []
   };
 
   componentDidMount() {
     this.props.setBoardSize(this.width);
+    let that = this;
+    imagesDbRef.once('value').then(function(data) {
+      that.setState({
+        images: data.val()
+      });
+    });
   }
 
   handleDragEnd = index => {
@@ -73,7 +80,6 @@ class Board extends React.Component {
 
   render() {
     const { connectDropTarget } = this.props;
-
     this.imageWidthRatio =
       this.props.boardImage.width / parseInt(this.width, 10);
     this.imageHeightRatio =
@@ -95,9 +101,18 @@ class Board extends React.Component {
                 <CanvasImage
                   ref={'canvasImage' + index}
                   key={index}
-                  width={item.image.width / this.imageWidthRatio}
-                  height={item.image.height / this.imageHeightRatio}
-                  src={item.image.downloadURL}
+                  width={
+                    this.state.images[item.element.images[0].imageId].width /
+                    this.imageWidthRatio
+                  }
+                  height={
+                    this.state.images[item.element.images[0].imageId].height /
+                    this.imageHeightRatio
+                  }
+                  src={
+                    this.state.images[item.element.images[0].imageId]
+                      .downloadURL
+                  }
                   x={item.offset.x}
                   y={item.offset.y}
                   draggable={true}

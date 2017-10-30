@@ -3,6 +3,8 @@ import ContentEditable from 'react-contenteditable';
 import TextField from 'material-ui/TextField';
 import constants from '../../constants';
 import styles from '../../styles';
+import firebase from 'firebase';
+import { auth } from '../../firebase';
 
 const flexStyle = {
   width: '50%',
@@ -10,7 +12,23 @@ const flexStyle = {
 };
 
 const SpecViewer = props => {
-  let specJson = props.spec.length !== 0 ? JSON.parse(props.spec) : {};
+  let spec = {
+    board: {
+      backgroundColor: 'FFFFFF',
+      imageId: props.selectedKey,
+      maxScale: 1
+    },
+    createdOn: firebase.database.ServerValue.TIMESTAMP,
+    gameIcon50x50: '-KwqEPnE2xzAON9V2mcP',
+    gameIcon512x512: '-KwqEjlZ_sv95XrfTn5z',
+    gameName: props.specName,
+    pieces: [],
+    tutorialYoutubeVideo: 'no_vid_here',
+    uploaderEmail: auth.currentUser.email,
+    uploaderUid: auth.currentUser.uid,
+    wikipediaUrl: 'https://no-wiki.com'
+  };
+  /*let specJson = props.spec.length !== 0 ? JSON.parse(props.spec) : {};
 
   specJson['@board'] = {
     '@imageId': props.boardImage.id,
@@ -28,8 +46,8 @@ const SpecViewer = props => {
       '@positionY': Math.round(item.offset.y / props.boardSize * 10000) / 100
     });
   });
-
-  props.setInitialSpec(specJson);
+*/
+  props.setInitialSpec(spec);
 
   return (
     <div style={flexStyle}>
@@ -42,7 +60,8 @@ const SpecViewer = props => {
         onChange={props.setSpecName}
       />
       <ContentEditable
-        html={JSON.stringify(specJson, null, 2)}
+        //html={JSON.stringify(specJson, null, 2)}
+        html={spec}
         disabled={false}
         onChange={props.handleSpecChange}
         tagName="pre"
