@@ -21,8 +21,8 @@ const boxTarget = {
     offset.y = offset.y - rect.top;
     let element = item.element;
     let eleKey = item.key;
-    let curruntImage = 0;
-    items.push({ element, offset, eleKey, curruntImage });
+    let currentImage = 0;
+    items.push({ element, offset, eleKey, currentImage });
     props.setItems(items);
     return { name: 'Board' };
   }
@@ -84,12 +84,12 @@ class Board extends React.Component {
     let items = this.props.getItems();
     let item = items[index];
     if (item !== null && item.element.elementKind === 'toggable') {
-      item.curruntImage = (item.curruntImage + 1) % item.element.images.length;
+      item.currentImage = (item.currentImage + 1) % item.element.images.length;
       items[index] = item;
       this.props.setItems(items);
     } else if (item !== null && item.element.elementKind === 'dice') {
       let num = Math.floor(Math.random() * item.element.images.length);
-      item.curruntImage = num;
+      item.currentImage = num;
       items[index] = item;
       this.props.setItems(items);
     }
@@ -123,18 +123,18 @@ class Board extends React.Component {
                   }}
                   item={item}
                   width={
-                    this.state.images[
-                      item.element.images[item.curruntImage].imageId
+                    this.props.allImages[
+                      item.element.images[item.currentImage].imageId
                     ].width / this.imageWidthRatio
                   }
                   height={
-                    this.state.images[
-                      item.element.images[item.curruntImage].imageId
+                    this.props.allImages[
+                      item.element.images[item.currentImage].imageId
                     ].height / this.imageHeightRatio
                   }
                   src={
-                    this.state.images[
-                      item.element.images[item.curruntImage].imageId
+                    this.props.allImages[
+                      item.element.images[item.currentImage].imageId
                     ].downloadURL
                   }
                   x={item.offset.x}

@@ -18,7 +18,14 @@ const flexElement = {
 };
 
 const GameSpecBuilder = props => {
-  let { elements, setItems, setBoardSize, getItems, boardImage } = props;
+  let {
+    elements,
+    setItems,
+    setBoardSize,
+    getItems,
+    boardImage,
+    allImages
+  } = props;
   return (
     <DragDropContextProvider backend={HTML5Backend}>
       <div style={flexStyle}>
@@ -30,6 +37,7 @@ const GameSpecBuilder = props => {
           setItems={setItems}
           getItems={getItems}
           boardImage={boardImage}
+          allImages={allImages}
         />
       </div>
     </DragDropContextProvider>

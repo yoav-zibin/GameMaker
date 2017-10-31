@@ -29,6 +29,7 @@ class GameSpecBuilderContainer extends React.Component {
   initialBoardState = {
     boardImages: [],
     otherImages: [],
+    allImages: [],
     playElements: [],
     allSpecs: []
   };
@@ -64,6 +65,11 @@ class GameSpecBuilderContainer extends React.Component {
         });
       });
 
+    imagesDbRef.once('value').then(function(data) {
+      that.setState({
+        allImages: data.val()
+      });
+    });
     elementsRef.once('value').then(function(data) {
       that.setState({
         playElements: data.val()
@@ -158,6 +164,7 @@ class GameSpecBuilderContainer extends React.Component {
             getItems={this.getItems.bind(this)}
             elements={this.state.playElements}
             boardImage={this.state.boardImages[this.state.selectedBoard]}
+            allImages={this.state.allImages}
           />
         );
       }

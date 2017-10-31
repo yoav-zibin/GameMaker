@@ -12,15 +12,13 @@ class CanvasImage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.image !== nextProps) {
-      const image = new window.Image();
-      image.src = this.props.src;
-      image.onload = () => {
-        this.setState({
-          image: image
-        });
-      };
-    }
+    const image = new window.Image();
+    image.src = nextProps.src;
+    image.onload = () => {
+      this.setState({
+        image: image
+      });
+    };
   }
 
   setImage = () => {

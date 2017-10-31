@@ -23,7 +23,7 @@ const SpecViewer = props => {
     let piece = {
       deckPieceIndex: deckIndex,
       initialState: {
-        currentImageIndex: 0,
+        currentImageIndex: item.currentImage,
         x: Math.round(item.offset.x / props.boardSize * 10000) / 100,
         y: Math.round(item.offset.y / props.boardSize * 10000) / 100,
         zDepth: index + 1
@@ -46,7 +46,6 @@ const SpecViewer = props => {
         onChange={props.setSpecName}
       />
       <ContentEditable
-        //html={JSON.stringify(specJson, null, 2)}
         html={JSON.stringify(pieces, null, 2)}
         disabled={false}
         onChange={props.handleSpecChange}
