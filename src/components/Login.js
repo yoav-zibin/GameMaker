@@ -30,10 +30,18 @@ class Login extends React.Component {
       let userData = {
         privateFields: {
           email: user.email,
-          createdOn: firebase.database.ServerValue.TIMESTAMP
+          createdOn: firebase.database.ServerValue.TIMESTAMP,
+          phoneNumber: '',
+          facebookId: '',
+          googleId: '',
+          twitterId: '',
+          githubId: '',
+          pushNotificationsToken: ''
         },
         publicFields: {
-          avatarImageUrl: user.photoURL || '',
+          avatarImageUrl:
+            user.photoUrl ||
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png',
           displayName: user.displayName || user.email,
           isConnected: true,
           lastSeen: firebase.database.ServerValue.TIMESTAMP
@@ -41,7 +49,12 @@ class Login extends React.Component {
       };
 
       usersRef.child(user.uid).transaction(function(currentUserData) {
-        if (currentUserData === null || !currentUserData.email) {
+        if (
+          currentUserData === null ||
+          !currentUserData.privateFields.email ||
+          currentUserData.publicFields.lastSeen !==
+            userData.publicFields.lastSeen
+        ) {
           return userData;
         }
       });

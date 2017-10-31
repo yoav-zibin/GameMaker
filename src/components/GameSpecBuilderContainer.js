@@ -43,7 +43,7 @@ class GameSpecBuilderContainer extends React.Component {
 
   componentDidMount() {
     let that = this;
-    let images = imagesDbRef.orderByChild('is_board_image');
+    let images = imagesDbRef.orderByChild('isBoardImage');
 
     images
       .equalTo(true)

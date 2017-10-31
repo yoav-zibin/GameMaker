@@ -56,6 +56,8 @@ class ImageUploader extends React.Component {
           resolve({ width, height });
         } else if (Math.max(width, height) === 1024) {
           resolve({ width, height });
+        } else if (file.size >= 0 && file.size <= 2 * 1024 * 1024) {
+          resolve({ width, height });
         } else {
           reject();
         }
@@ -76,13 +78,13 @@ class ImageUploader extends React.Component {
       customMetadata: {
         width: width,
         height: height,
-        is_board_image: this.vars.isBoardImage,
+        isBoardImage: this.vars.isBoardImage,
         name: that.state.imageName,
-        uploader_uid: auth.currentUser.uid,
-        uploader_email: auth.currentUser.email
+        uploaderUid: auth.currentUser.uid,
+        sizeInBytes: that.state.file.size,
+        uploaderEmail: auth.currentUser.email
       }
     };
-
     let childKey = dbRef.push().key;
     ref
       .child(childKey + '.' + extension)
@@ -94,10 +96,10 @@ class ImageUploader extends React.Component {
               let imageMetadataForDb = {
                 downloadURL: url,
                 createdOn: firebase.database.ServerValue.TIMESTAMP,
+                cloudStoragePath:
+                  constants.IMAGES_PATH + '/' + childKey + '.' + extension,
                 ...metadata.customMetadata
               };
-
-              imageMetadataForDb['key'] = childKey;
               dbRef.child(childKey).set(imageMetadataForDb);
               that.vars.snackbarWarning = constants.IMAGE_UPLOAD_SUCCESSFUL;
               that.setState({

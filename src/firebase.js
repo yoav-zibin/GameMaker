@@ -7,7 +7,8 @@ export const db = firebaseApp.database();
 export const auth = firebaseApp.auth();
 export const storage = firebaseApp.storage();
 
-export const imagesDbRef = db.ref(constants.IMAGES_PATH);
+export const gameBuilderRef = db.ref(constants.GAMEBUILDER_PATH);
+export const imagesDbRef = gameBuilderRef.child(constants.IMAGES_PATH);
 export const imagesRef = storage.ref().child(constants.IMAGES_PATH);
 export const specsRef = db.ref(constants.SPECS_PATH);
 
