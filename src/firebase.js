@@ -9,6 +9,7 @@ export const storage = firebaseApp.storage();
 
 export const gameBuilderRef = db.ref(constants.GAMEBUILDER_PATH);
 export const imagesDbRef = gameBuilderRef.child(constants.IMAGES_PATH);
+
 export const elementsRef = gameBuilderRef.child(constants.ELEMENTS_PATH);
 export const imagesRef = storage.ref().child(constants.IMAGES_PATH);
 export const specsRef = gameBuilderRef.child(constants.SPECS_PATH);

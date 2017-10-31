@@ -8,6 +8,7 @@ const constants = {
     'I certify that I have the rights to use this image in an open source project',
   NO_FILE_SELECTED_WARNING: 'No file selected',
   NO_BOARD_SELECTED_ERROR: 'You must select a board',
+  NO_IMAGE_SELECTED_ERROR: 'You must select an image for the element',
   MAX_WIDTH_HEIGHT_WARNING:
     'Max of width and height for board image should be 1024',
   NOT_CERTIFIED_WARNING: 'Certification is necessary to move forward',
@@ -20,10 +21,20 @@ const constants = {
   SPEC_UPLOAD_FAILED: 'Spec Upload failed',
   EXISTING_SPEC_NAME_ERROR: 'Spec name already exists',
   NO_SPEC_NAME_ERROR: 'No spec name specified',
+  ELEMENT_CREATE_SUCCESSFUL: 'Element created successfully',
+  ELEMENT_CREATE_FAILED: 'Element created failed',
+  ELEMETN_DIFFERENT_WIDTH_HEIGHT:
+    'All the images must have the same width&height',
+  EXCEED_ELEMENT_IMAGES_LIMIT:
+    'Only one image is allowed in this kind of element',
+  LESS_THAN_ELEMENT_IMAGES_LIMIT: 'At least two images in this kind of element',
+  DICE_IMAGE_NUM_LIMIT: '6^n images in dice',
+  CARD_IMAGE_NUM_LIMIT: 'Card must contains only two images',
   PIECE_SIZE_FLOATING_LABEL: 'Enter piece image size',
   PIECE_SIZE_HINT_TEXT: 'Piece Image Size',
   NAV_UPLOAD_IMAGE_TEXT: 'Upload Image',
   NAV_GAME_SPEC_BUILDER_TEXT: 'Spec Builder',
+  NAV_CREATE_ELEMENT_TEXT: 'Create Element',
   TITLE_TEXT: 'Game Builder',
   AUTHENTICATION_LOCAL_STORAGE_KEY: 'GAME_BUILDER_LOCAL_STORAGE_$UID',
   GAMEBUILDER_PATH: 'gameBuilder',

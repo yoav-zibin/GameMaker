@@ -56,7 +56,7 @@ class ImageUploader extends React.Component {
           resolve({ width, height });
         } else if (Math.max(width, height) === 1024) {
           resolve({ width, height });
-        } else if (file.size <= 2 * 1024 * 1024) {
+        } else if (file.size >= 0 && file.size <= 2 * 1024 * 1024) {
           resolve({ width, height });
         } else {
           reject();

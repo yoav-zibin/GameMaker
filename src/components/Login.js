@@ -40,8 +40,9 @@ class Login extends React.Component {
         },
         publicFields: {
           avatarImageUrl:
+            user.photoUrl ||
             'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png',
-          displayName: user.email,
+          displayName: user.displayName || user.email,
           isConnected: true,
           lastSeen: firebase.database.ServerValue.TIMESTAMP
         }
