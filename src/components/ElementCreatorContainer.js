@@ -170,6 +170,8 @@ class ElementCreatorContainer extends React.Component {
             getElementKind={this.getElementKind.bind(this)}
             setElementKind={this.setElementKind.bind(this)}
             handleChange={this.handleElementCreatorChange.bind(this)}
+            isDraggable={this.vars.isDraggable}
+            isDrawable={this.vars.isDrawable}
           />
         );
       }

@@ -40,6 +40,7 @@ const ElementKindSelector = props => {
         <br />
         <Toggle
           label="draggable"
+          defaultToggled={props.isDraggable}
           onToggle={(e, newValue) => {
             props.handleChange('draggable', e, newValue);
           }}
@@ -47,6 +48,7 @@ const ElementKindSelector = props => {
         <br />
         <Toggle
           label="drawable"
+          defaultToggled={props.isDrawable}
           disabled={showIsDrawable(props.getElementKind())}
           onToggle={(e, newValue) => {
             props.handleChange('drawable', e, newValue);
