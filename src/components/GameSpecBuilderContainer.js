@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from '../styles';
 import constants from '../constants';
-import { imagesDbRef, specsRef, auth } from '../firebase';
+import { elementsRef, imagesDbRef, specsRef, auth } from '../firebase';
 import BoardList from './gamespec/BoardList';
 import GameSpecBuilder from './GameSpecBuilder';
 import SpecViewer from './gamespec/SpecViewer';
@@ -29,13 +29,15 @@ class GameSpecBuilderContainer extends React.Component {
   initialBoardState = {
     boardImages: [],
     otherImages: [],
+    allImages: [],
+    playElements: [],
     allSpecs: []
   };
 
   initialVars = {
     snackbarWarning: '',
     boardSize: 0,
-    spec: ''
+    spec: []
   };
 
   state = Object.assign({}, this.initialState, this.initialBoardState);
@@ -63,6 +65,17 @@ class GameSpecBuilderContainer extends React.Component {
         });
       });
 
+    imagesDbRef.once('value').then(function(data) {
+      that.setState({
+        allImages: data.val()
+      });
+    });
+    elementsRef.once('value').then(function(data) {
+      that.setState({
+        playElements: data.val()
+      });
+    });
+
     specsRef.once('value').then(function(data) {
       that.setState({
         allSpecs: data.val()
@@ -83,7 +96,7 @@ class GameSpecBuilderContainer extends React.Component {
   }
 
   setInitialSpec(spec) {
-    this.vars.spec = JSON.stringify(spec);
+    this.vars.spec = spec;
   }
 
   setSpecName(e, newValue) {
@@ -103,7 +116,7 @@ class GameSpecBuilderContainer extends React.Component {
   handleSpecChange = e => {
     // From 4 spaces to none
     try {
-      this.vars.spec = JSON.stringify(JSON.parse(e.target.value));
+      this.vars.spec = e.target.value;
     } catch (e) {
       this.notify(constants.JSON_MALFORMED_ERROR + e.message);
     }
@@ -149,8 +162,9 @@ class GameSpecBuilderContainer extends React.Component {
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
-            images={this.state.otherImages}
+            elements={this.state.playElements}
             boardImage={this.state.boardImages[this.state.selectedBoard]}
+            allImages={this.state.allImages}
           />
         );
       }
@@ -202,13 +216,26 @@ class GameSpecBuilderContainer extends React.Component {
       }
 
       let value = {
-        spec: this.vars.spec,
-        uploader_uid: auth.currentUser.uid,
-        createdOn: firebase.database.ServerValue.TIMESTAMP
+        board: {
+          backgroundColor: constants.BACKGROUND_COLOR,
+          imageId: this.state.selectedBoard,
+          maxScale: 1
+        },
+        gameIcon50x50: constants.GAMEICON_50x50,
+        gameIcon512x512: constants.GAMEICON_512x512,
+        gameName: this.state.specName,
+        tutorialYoutubeVideo: constants.YOUTUBE_VIDEO,
+        uploaderEmail: auth.currentUser.email,
+        pieces: this.vars.spec,
+        uploaderUid: auth.currentUser.uid,
+        createdOn: firebase.database.ServerValue.TIMESTAMP,
+        wikipediaUrl: constants.WIKI_URL
       };
 
+      let key = specsRef.push().key;
+
       specsRef
-        .child(this.state.specName)
+        .child(key)
         .set(value)
         .then(
           () => {

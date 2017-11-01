@@ -4,17 +4,25 @@ import { DragSource } from 'react-dnd';
 import { GridTile } from 'material-ui/GridList';
 import ItemTypes from './ItemTypes';
 import styles from '../../styles';
+import { imagesDbRef } from '../../firebase';
 
 const pieceSource = {
   beginDrag(props, monitor, component) {
     return {
-      image: props.image
+      element: props.image,
+      key: props.keyProp
     };
   }
 };
 
 class Piece extends Component {
-  imageRef;
+  initialState = {
+    imageKey: '',
+    imageURL: ''
+  };
+
+  state = Object.assign({}, this.initialState);
+
   static propTypes = {
     connectDragSource: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
@@ -22,15 +30,28 @@ class Piece extends Component {
     keyProp: PropTypes.string.isRequired
   };
 
+  componentDidMount() {
+    const { image } = this.props;
+    let that = this;
+    let imageKey = image.images[0].imageId;
+    let img = imagesDbRef.child(imageKey);
+    img.on('value', function(snap) {
+      that.setState({
+        imageURL: snap.val().downloadURL
+      });
+    });
+  }
+
   render() {
     const { isDragging, connectDragSource, keyProp } = this.props;
     const { image } = this.props;
     const opacity = isDragging ? 0.4 : 1;
     const height = 'inherit';
+
     return connectDragSource(
       <div key={keyProp} style={{ opacity, height }}>
-        <GridTile style={styles.hoverCursorPointer} title={image.name}>
-          <img src={image.downloadURL} alt={image.id} />
+        <GridTile style={styles.hoverCursorPointer} title={image.elementKind}>
+          <img src={this.state.imageURL} alt={image.id} />
         </GridTile>
       </div>
     );

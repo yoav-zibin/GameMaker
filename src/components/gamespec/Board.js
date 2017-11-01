@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
 import ItemTypes from './ItemTypes';
 import { Layer, Stage } from 'react-konva';
+import { imagesDbRef } from '../../firebase';
 
 import CanvasImage from './CanvasImage';
 
@@ -18,10 +19,11 @@ const boxTarget = {
       .getBoundingClientRect();
     offset.x = offset.x - rect.left;
     offset.y = offset.y - rect.top;
-    let image = item.image;
-    items.push({ image, offset });
+    let element = item.element;
+    let eleKey = item.key;
+    let currentImage = 0;
+    items.push({ element, offset, eleKey, currentImage });
     props.setItems(items);
-
     return { name: 'Board' };
   }
 };
@@ -52,11 +54,18 @@ class Board extends React.Component {
   };
 
   state = {
-    items: []
+    items: [],
+    images: []
   };
 
   componentDidMount() {
     this.props.setBoardSize(this.width);
+    let that = this;
+    imagesDbRef.once('value').then(function(data) {
+      that.setState({
+        images: data.val()
+      });
+    });
   }
 
   handleDragEnd = index => {
@@ -71,9 +80,23 @@ class Board extends React.Component {
     this.props.setItems(items);
   };
 
+  handleClickOn = index => {
+    let items = this.props.getItems();
+    let item = items[index];
+    if (item && item.element.elementKind === 'toggable') {
+      item.currentImage = (item.currentImage + 1) % item.element.images.length;
+      items[index] = item;
+      this.props.setItems(items);
+    } else if (item && item.element.elementKind === 'dice') {
+      let num = Math.floor(Math.random() * item.element.images.length);
+      item.currentImage = num;
+      items[index] = item;
+      this.props.setItems(items);
+    }
+  };
+
   render() {
     const { connectDropTarget } = this.props;
-
     this.imageWidthRatio =
       this.props.boardImage.width / parseInt(this.width, 10);
     this.imageHeightRatio =
@@ -95,9 +118,25 @@ class Board extends React.Component {
                 <CanvasImage
                   ref={'canvasImage' + index}
                   key={index}
-                  width={item.image.width / this.imageWidthRatio}
-                  height={item.image.height / this.imageHeightRatio}
-                  src={item.image.downloadURL}
+                  onClick={() => {
+                    this.handleClickOn(index);
+                  }}
+                  item={item}
+                  width={
+                    this.props.allImages[
+                      item.element.images[item.currentImage].imageId
+                    ].width / this.imageWidthRatio
+                  }
+                  height={
+                    this.props.allImages[
+                      item.element.images[item.currentImage].imageId
+                    ].height / this.imageHeightRatio
+                  }
+                  src={
+                    this.props.allImages[
+                      item.element.images[item.currentImage].imageId
+                    ].downloadURL
+                  }
                   x={item.offset.x}
                   y={item.offset.y}
                   draggable={true}

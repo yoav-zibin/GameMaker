@@ -10,26 +10,30 @@ const flexStyle = {
 };
 
 const SpecViewer = props => {
-  let specJson = props.spec.length !== 0 ? JSON.parse(props.spec) : {};
+  let pieces = [];
 
-  specJson['@board'] = {
-    '@imageId': props.boardImage.id,
-    '@imageKey': props.boardImage.key
-  };
-
-  specJson['@initialPositions'] = {
-    '@pieces': []
-  };
   props.items.forEach((item, index) => {
-    specJson['@initialPositions']['@pieces'].push({
-      '@imageId': item.image.id,
-      '@imageKey': item.image.key,
-      '@positionX': Math.round(item.offset.x / props.boardSize * 10000) / 100,
-      '@positionY': Math.round(item.offset.y / props.boardSize * 10000) / 100
-    });
+    let deckIndex = -1;
+    if (
+      item.element.elementKind === 'card' ||
+      item.element.elementKind.endsWith('Deck')
+    ) {
+      deckIndex = 1;
+    }
+    let piece = {
+      deckPieceIndex: deckIndex,
+      initialState: {
+        currentImageIndex: item.currentImage,
+        x: Math.round(item.offset.x / props.boardSize * 10000) / 100,
+        y: Math.round(item.offset.y / props.boardSize * 10000) / 100,
+        zDepth: index + 1
+      },
+      pieceElementId: item.eleKey
+    };
+    pieces.push(piece);
   });
 
-  props.setInitialSpec(specJson);
+  props.setInitialSpec(pieces);
 
   return (
     <div style={flexStyle}>
@@ -42,7 +46,7 @@ const SpecViewer = props => {
         onChange={props.setSpecName}
       />
       <ContentEditable
-        html={JSON.stringify(specJson, null, 2)}
+        html={JSON.stringify(pieces, null, 2)}
         disabled={false}
         onChange={props.handleSpecChange}
         tagName="pre"
