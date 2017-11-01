@@ -83,11 +83,11 @@ class Board extends React.Component {
   handleClickOn = index => {
     let items = this.props.getItems();
     let item = items[index];
-    if (item !== null && item.element.elementKind === 'toggable') {
+    if (item && item.element.elementKind === 'toggable') {
       item.currentImage = (item.currentImage + 1) % item.element.images.length;
       items[index] = item;
       this.props.setItems(items);
-    } else if (item !== null && item.element.elementKind === 'dice') {
+    } else if (item && item.element.elementKind === 'dice') {
       let num = Math.floor(Math.random() * item.element.images.length);
       item.currentImage = num;
       items[index] = item;

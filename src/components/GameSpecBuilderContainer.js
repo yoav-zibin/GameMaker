@@ -217,19 +217,19 @@ class GameSpecBuilderContainer extends React.Component {
 
       let value = {
         board: {
-          backgroundColor: 'FFFFFF',
+          backgroundColor: constants.BACKGROUND_COLOR,
           imageId: this.state.selectedBoard,
           maxScale: 1
         },
-        gameIcon50x50: '-KwqEPnE2xzAON9V2mcP',
-        gameIcon512x512: '-KwqEjlZ_sv95XrfTn5z',
+        gameIcon50x50: constants.GAMEICON_50x50,
+        gameIcon512x512: constants.GAMEICON_512x512,
         gameName: this.state.specName,
-        tutorialYoutubeVideo: 'no_vid_here',
+        tutorialYoutubeVideo: constants.YOUTUBE_VIDEO,
         uploaderEmail: auth.currentUser.email,
         pieces: this.vars.spec,
         uploaderUid: auth.currentUser.uid,
         createdOn: firebase.database.ServerValue.TIMESTAMP,
-        wikipediaUrl: 'https://no-wiki.com'
+        wikipediaUrl: constants.WIKI_URL
       };
 
       let key = specsRef.push().key;
