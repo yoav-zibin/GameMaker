@@ -6,6 +6,7 @@ import { elementsRef, imagesDbRef, specsRef, auth } from '../firebase';
 import BoardList from './gamespec/BoardList';
 import GameSpecBuilder from './GameSpecBuilder';
 import SpecViewer from './gamespec/SpecViewer';
+import SpecInfo from './gamespec/SpecInfo';
 
 import firebase from 'firebase';
 
@@ -31,13 +32,19 @@ class GameSpecBuilderContainer extends React.Component {
     otherImages: [],
     allImages: [],
     playElements: [],
-    allSpecs: []
+    allSpecs: [],
+    gameIcon50: [],
+    gameIcon512: [],
+    gameIcon50x50: constants.GAMEICON_50x50,
+    gameIcon512x512: constants.GAMEICON_512x512
   };
 
   initialVars = {
     snackbarWarning: '',
     boardSize: 0,
-    spec: []
+    spec: [],
+    tutorialYoutubeVideo: constants.YOUTUBE_VIDEO,
+    wikipediaUrl: constants.WIKI_URL
   };
 
   state = Object.assign({}, this.initialState, this.initialBoardState);
@@ -46,6 +53,7 @@ class GameSpecBuilderContainer extends React.Component {
   componentDidMount() {
     let that = this;
     let images = imagesDbRef.orderByChild('isBoardImage');
+    let icon = imagesDbRef.orderByChild('height');
 
     images
       .equalTo(true)
@@ -62,6 +70,38 @@ class GameSpecBuilderContainer extends React.Component {
       .then(function(data) {
         that.setState({
           otherImages: data.val()
+        });
+      });
+
+    icon
+      .equalTo(50)
+      .once('value')
+      .then(function(data) {
+        let height50 = data.val();
+        let icon50 = [];
+        for (let i = 0; i < height50.length; i++) {
+          if (height50[i].width === 50) {
+            icon50.push(height50[i]);
+          }
+        }
+        that.setState({
+          gameIcon50: height50
+        });
+      });
+
+    icon
+      .equalTo(512)
+      .once('value')
+      .then(function(data) {
+        let height512 = data.val();
+        let icon512 = [];
+        for (let i = 0; i < height512.length; i++) {
+          if (height512[i].width === 512) {
+            icon512.push(height512[i]);
+          }
+        }
+        that.setState({
+          gameIcon512: height512
         });
       });
 
@@ -113,6 +153,14 @@ class GameSpecBuilderContainer extends React.Component {
     }
   }
 
+  setYoutube(e, newValue) {
+    this.vars.tutorialYoutubeVideo = newValue;
+  }
+
+  setWiki(e, newValue) {
+    this.vars.wikipediaUrl = newValue;
+  }
+
   handleSpecChange = e => {
     // From 4 spaces to none
     try {
@@ -130,13 +178,45 @@ class GameSpecBuilderContainer extends React.Component {
   updateStepIndex(stepIndex) {
     this.setState({
       stepIndex: stepIndex + 1,
-      finished: stepIndex >= 2
+      finished: stepIndex >= 3
     });
   }
 
   handleGridTileClickBoard(key) {
     this.setState({
       selectedBoard: key
+    });
+  }
+
+  handleGameIcon50(key) {
+    this.setState({
+      gameIcon50x50: key
+    });
+  }
+
+  handleGameIcon512(key) {
+    this.setState({
+      gameIcon512x512: key
+    });
+  }
+
+  setGameIcon50(key) {
+    this.setState({
+      gameIcon50x50: key
+    });
+  }
+
+  getGameIcon50() {
+    return this.state.gameIcon50x50;
+  }
+
+  getGameIcon512() {
+    return this.state.gameIcon512x512;
+  }
+
+  setGameIcon512(key) {
+    this.setState({
+      gameIcon512x512: key
     });
   }
 
@@ -170,6 +250,21 @@ class GameSpecBuilderContainer extends React.Component {
       }
 
       case 2: {
+        return (
+          <SpecInfo
+            handleIcon50CLick={this.handleGameIcon50.bind(this)}
+            handleIcon512Click={this.handleGameIcon512.bind(this)}
+            gameIcon50={this.state.gameIcon50}
+            gameIcon512={this.state.gameIcon512}
+            setYoutube={this.setYoutube.bind(this)}
+            setWiki={this.setWiki.bind(this)}
+            getGameIcon50={this.getGameIcon50.bind(this)}
+            getGameIcon512={this.getGameIcon512.bind(this)}
+          />
+        );
+      }
+
+      case 3: {
         return (
           <SpecViewer
             specName={this.state.specName}
@@ -207,6 +302,20 @@ class GameSpecBuilderContainer extends React.Component {
       }
       this.updateStepIndex(stepIndex);
     } else if (stepIndex === 2) {
+      if (
+        !(
+          this.vars.wikipediaUrl.startsWith('http://') &&
+          this.vars.wikipediaUrl.length >= 10 &&
+          this.vars.wikipediaUrl.length < 500
+        )
+      ) {
+        this.notify(constants.NOT_CORRECT_WIKI_FORMAT);
+      }
+      if (!this.vars.tutorialYoutubeVideo.match(/^([-_A-Za-z0-9]{11})?$/)) {
+        this.notify(constants.NOT_CORRECT_VIDEO_FORMAT);
+      }
+      return;
+    } else if (stepIndex === 3) {
       if (this.state.specNameErrorText.length !== 0) {
         this.notify(constants.EXISTING_SPEC_NAME_ERROR);
         return;
@@ -221,15 +330,15 @@ class GameSpecBuilderContainer extends React.Component {
           imageId: this.state.selectedBoard,
           maxScale: 1
         },
-        gameIcon50x50: constants.GAMEICON_50x50,
-        gameIcon512x512: constants.GAMEICON_512x512,
+        gameIcon50x50: this.state.gameIcon50x50,
+        gameIcon512x512: this.state.gameIcon512x512,
         gameName: this.state.specName,
-        tutorialYoutubeVideo: constants.YOUTUBE_VIDEO,
+        tutorialYoutubeVideo: this.vars.tutorialYoutubeVideo,
         uploaderEmail: auth.currentUser.email,
         pieces: this.vars.spec,
         uploaderUid: auth.currentUser.uid,
         createdOn: firebase.database.ServerValue.TIMESTAMP,
-        wikipediaUrl: constants.WIKI_URL
+        wikipediaUrl: this.vars.wikipediaUrl
       };
 
       let key = specsRef.push().key;
@@ -274,6 +383,9 @@ class GameSpecBuilderContainer extends React.Component {
             <StepLabel>Build game specification</StepLabel>
           </Step>
           <Step>
+            <StepLabel>Fill game imformation</StepLabel>
+          </Step>
+          <Step>
             <StepLabel>Check generated spec</StepLabel>
           </Step>
         </Stepper>
@@ -304,7 +416,7 @@ class GameSpecBuilderContainer extends React.Component {
                   style={{ marginRight: 12 }}
                 />
                 <RaisedButton
-                  label={stepIndex === 2 ? 'Upload' : 'Next'}
+                  label={stepIndex === 3 ? 'Upload' : 'Next'}
                   primary={true}
                   onTouchTap={this.handleNext}
                 />
