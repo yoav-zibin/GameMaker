@@ -30,7 +30,8 @@ class ElementCreatorContainer extends React.Component {
     snackbarWarning: '',
     isDraggable: false,
     isDrawable: false,
-    rotatableDegrees: 360
+    rotatableDegrees: 360,
+    name: ''
   };
 
   state = Object.assign({}, this.initialState);
@@ -156,6 +157,10 @@ class ElementCreatorContainer extends React.Component {
         this.vars.rotatableDegrees = Number(newValue);
         break;
       }
+      case 'name': {
+        this.vars.name = newValue;
+        break;
+      }
       default: {
         break;
       }
@@ -172,6 +177,8 @@ class ElementCreatorContainer extends React.Component {
             handleChange={this.handleElementCreatorChange.bind(this)}
             isDraggable={this.vars.isDraggable}
             isDrawable={this.vars.isDrawable}
+            name={this.vars.name}
+            degree={this.vars.rotatableDegrees}
           />
         );
       }
@@ -217,6 +224,8 @@ class ElementCreatorContainer extends React.Component {
       width: width,
       height: height
     };
+
+    if (this.vars.name !== '') value['name'] = this.vars.name;
 
     switch (this.state.elementKind) {
       case 0: {
@@ -393,9 +402,11 @@ class ElementCreatorContainer extends React.Component {
                 onClick={event => {
                   event.preventDefault();
                   this.vars = Object.assign({}, this.initialVars);
+                  let eles = this.state.cardElements;
                   let imgs = this.state.images;
                   this.setState(this.initialState);
                   this.setState({ images: imgs });
+                  this.setState({ cardElements: eles });
                   this.setState({ selectedImages: [] });
                 }}
               />
