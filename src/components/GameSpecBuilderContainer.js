@@ -24,14 +24,20 @@ class GameSpecBuilderContainer extends React.Component {
     shouldDisplayWarningSnackBar: false,
     items: [],
     specName: '',
-    specNameErrorText: ''
+    specNameErrorText: '',
+    value: 0
   };
 
   initialBoardState = {
     boardImages: [],
     otherImages: [],
     allImages: [],
-    playElements: [],
+    standardElements: [],
+    toggableElements: [],
+    cardElements: [],
+    diceElements: [],
+    cardsDeckElements: [],
+    piecesDeckElements: [],
     allSpecs: [],
     gameIcon50: [],
     gameIcon512: [],
@@ -54,6 +60,7 @@ class GameSpecBuilderContainer extends React.Component {
     let that = this;
     let images = imagesDbRef.orderByChild('isBoardImage');
     let icon = imagesDbRef.orderByChild('height');
+    let elements = elementsRef.orderByChild('elementKind');
 
     images
       .equalTo(true)
@@ -105,16 +112,70 @@ class GameSpecBuilderContainer extends React.Component {
         });
       });
 
+    elements
+      .equalTo('standard')
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          standardElements: data.val()
+        });
+      });
+
+    elements
+      .equalTo('toggable')
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          toggableElements: data.val()
+        });
+      });
+
+    elements
+      .equalTo('card')
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          cardElements: data.val()
+        });
+      });
+
+    elements
+      .equalTo('dice')
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          diceElements: data.val()
+        });
+      });
+
+    elements
+      .equalTo('cardsDeck')
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          cardsDeckElements: data.val()
+        });
+      });
+
+    elements
+      .equalTo('piecesDeck')
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          piecesDeckElements: data.val()
+        });
+      });
+
     imagesDbRef.once('value').then(function(data) {
       that.setState({
         allImages: data.val()
       });
     });
-    elementsRef.once('value').then(function(data) {
+    /*elementsRef.once('value').then(function(data) {
       that.setState({
         playElements: data.val()
       });
-    });
+    });*/
 
     specsRef.once('value').then(function(data) {
       that.setState({
@@ -169,6 +230,16 @@ class GameSpecBuilderContainer extends React.Component {
       this.notify(constants.JSON_MALFORMED_ERROR + e.message);
     }
   };
+
+  setValue(val) {
+    this.setState({
+      value: val
+    });
+  }
+
+  getValue() {
+    return this.state.value;
+  }
 
   notify = message => {
     this.vars.snackbarWarning = message;
@@ -242,9 +313,16 @@ class GameSpecBuilderContainer extends React.Component {
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
-            elements={this.state.playElements}
+            standardElements={this.state.standardElements}
+            toggableElements={this.state.toggableElements}
+            cardElements={this.state.cardElements}
+            diceElements={this.state.diceElements}
+            cardsDeckElements={this.state.cardElements}
+            piecesDeckElements={this.state.piecesDeckElements}
             boardImage={this.state.boardImages[this.state.selectedBoard]}
             allImages={this.state.allImages}
+            setValue={this.setValue.bind(this)}
+            getValue={this.getValue.bind(this)}
           />
         );
       }
