@@ -4,6 +4,11 @@ import { GridTile } from 'material-ui/GridList';
 
 import styles from '../../styles';
 
+const showName = image => {
+  if (image.name !== undefined) return image.name;
+  else return image.elementKind;
+};
+
 const ElementTile = props => {
   let originalBackgroundTitle = 'rgba(0, 0, 0, 0.4)';
   let { keyProp, selectedKey, handleGridTileClick, image, images } = props;
@@ -15,7 +20,7 @@ const ElementTile = props => {
       titleBackground={
         selectedKey === keyProp ? blue500 : originalBackgroundTitle
       }
-      title={image.elementKind}
+      title={showName(image)}
       onClick={e => {
         handleGridTileClick(keyProp, image);
       }}
