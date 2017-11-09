@@ -495,6 +495,12 @@ class SpecTestContainer extends React.Component {
                   this.vars = Object.assign({}, this.initialVars);
                   this.setState(this.initialState);
                   this.setState({ items: [] });
+                  let that = this;
+                  specsRef.once('value').then(function(data) {
+                    that.setState({
+                      allSpecs: data.val()
+                    });
+                  });
                 }}
               />
             </div>
