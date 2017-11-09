@@ -218,8 +218,16 @@ class GameSpecBuilderContainer extends React.Component {
     this.vars.tutorialYoutubeVideo = newValue;
   }
 
+  getYoutube() {
+    return this.vars.tutorialYoutubeVideo;
+  }
+
   setWiki(e, newValue) {
     this.vars.wikipediaUrl = newValue;
+  }
+
+  getWiki() {
+    return this.vars.wikipediaUrl;
   }
 
   handleSpecChange = e => {
@@ -336,6 +344,8 @@ class GameSpecBuilderContainer extends React.Component {
             gameIcon512={this.state.gameIcon512}
             setYoutube={this.setYoutube.bind(this)}
             setWiki={this.setWiki.bind(this)}
+            getYoutube={this.getYoutube.bind(this)}
+            getWiki={this.getWiki.bind(this)}
             getGameIcon50={this.getGameIcon50.bind(this)}
             getGameIcon512={this.getGameIcon512.bind(this)}
           />
@@ -382,17 +392,19 @@ class GameSpecBuilderContainer extends React.Component {
     } else if (stepIndex === 2) {
       if (
         !(
-          this.vars.wikipediaUrl.startsWith('http://') &&
+          this.vars.wikipediaUrl.startsWith('https://') &&
           this.vars.wikipediaUrl.length >= 10 &&
           this.vars.wikipediaUrl.length < 500
         )
       ) {
         this.notify(constants.NOT_CORRECT_WIKI_FORMAT);
+        return;
       }
       if (!this.vars.tutorialYoutubeVideo.match(/^([-_A-Za-z0-9]{11})?$/)) {
         this.notify(constants.NOT_CORRECT_VIDEO_FORMAT);
+        return;
       }
-      return;
+      this.updateStepIndex(stepIndex);
     } else if (stepIndex === 3) {
       if (this.state.specNameErrorText.length !== 0) {
         this.notify(constants.EXISTING_SPEC_NAME_ERROR);

@@ -4,7 +4,7 @@ import styles from '../styles';
 import constants from '../constants';
 import { elementsRef, imagesDbRef, specsRef, auth } from '../firebase';
 import SpecList from './gamespec/SpecList';
-import SpecTestBuilder from './SpecTestBuilder';
+import GameSpecBuilder from './GameSpecBuilder';
 import SpecViewer from './gamespec/SpecViewer';
 import SpecInfo from './gamespec/SpecInfo';
 
@@ -16,7 +16,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
-class GameSpecBuilderContainer extends React.Component {
+class SpecTestContainer extends React.Component {
   initialState = {
     selectedSpec: '',
     stepIndex: 0,
@@ -25,13 +25,21 @@ class GameSpecBuilderContainer extends React.Component {
     items: [],
     specName: '',
     specNameErrorText: '',
-    value: 0
+    value: 0,
+    selectedSpecContent: ''
   };
 
   initialBoardState = {
     otherImages: [],
     allImages: [],
     allSpecs: [],
+    allElements: [],
+    standardElements: [],
+    toggableElements: [],
+    cardElements: [],
+    diceElements: [],
+    cardsDeckElements: [],
+    piecesDeckElements: [],
     gameIcon50: [],
     gameIcon512: [],
     gameIcon50x50: constants.GAMEICON_50x50,
@@ -39,6 +47,7 @@ class GameSpecBuilderContainer extends React.Component {
   };
 
   initialVars = {
+    boardImage: '',
     snackbarWarning: '',
     boardSize: 0,
     spec: [],
@@ -85,6 +94,12 @@ class GameSpecBuilderContainer extends React.Component {
           gameIcon512: height512
         });
       });
+
+    elements.once('value').then(function(data) {
+      that.setState({
+        allElements: data.val()
+      });
+    });
 
     elements
       .equalTo('standard')
@@ -187,8 +202,16 @@ class GameSpecBuilderContainer extends React.Component {
     this.vars.tutorialYoutubeVideo = newValue;
   }
 
+  getYoutube() {
+    return this.vars.tutorialYoutubeVideo;
+  }
+
   setWiki(e, newValue) {
     this.vars.wikipediaUrl = newValue;
+  }
+
+  getWiki() {
+    return this.vars.wikipediaUrl;
   }
 
   handleSpecChange = e => {
@@ -279,7 +302,7 @@ class GameSpecBuilderContainer extends React.Component {
 
       case 1: {
         return (
-          <SpecTestBuilder
+          <GameSpecBuilder
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
@@ -289,7 +312,7 @@ class GameSpecBuilderContainer extends React.Component {
             diceElements={this.state.diceElements}
             cardsDeckElements={this.state.cardElements}
             piecesDeckElements={this.state.piecesDeckElements}
-            boardImage={this.state.boardImages[this.state.selectedBoard]}
+            boardImage={this.state.allImages[this.vars.boardImage]}
             allImages={this.state.allImages}
             setValue={this.setValue.bind(this)}
             getValue={this.getValue.bind(this)}
@@ -306,6 +329,8 @@ class GameSpecBuilderContainer extends React.Component {
             gameIcon512={this.state.gameIcon512}
             setYoutube={this.setYoutube.bind(this)}
             setWiki={this.setWiki.bind(this)}
+            getYoutube={this.getYoutube.bind(this)}
+            getWiki={this.getWiki.bind(this)}
             getGameIcon50={this.getGameIcon50.bind(this)}
             getGameIcon512={this.getGameIcon512.bind(this)}
           />
@@ -323,7 +348,7 @@ class GameSpecBuilderContainer extends React.Component {
             boardSize={this.vars.boardSize}
             setInitialSpec={this.setInitialSpec.bind(this)}
             handleSpecChange={this.handleSpecChange.bind(this)}
-            boardImage={this.state.boardImages[this.state.selectedBoard]}
+            boardImage={this.state.allImages[this.vars.boardImage]}
           />
         );
       }
@@ -344,25 +369,47 @@ class GameSpecBuilderContainer extends React.Component {
   handleNext = () => {
     const { stepIndex } = this.state;
     if (stepIndex === 0) {
-      if (!this.state.selectedBoard.length) {
+      if (!this.state.selectedSpec.length) {
         this.notify(constants.NO_BOARD_SELECTED_ERROR);
         return;
+      } else {
+        let specContent = this.state.allSpecs[this.state.selectedSpec];
+        this.vars.boardImage = specContent['board']['imageId'];
+        this.vars.tutorialYoutubeVideo = specContent['tutorialYoutubeVideo'];
+        this.vars.wikipediaUrl = specContent['wikipediaUrl'];
+        this.setGameIcon50(specContent.gameIcon50x50);
+        this.setGameIcon512(specContent.gameIcon512x512);
+        this.setState({ specName: specContent.gameName });
+        let itemList = [];
+        let piecesList = specContent['pieces'];
+        for (let i = 0; i < piecesList.length; i++) {
+          let eleKey = piecesList[i]['pieceElementId'];
+          let element = this.state.allElements[eleKey];
+          let x = piecesList[i]['initialState']['x'] * 512 / 100;
+          let y = piecesList[i]['initialState']['y'] * 512 / 100;
+          let offset = { x: x, y: y };
+          let currentImage = piecesList[i]['initialState']['currentImageIndex'];
+          itemList.push({ element, offset, eleKey, currentImage });
+        }
+        this.setItems(itemList);
       }
       this.updateStepIndex(stepIndex);
     } else if (stepIndex === 2) {
       if (
         !(
-          this.vars.wikipediaUrl.startsWith('http://') &&
+          this.vars.wikipediaUrl.startsWith('https://') &&
           this.vars.wikipediaUrl.length >= 10 &&
           this.vars.wikipediaUrl.length < 500
         )
       ) {
         this.notify(constants.NOT_CORRECT_WIKI_FORMAT);
+        return;
       }
       if (!this.vars.tutorialYoutubeVideo.match(/^([-_A-Za-z0-9]{11})?$/)) {
         this.notify(constants.NOT_CORRECT_VIDEO_FORMAT);
+        return;
       }
-      return;
+      this.updateStepIndex(stepIndex);
     } else if (stepIndex === 3) {
       if (this.state.specNameErrorText.length !== 0) {
         this.notify(constants.EXISTING_SPEC_NAME_ERROR);
@@ -375,7 +422,7 @@ class GameSpecBuilderContainer extends React.Component {
       let value = {
         board: {
           backgroundColor: constants.BACKGROUND_COLOR,
-          imageId: this.state.selectedBoard,
+          imageId: this.vars.boardImage,
           maxScale: 1
         },
         gameIcon50x50: this.state.gameIcon50x50,
@@ -425,13 +472,13 @@ class GameSpecBuilderContainer extends React.Component {
           style={{ ...styles.container, ...styles.containerWidth700 }}
         >
           <Step>
-            <StepLabel>Select the board</StepLabel>
+            <StepLabel>Select the spec</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Build game specification</StepLabel>
+            <StepLabel>Modify the spec</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Fill game imformation</StepLabel>
+            <StepLabel>Modify spec imformation</StepLabel>
           </Step>
           <Step>
             <StepLabel>Check generated spec</StepLabel>
@@ -477,4 +524,4 @@ class GameSpecBuilderContainer extends React.Component {
   }
 }
 
-export default GameSpecBuilderContainer;
+export default SpecTestContainer;

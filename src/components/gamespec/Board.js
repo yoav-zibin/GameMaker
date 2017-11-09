@@ -61,6 +61,7 @@ class Board extends React.Component {
   componentDidMount() {
     this.props.setBoardSize(this.width);
     let that = this;
+    that.setState({ items: this.props.getItems() });
     imagesDbRef.once('value').then(function(data) {
       that.setState({
         images: data.val()

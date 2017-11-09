@@ -10,12 +10,12 @@ const flexStyle = {
 };
 
 const SpecInfo = props => {
-  console.log(props.getGameIcon50);
   return (
     <div>
       <div style={flexStyle}>
         <TextField
           floatingLabelText={constants.SPEC_WIKI_FLOATING_LABEL}
+          defaultValue={props.getWiki()}
           floatingLabelFixed={true}
           hintText={constants.SPEC_WIKI_HINT_TEXT}
           onChange={props.setWiki}
@@ -24,6 +24,7 @@ const SpecInfo = props => {
       <div style={flexStyle}>
         <TextField
           floatingLabelText={constants.SPEC_YOUTUBE_FLOATING_LABLE}
+          defaultValue={props.getYoutube()}
           floatingLabelFixed={true}
           hintText={constants.SPEC_YOUTUBE_HINT_TEXT}
           onChange={props.setYoutube}
