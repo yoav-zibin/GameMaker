@@ -8,6 +8,7 @@ import Logout from './Logout';
 import ImageAddAPhoto from 'material-ui/svg-icons/image/add-a-photo';
 import Build from 'material-ui/svg-icons/action/build';
 import CreateElements from 'material-ui/svg-icons/image/add-to-photos';
+import Update from 'material-ui/svg-icons/action/update';
 
 const SelectableList = makeSelectable(List);
 
@@ -35,6 +36,11 @@ const Sidebar = props => {
           }
           primaryText={constants.NAV_CREATE_ELEMENT_TEXT}
           value="/create"
+        />
+        <ListItem
+          leftAvatar={<Avatar icon={<Update />} backgroundColor={blue500} />}
+          primaryText={constants.NAV_TEST_SPEC_TEXT}
+          value="/test"
         />
         <ListItem
           leftAvatar={<Avatar icon={<Build />} backgroundColor={blue500} />}

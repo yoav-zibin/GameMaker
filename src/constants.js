@@ -41,6 +41,7 @@ const constants = {
   NAV_UPLOAD_IMAGE_TEXT: 'Upload Image',
   NAV_GAME_SPEC_BUILDER_TEXT: 'Spec Builder',
   NAV_CREATE_ELEMENT_TEXT: 'Create Element',
+  NAV_TEST_SPEC_TEXT: 'Test Spec',
   TITLE_TEXT: 'Game Builder',
   BACKGROUND_COLOR: 'FFFFFF',
   GAMEICON_50x50: '-KwqEPnE2xzAON9V2mcP',
