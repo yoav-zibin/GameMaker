@@ -8,6 +8,7 @@ const constants = {
     'I certify that I have the rights to use this image in an open source project',
   NO_FILE_SELECTED_WARNING: 'No file selected',
   NO_BOARD_SELECTED_ERROR: 'You must select a board',
+  NO_SPEC_SELECTED_ERROR: 'You must select a spec',
   NO_IMAGE_SELECTED_ERROR: 'You must select an image for the element',
   MAX_WIDTH_HEIGHT_WARNING:
     'Max of width and height for board image should be 1024',
@@ -23,6 +24,8 @@ const constants = {
   SPEC_YOUTUBE_HINT_TEXT: "Spec's tutorial youtube URL",
   SPEC_UPLOAD_SUCCESSFUL: 'Spec uploaded successfully',
   SPEC_UPLOAD_FAILED: 'Spec Upload failed',
+  SPEC_UPLOAD_SAME_UID:
+    'Only the person who created the spec can edit and upload again',
   EXISTING_SPEC_NAME_ERROR: 'Spec name already exists',
   NO_SPEC_NAME_ERROR: 'No spec name specified',
   SPEC_WIKI_FLOATING_LABEL: "Enter spec's wiki",

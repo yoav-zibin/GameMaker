@@ -52,7 +52,8 @@ class SpecTestContainer extends React.Component {
     boardSize: 0,
     spec: [],
     tutorialYoutubeVideo: constants.YOUTUBE_VIDEO,
-    wikipediaUrl: constants.WIKI_URL
+    wikipediaUrl: constants.WIKI_URL,
+    selectedUid: ''
   };
 
   state = Object.assign({}, this.initialState, this.initialBoardState);
@@ -370,13 +371,14 @@ class SpecTestContainer extends React.Component {
     const { stepIndex } = this.state;
     if (stepIndex === 0) {
       if (!this.state.selectedSpec.length) {
-        this.notify(constants.NO_BOARD_SELECTED_ERROR);
+        this.notify(constants.NO_SPEC_SELECTED_ERROR);
         return;
       } else {
         let specContent = this.state.allSpecs[this.state.selectedSpec];
         this.vars.boardImage = specContent['board']['imageId'];
         this.vars.tutorialYoutubeVideo = specContent['tutorialYoutubeVideo'];
         this.vars.wikipediaUrl = specContent['wikipediaUrl'];
+        this.vars.selectedUid = specContent.uploaderUid;
         this.setGameIcon50(specContent.gameIcon50x50);
         this.setGameIcon512(specContent.gameIcon512x512);
         this.setState({ specName: specContent.gameName });
@@ -393,6 +395,11 @@ class SpecTestContainer extends React.Component {
         }
         this.setItems(itemList);
       }
+      if (auth.currentUser.uid !== this.vars.selectedUid) {
+        this.notify(constants.SPEC_UPLOAD_SAME_UID);
+      }
+      this.updateStepIndex(stepIndex);
+    } else if (stepIndex === 1) {
       this.updateStepIndex(stepIndex);
     } else if (stepIndex === 2) {
       if (
@@ -518,6 +525,10 @@ class SpecTestContainer extends React.Component {
                 />
                 <RaisedButton
                   label={stepIndex === 3 ? 'Upload' : 'Next'}
+                  disabled={
+                    stepIndex === 1 &&
+                    auth.currentUser.uid !== this.vars.selectedUid
+                  }
                   primary={true}
                   onTouchTap={this.handleNext}
                 />
