@@ -36,9 +36,11 @@ class Piece extends Component {
     let imageKey = image.images[0].imageId;
     let img = imagesDbRef.child(imageKey);
     img.on('value', function(snap) {
-      that.setState({
-        imageURL: snap.val().downloadURL
-      });
+      if (snap.val() !== null) {
+        that.setState({
+          imageURL: snap.val().downloadURL
+        });
+      }
     });
   }
 
