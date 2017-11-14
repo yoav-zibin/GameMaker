@@ -16,6 +16,10 @@ const showRotatableDegree = kind => {
   else return true;
 };
 
+const showName = name => {
+  if (name !== '') return name;
+};
+
 const ElementKindSelector = props => {
   return (
     <div style={styles.block} className="element-kind-selector-div">
@@ -40,6 +44,7 @@ const ElementKindSelector = props => {
         <br />
         <Toggle
           label="draggable"
+          defaultToggled={props.isDraggable}
           onToggle={(e, newValue) => {
             props.handleChange('draggable', e, newValue);
           }}
@@ -47,6 +52,7 @@ const ElementKindSelector = props => {
         <br />
         <Toggle
           label="drawable"
+          defaultToggled={props.isDrawable}
           disabled={showIsDrawable(props.getElementKind())}
           onToggle={(e, newValue) => {
             props.handleChange('drawable', e, newValue);
@@ -58,6 +64,14 @@ const ElementKindSelector = props => {
           disabled={showRotatableDegree(props.getElementKind())}
           onChange={(e, newValue) => {
             props.handleChange('degree', e, newValue);
+          }}
+        />
+        <TextField
+          hintText="Enter the name of the element"
+          defaultValue={showName(props.name)}
+          floatingLabelText="Name(Optional)"
+          onChange={(e, newValue) => {
+            props.handleChange('name', e, newValue);
           }}
         />
       </div>

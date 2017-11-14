@@ -49,6 +49,11 @@ class Element extends React.Component {
     );
   }
 
+  showName(card, data) {
+    if (card.name !== undefined) return card.name;
+    else return data;
+  }
+
   renderCardChip(data) {
     let card = this.props.getCardElements()[data];
     let index = card['images'][0]['imageId'];
@@ -59,7 +64,7 @@ class Element extends React.Component {
         onRequestDelete={() => this.handleRequestDeleteCard(data)}
       >
         <Avatar src={image.downloadURL} />
-        {data}
+        {this.showName(card, data)}
       </Chip>
     );
   }
