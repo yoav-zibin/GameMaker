@@ -361,7 +361,6 @@ class ElementCreatorContainer extends React.Component {
           this.handleCreateElement(width, height, stepIndex);
         },
         ({ type }) => {
-          console.log(type);
           this.notify(type);
         }
       );

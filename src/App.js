@@ -5,6 +5,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import ImageUploader from './components/ImageUploader';
 import GameSpecBuilderContainer from './components/GameSpecBuilderContainer';
+import SpecTestContainer from './components/SpecTestContainer';
 import ElementCreatorContainer from './components/ElementCreatorContainer';
 import Login from './components/Login';
 import RouteWhenAuthenticated from './components/RouteWhenAuthenticated';
@@ -56,6 +57,11 @@ class App extends Component {
                   exact
                   path="/create"
                   component={ElementCreatorContainer}
+                />
+                <RouteWhenAuthenticated
+                  exact
+                  path="/test"
+                  component={SpecTestContainer}
                 />
                 <Route path="/login" component={Login} />
               </div>

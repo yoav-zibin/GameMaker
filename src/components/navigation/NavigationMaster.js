@@ -52,7 +52,8 @@ class NavigationMaster extends React.Component {
 
     if (
       this.props.width === LARGE &&
-      this.props.location.pathname !== '/build'
+      this.props.location.pathname !== '/build' &&
+      this.props.location.pathname !== '/test'
     ) {
       docked = true;
       navDrawerOpen = true;

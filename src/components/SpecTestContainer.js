@@ -3,7 +3,7 @@ import React from 'react';
 import styles from '../styles';
 import constants from '../constants';
 import { elementsRef, imagesDbRef, specsRef, auth } from '../firebase';
-import BoardList from './gamespec/BoardList';
+import SpecList from './gamespec/SpecList';
 import GameSpecBuilder from './GameSpecBuilder';
 import SpecViewer from './gamespec/SpecViewer';
 import SpecInfo from './gamespec/SpecInfo';
@@ -16,29 +16,30 @@ import FlatButton from 'material-ui/FlatButton';
 
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
-class GameSpecBuilderContainer extends React.Component {
+class SpecTestContainer extends React.Component {
   initialState = {
-    selectedBoard: '',
+    selectedSpec: '',
     stepIndex: 0,
     finished: false,
     shouldDisplayWarningSnackBar: false,
     items: [],
     specName: '',
     specNameErrorText: '',
-    value: 0
+    value: 0,
+    selectedSpecContent: ''
   };
 
   initialBoardState = {
-    boardImages: [],
     otherImages: [],
     allImages: [],
+    allSpecs: [],
+    allElements: [],
     standardElements: [],
     toggableElements: [],
     cardElements: [],
     diceElements: [],
     cardsDeckElements: [],
     piecesDeckElements: [],
-    allSpecs: [],
     gameIcon50: [],
     gameIcon512: [],
     gameIcon50x50: constants.GAMEICON_50x50,
@@ -46,11 +47,13 @@ class GameSpecBuilderContainer extends React.Component {
   };
 
   initialVars = {
+    boardImage: '',
     snackbarWarning: '',
     boardSize: 0,
     spec: [],
     tutorialYoutubeVideo: constants.YOUTUBE_VIDEO,
-    wikipediaUrl: constants.WIKI_URL
+    wikipediaUrl: constants.WIKI_URL,
+    selectedUid: ''
   };
 
   state = Object.assign({}, this.initialState, this.initialBoardState);
@@ -58,27 +61,8 @@ class GameSpecBuilderContainer extends React.Component {
 
   componentDidMount() {
     let that = this;
-    let images = imagesDbRef.orderByChild('isBoardImage');
     let icon = imagesDbRef.orderByChild('height');
     let elements = elementsRef.orderByChild('elementKind');
-
-    images
-      .equalTo(true)
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          boardImages: data.val()
-        });
-      });
-
-    images
-      .equalTo(false)
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          otherImages: data.val()
-        });
-      });
 
     icon
       .equalTo(50)
@@ -111,6 +95,12 @@ class GameSpecBuilderContainer extends React.Component {
           gameIcon512: height512
         });
       });
+
+    elements.once('value').then(function(data) {
+      that.setState({
+        allElements: data.val()
+      });
+    });
 
     elements
       .equalTo('standard')
@@ -171,11 +161,6 @@ class GameSpecBuilderContainer extends React.Component {
         allImages: data.val()
       });
     });
-    /*elementsRef.once('value').then(function(data) {
-      that.setState({
-        playElements: data.val()
-      });
-    });*/
 
     specsRef.once('value').then(function(data) {
       that.setState({
@@ -263,7 +248,7 @@ class GameSpecBuilderContainer extends React.Component {
 
   handleGridTileClickBoard(key) {
     this.setState({
-      selectedBoard: key
+      selectedSpec: key
     });
   }
 
@@ -304,12 +289,13 @@ class GameSpecBuilderContainer extends React.Component {
       case 0: {
         return (
           <div>
-            <BoardList
+            <SpecList
               cellHeight={180}
-              header="Boards"
+              header="Specs"
               handleGridTileClick={this.handleGridTileClickBoard.bind(this)}
-              data={this.state.boardImages}
-              selectedKey={this.state.selectedBoard}
+              data={this.state.allSpecs}
+              selectedKey={this.state.selectedSpec}
+              images={this.state.allImages}
             />
           </div>
         );
@@ -327,7 +313,7 @@ class GameSpecBuilderContainer extends React.Component {
             diceElements={this.state.diceElements}
             cardsDeckElements={this.state.cardElements}
             piecesDeckElements={this.state.piecesDeckElements}
-            boardImage={this.state.boardImages[this.state.selectedBoard]}
+            boardImage={this.state.allImages[this.vars.boardImage]}
             allImages={this.state.allImages}
             setValue={this.setValue.bind(this)}
             getValue={this.getValue.bind(this)}
@@ -363,7 +349,7 @@ class GameSpecBuilderContainer extends React.Component {
             boardSize={this.vars.boardSize}
             setInitialSpec={this.setInitialSpec.bind(this)}
             handleSpecChange={this.handleSpecChange.bind(this)}
-            boardImage={this.state.boardImages[this.state.selectedBoard]}
+            boardImage={this.state.allImages[this.vars.boardImage]}
           />
         );
       }
@@ -384,10 +370,36 @@ class GameSpecBuilderContainer extends React.Component {
   handleNext = () => {
     const { stepIndex } = this.state;
     if (stepIndex === 0) {
-      if (!this.state.selectedBoard.length) {
-        this.notify(constants.NO_BOARD_SELECTED_ERROR);
+      if (!this.state.selectedSpec.length) {
+        this.notify(constants.NO_SPEC_SELECTED_ERROR);
         return;
+      } else {
+        let specContent = this.state.allSpecs[this.state.selectedSpec];
+        this.vars.boardImage = specContent['board']['imageId'];
+        this.vars.tutorialYoutubeVideo = specContent['tutorialYoutubeVideo'];
+        this.vars.wikipediaUrl = specContent['wikipediaUrl'];
+        this.vars.selectedUid = specContent.uploaderUid;
+        this.setGameIcon50(specContent.gameIcon50x50);
+        this.setGameIcon512(specContent.gameIcon512x512);
+        this.setState({ specName: specContent.gameName });
+        let itemList = [];
+        let piecesList = specContent['pieces'];
+        for (let i = 0; i < piecesList.length; i++) {
+          let eleKey = piecesList[i]['pieceElementId'];
+          let element = this.state.allElements[eleKey];
+          let x = piecesList[i]['initialState']['x'] * 512 / 100;
+          let y = piecesList[i]['initialState']['y'] * 512 / 100;
+          let offset = { x: x, y: y };
+          let currentImage = piecesList[i]['initialState']['currentImageIndex'];
+          itemList.push({ element, offset, eleKey, currentImage });
+        }
+        this.setItems(itemList);
       }
+      if (auth.currentUser.uid !== this.vars.selectedUid) {
+        this.notify(constants.SPEC_UPLOAD_SAME_UID);
+      }
+      this.updateStepIndex(stepIndex);
+    } else if (stepIndex === 1) {
       this.updateStepIndex(stepIndex);
     } else if (stepIndex === 2) {
       if (
@@ -417,7 +429,7 @@ class GameSpecBuilderContainer extends React.Component {
       let value = {
         board: {
           backgroundColor: constants.BACKGROUND_COLOR,
-          imageId: this.state.selectedBoard,
+          imageId: this.vars.boardImage,
           maxScale: 1
         },
         gameIcon50x50: this.state.gameIcon50x50,
@@ -431,7 +443,7 @@ class GameSpecBuilderContainer extends React.Component {
         wikipediaUrl: this.vars.wikipediaUrl
       };
 
-      let key = specsRef.push().key;
+      let key = this.state.selectedSpec;
 
       specsRef
         .child(key)
@@ -467,13 +479,13 @@ class GameSpecBuilderContainer extends React.Component {
           style={{ ...styles.container, ...styles.containerWidth700 }}
         >
           <Step>
-            <StepLabel>Select the board</StepLabel>
+            <StepLabel>Select the spec</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Build game specification</StepLabel>
+            <StepLabel>Modify the spec</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Fill game imformation</StepLabel>
+            <StepLabel>Modify spec imformation</StepLabel>
           </Step>
           <Step>
             <StepLabel>Check generated spec</StepLabel>
@@ -490,6 +502,12 @@ class GameSpecBuilderContainer extends React.Component {
                   this.vars = Object.assign({}, this.initialVars);
                   this.setState(this.initialState);
                   this.setState({ items: [] });
+                  let that = this;
+                  specsRef.once('value').then(function(data) {
+                    that.setState({
+                      allSpecs: data.val()
+                    });
+                  });
                 }}
               />
             </div>
@@ -507,6 +525,10 @@ class GameSpecBuilderContainer extends React.Component {
                 />
                 <RaisedButton
                   label={stepIndex === 3 ? 'Upload' : 'Next'}
+                  disabled={
+                    stepIndex === 1 &&
+                    auth.currentUser.uid !== this.vars.selectedUid
+                  }
                   primary={true}
                   onTouchTap={this.handleNext}
                 />
@@ -519,4 +541,4 @@ class GameSpecBuilderContainer extends React.Component {
   }
 }
 
-export default GameSpecBuilderContainer;
+export default SpecTestContainer;
