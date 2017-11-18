@@ -1,9 +1,6 @@
 import React from 'react';
-//import { DragDropContextProvider } from 'react-dnd';
-//import HTML5Backend from 'react-dnd-html5-backend';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-
 import PieceList from './gamespec/PieceList';
 import Board from './gamespec/Board';
 import styles from '../styles';
@@ -45,7 +42,6 @@ const GameSpecBuilder = props => {
   ];
 
   return (
-    //<DragDropContextProvider backend={HTML5Backend}>
     <div style={flexStyle}>
       <div style={flexElement}>
         <DropDownMenu
@@ -71,7 +67,6 @@ const GameSpecBuilder = props => {
         allImages={allImages}
       />
     </div>
-    //</DragDropContextProvider>
   );
 };
 
