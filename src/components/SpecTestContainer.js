@@ -311,7 +311,7 @@ class SpecTestContainer extends React.Component {
             toggableElements={this.state.toggableElements}
             cardElements={this.state.cardElements}
             diceElements={this.state.diceElements}
-            cardsDeckElements={this.state.cardElements}
+            cardsDeckElements={this.state.cardsDeckElements}
             piecesDeckElements={this.state.piecesDeckElements}
             boardImage={this.state.allImages[this.vars.boardImage]}
             allImages={this.state.allImages}
