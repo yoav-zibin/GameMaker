@@ -75,9 +75,18 @@ class Board extends React.Component {
     let position = this.refs[
       'canvasImage' + index
     ].refs.image.getAbsolutePosition();
-    item.offset.x = position.x;
-    item.offset.y = position.y;
-    items[index] = item;
+    if (
+      position.x < 0 ||
+      position.x > this.width ||
+      position.y < 0 ||
+      position.y > this.height
+    ) {
+      items.splice(index, 1);
+    } else {
+      item.offset.x = position.x;
+      item.offset.y = position.y;
+      items[index] = item;
+    }
     this.props.setItems(items);
   };
 

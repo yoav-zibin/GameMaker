@@ -7,6 +7,7 @@ import ImageUploader from './components/ImageUploader';
 import GameSpecBuilderContainer from './components/GameSpecBuilderContainer';
 import SpecTestContainer from './components/SpecTestContainer';
 import ElementCreatorContainer from './components/ElementCreatorContainer';
+import PlaySpecContainer from './components/PlaySpecContainer';
 import Login from './components/Login';
 import RouteWhenAuthenticated from './components/RouteWhenAuthenticated';
 import NavigationMaster from './components/navigation/NavigationMaster';
@@ -60,8 +61,13 @@ class App extends Component {
                 />
                 <RouteWhenAuthenticated
                   exact
-                  path="/test"
+                  path="/update"
                   component={SpecTestContainer}
+                />
+                <RouteWhenAuthenticated
+                  exact
+                  path="/play"
+                  component={PlaySpecContainer}
                 />
                 <Route path="/login" component={Login} />
               </div>
