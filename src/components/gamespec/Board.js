@@ -22,7 +22,8 @@ const boxTarget = {
     let element = item.element;
     let eleKey = item.key;
     let currentImage = 0;
-    items.push({ element, offset, eleKey, currentImage });
+    let degree = 360;
+    items.push({ element, offset, eleKey, currentImage, degree });
     props.setItems(items);
     return { name: 'Board' };
   }
@@ -82,11 +83,15 @@ class Board extends React.Component {
       position.y > this.height
     ) {
       items.splice(index, 1);
+      this.props.setItems(items);
+      return;
     } else {
       item.offset.x = position.x;
       item.offset.y = position.y;
       items[index] = item;
     }
+    items.splice(index, 1);
+    items.push(item);
     this.props.setItems(items);
   };
 
@@ -100,6 +105,16 @@ class Board extends React.Component {
     } else if (item && item.element.elementKind === 'dice') {
       let num = Math.floor(Math.random() * item.element.images.length);
       item.currentImage = num;
+      items[index] = item;
+      this.props.setItems(items);
+    } else if (item && item.element.elementKind === 'standard') {
+      let rotateDegree = item.element.rotatableDegrees;
+      if (rotateDegree !== 360) {
+        item.degree = (rotateDegree + item.degree) % 360;
+        this.props.setItems(items);
+      }
+    } else if (item && item.element.elementKind === 'card') {
+      item.currentImage = (item.currentImage + 1) % item.element.images.length;
       items[index] = item;
       this.props.setItems(items);
     }
@@ -149,6 +164,7 @@ class Board extends React.Component {
                   }
                   x={item.offset.x}
                   y={item.offset.y}
+                  rotation={item.degree}
                   draggable={true}
                   onDragEnd={() => {
                     this.handleDragEnd(index);
