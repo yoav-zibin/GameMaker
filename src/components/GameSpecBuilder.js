@@ -37,7 +37,7 @@ const GameSpecBuilder = props => {
     specType,
     setDecks,
     getDecks,
-    handleClickShuffle
+    handleClickShuffle,
     setDeckCount,
     getDeckCount
   } = props;

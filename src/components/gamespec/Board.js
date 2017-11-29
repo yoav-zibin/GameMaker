@@ -31,7 +31,7 @@ const boxTarget = {
       let decks = props.getDecks();
       switch (props.specType) {
         case 'SpecBuilder': {
-          decks.push(element);
+          decks.push({ element, offset });
           let parentDeck = decks.length;
           items.push({
             element,
@@ -45,7 +45,7 @@ const boxTarget = {
         }
 
         case 'SpecTest': {
-          decks.push(element);
+          decks.push({ element, offset });
           let parentDeck = decks.length;
           items.push({
             element,
@@ -59,7 +59,7 @@ const boxTarget = {
         }
 
         case 'PlaySpec': {
-          decks.push(element);
+          decks.push({ element, offset });
           let parentDeck = decks.length;
           let deckCount = props.getDeckCount();
           deckCount.push(element.deckElements.length);
