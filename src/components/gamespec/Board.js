@@ -84,7 +84,7 @@ const boxTarget = {
       let parentDeck = -1;
       items.push({ element, offset, eleKey, currentImage, degree, parentDeck });
     }
-
+    
     props.setItems(items);
     return { name: 'Board' };
   }
