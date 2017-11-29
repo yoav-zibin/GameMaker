@@ -23,10 +23,12 @@ class SpecTestContainer extends React.Component {
     finished: false,
     shouldDisplayWarningSnackBar: false,
     items: [],
+    decks: [],
     specName: '',
     specNameErrorText: '',
     value: 0,
-    selectedSpecContent: ''
+    selectedSpecContent: '',
+    specType: 'SpecTest'
   };
 
   initialBoardState = {
@@ -96,7 +98,7 @@ class SpecTestContainer extends React.Component {
         });
       });
 
-    elements.once('value').then(function(data) {
+    elementsRef.once('value').then(function(data) {
       that.setState({
         allElements: data.val()
       });
@@ -173,8 +175,16 @@ class SpecTestContainer extends React.Component {
     return this.state.items;
   }
 
+  getDecks() {
+    return this.state.decks;
+  }
+
   setItems(items) {
     this.setState({ items });
+  }
+
+  setDecks(decks) {
+    this.setState({ decks });
   }
 
   setBoardSize(num) {
@@ -307,6 +317,8 @@ class SpecTestContainer extends React.Component {
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
+            setDecks={this.setDecks.bind(this)}
+            getDecks={this.getDecks.bind(this)}
             standardElements={this.state.standardElements}
             toggableElements={this.state.toggableElements}
             cardElements={this.state.cardElements}
@@ -315,8 +327,10 @@ class SpecTestContainer extends React.Component {
             piecesDeckElements={this.state.piecesDeckElements}
             boardImage={this.state.allImages[this.vars.boardImage]}
             allImages={this.state.allImages}
+            allElements={this.state.allElements}
             setValue={this.setValue.bind(this)}
             getValue={this.getValue.bind(this)}
+            specType={this.state.specType}
           />
         );
       }
@@ -384,6 +398,7 @@ class SpecTestContainer extends React.Component {
         this.setState({ specName: specContent.gameName });
         let itemList = [];
         let piecesList = specContent['pieces'];
+        let degree = 360;
         for (let i = 0; i < piecesList.length; i++) {
           let eleKey = piecesList[i]['pieceElementId'];
           let element = this.state.allElements[eleKey];
@@ -391,7 +406,7 @@ class SpecTestContainer extends React.Component {
           let y = piecesList[i]['initialState']['y'] * 512 / 100;
           let offset = { x: x, y: y };
           let currentImage = piecesList[i]['initialState']['currentImageIndex'];
-          itemList.push({ element, offset, eleKey, currentImage });
+          itemList.push({ element, offset, eleKey, degree, currentImage });
         }
         this.setItems(itemList);
       }

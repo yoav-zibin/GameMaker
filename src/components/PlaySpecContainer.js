@@ -19,10 +19,12 @@ class PlaySpecContainer extends React.Component {
     finished: false,
     shouldDisplayWarningSnackBar: false,
     items: [],
+    decks: [],
     specName: '',
     specNameErrorText: '',
     value: 0,
-    selectedSpecContent: ''
+    selectedSpecContent: '',
+    specType: 'PlaySpec'
   };
 
   initialBoardState = {
@@ -92,7 +94,7 @@ class PlaySpecContainer extends React.Component {
         });
       });
 
-    elements.once('value').then(function(data) {
+    elementsRef.once('value').then(function(data) {
       that.setState({
         allElements: data.val()
       });
@@ -169,8 +171,16 @@ class PlaySpecContainer extends React.Component {
     return this.state.items;
   }
 
+  getDecks() {
+    return this.state.decks;
+  }
+
   setItems(items) {
     this.setState({ items });
+  }
+
+  setDecks(decks) {
+    this.setState({ decks });
   }
 
   setBoardSize(num) {
@@ -303,6 +313,8 @@ class PlaySpecContainer extends React.Component {
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
+            setDecks={this.setDecks.bind(this)}
+            getDecks={this.getDecks.bind(this)}
             standardElements={this.state.standardElements}
             toggableElements={this.state.toggableElements}
             cardElements={this.state.cardElements}
@@ -311,8 +323,10 @@ class PlaySpecContainer extends React.Component {
             piecesDeckElements={this.state.piecesDeckElements}
             boardImage={this.state.allImages[this.vars.boardImage]}
             allImages={this.state.allImages}
+            allElements={this.state.allElements}
             setValue={this.setValue.bind(this)}
             getValue={this.getValue.bind(this)}
+            specType={this.state.specType}
           />
         );
       }
@@ -347,6 +361,7 @@ class PlaySpecContainer extends React.Component {
         this.setState({ specName: specContent.gameName });
         let itemList = [];
         let piecesList = specContent['pieces'];
+        let degree = 360;
         for (let i = 0; i < piecesList.length; i++) {
           let eleKey = piecesList[i]['pieceElementId'];
           let element = this.state.allElements[eleKey];
@@ -354,7 +369,37 @@ class PlaySpecContainer extends React.Component {
           let y = piecesList[i]['initialState']['y'] * 512 / 100;
           let offset = { x: x, y: y };
           let currentImage = piecesList[i]['initialState']['currentImageIndex'];
-          itemList.push({ element, offset, eleKey, currentImage });
+          let parentDeck = -1;
+          if (
+            element.elementKind === 'cardsDeck' ||
+            element.elementKind === 'piecesDeck'
+          ) {
+            let decks = this.getDecks();
+            parentDeck = decks.length;
+            for (let i = 0; i < element.deckElements.length; i++) {
+              offset = { x: x + i, y: y + i };
+              let deckElementId = element.deckElements[i].deckMemberElementId;
+              let elementPiece = this.state.allElements[deckElementId];
+              itemList.push({
+                element: elementPiece,
+                offset,
+                eleKey: deckElementId,
+                currentImage,
+                degree,
+                parentDeck
+              });
+            }
+            this.setDecks(decks);
+          } else {
+            itemList.push({
+              element,
+              offset,
+              eleKey,
+              currentImage,
+              degree,
+              parentDeck
+            });
+          }
         }
         this.setItems(itemList);
       }

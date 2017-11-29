@@ -29,7 +29,11 @@ const GameSpecBuilder = props => {
     setBoardSize,
     getItems,
     boardImage,
-    allImages
+    allImages,
+    allElements,
+    specType,
+    setDecks,
+    getDecks
   } = props;
 
   let elements = [
@@ -65,6 +69,10 @@ const GameSpecBuilder = props => {
         getItems={getItems}
         boardImage={boardImage}
         allImages={allImages}
+        allElements={allElements}
+        specType={specType}
+        setDecks={setDecks}
+        getDecks={getDecks}
       />
     </div>
   );

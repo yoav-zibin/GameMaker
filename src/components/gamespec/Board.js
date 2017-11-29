@@ -23,7 +23,68 @@ const boxTarget = {
     let eleKey = item.key;
     let currentImage = 0;
     let degree = 360;
-    items.push({ element, offset, eleKey, currentImage, degree });
+
+    if (
+      element.elementKind === 'cardsDeck' ||
+      element.elementKind === 'piecesDeck'
+    ) {
+      let decks = props.getDecks();
+      switch (props.specType) {
+        case 'SpecBuilder': {
+          decks.push(element);
+          let parentDeck = decks.length;
+          items.push({
+            element,
+            offset,
+            eleKey,
+            currentImage,
+            degree,
+            parentDeck
+          });
+          break;
+        }
+
+        case 'SpecTest': {
+          decks.push(element);
+          let parentDeck = decks.length;
+          items.push({
+            element,
+            offset,
+            eleKey,
+            currentImage,
+            degree,
+            parentDeck
+          });
+          break;
+        }
+
+        case 'PlaySpec': {
+          decks.push(element);
+          let parentDeck = decks.length;
+          for (let i = 0; i < element.deckElements.length; i++) {
+            let elementPiece = props.allElements[element.deckElements[i]];
+            items.push({
+              elementPiece,
+              offset,
+              eleKey,
+              currentImage,
+              degree,
+              parentDeck
+            });
+          }
+          break;
+        }
+
+        default: {
+          break;
+        }
+      }
+      props.setDecks(decks);
+    } else {
+      let parentDeck = -1;
+      items.push({ element, offset, eleKey, currentImage, degree, parentDeck });
+    }
+
     props.setItems(items);
     return { name: 'Board' };
   }
@@ -126,7 +187,7 @@ class Board extends React.Component {
       this.props.boardImage.width / parseInt(this.width, 10);
     this.imageHeightRatio =
       this.props.boardImage.height / parseInt(this.height, 10);
-
+    //console.log(this.props.getItems())
     return connectDropTarget(
       <div style={flexElement}>
         <Stage ref="stage" width={this.width} height={this.height}>
