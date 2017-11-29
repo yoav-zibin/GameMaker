@@ -40,6 +40,8 @@ class GameSpecBuilderContainer extends React.Component {
     diceElements: [],
     cardsDeckElements: [],
     piecesDeckElements: [],
+    currentUserElements: [],
+    recentElements: [],
     allElements: [],
     allSpecs: [],
     gameIcon50: [],
@@ -64,6 +66,8 @@ class GameSpecBuilderContainer extends React.Component {
     let images = imagesDbRef.orderByChild('isBoardImage');
     let icon = imagesDbRef.orderByChild('height');
     let elements = elementsRef.orderByChild('elementKind');
+    let userElements = elementsRef.orderByChild('uploaderUid');
+    let recentEles = elementsRef.orderByChild('createdOn');
 
     images
       .equalTo(true)
@@ -169,6 +173,21 @@ class GameSpecBuilderContainer extends React.Component {
         });
       });
 
+    userElements
+      .equalTo(auth.currentUser.uid)
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          currentUserElements: data.val()
+        });
+      });
+
+    recentEles.once('value').then(function(data) {
+      that.setState({
+        recentElements: data.val()
+      });
+    });
+
     imagesDbRef.once('value').then(function(data) {
       that.setState({
         allImages: data.val()
@@ -250,6 +269,8 @@ class GameSpecBuilderContainer extends React.Component {
       this.notify(constants.JSON_MALFORMED_ERROR + e.message);
     }
   };
+
+  handleClickShuffle = () => {};
 
   setValue(val) {
     this.setState({
@@ -347,6 +368,9 @@ class GameSpecBuilderContainer extends React.Component {
             setValue={this.setValue.bind(this)}
             getValue={this.getValue.bind(this)}
             specType={this.state.specType}
+            recentElements={this.state.recentElements}
+            currentUserElements={this.state.currentUserElements}
+            handleClickShuffle={this.handleClickShuffle.bind(this)}
           />
         );
       }

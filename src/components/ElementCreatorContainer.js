@@ -310,7 +310,7 @@ class ElementCreatorContainer extends React.Component {
       }
       case 5: {
         if (this.state.selectedImages.length !== 1) {
-          this.notify(constants.EXCEED_STANDARD_ELEMENT_LIMIT);
+          this.notify(constants.EXCEED_ELEMENT_IMAGES_LIMIT);
           return;
         }
 

@@ -42,6 +42,8 @@ class SpecTestContainer extends React.Component {
     diceElements: [],
     cardsDeckElements: [],
     piecesDeckElements: [],
+    currentUserElements: [],
+    recentElements: [],
     gameIcon50: [],
     gameIcon512: [],
     gameIcon50x50: constants.GAMEICON_50x50,
@@ -65,6 +67,8 @@ class SpecTestContainer extends React.Component {
     let that = this;
     let icon = imagesDbRef.orderByChild('height');
     let elements = elementsRef.orderByChild('elementKind');
+    let userElements = elementsRef.orderByChild('uploaderUid');
+    let recentEles = elementsRef.orderByChild('createdOn');
 
     icon
       .equalTo(50)
@@ -157,6 +161,21 @@ class SpecTestContainer extends React.Component {
           piecesDeckElements: data.val()
         });
       });
+
+    userElements
+      .equalTo(auth.currentUser.uid)
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          currentUserElements: data.val()
+        });
+      });
+
+    recentEles.once('value').then(function(data) {
+      that.setState({
+        recentElements: data.val()
+      });
+    });
 
     imagesDbRef.once('value').then(function(data) {
       that.setState({
@@ -274,6 +293,8 @@ class SpecTestContainer extends React.Component {
     });
   }
 
+  handleClickShuffle = () => {};
+
   setGameIcon50(key) {
     this.setState({
       gameIcon50x50: key
@@ -331,6 +352,9 @@ class SpecTestContainer extends React.Component {
             setValue={this.setValue.bind(this)}
             getValue={this.getValue.bind(this)}
             specType={this.state.specType}
+            recentElements={this.state.recentElements}
+            currentUserElements={this.state.currentUserElements}
+            handleClickShuffle={this.handleClickShuffle.bind(this)}
           />
         );
       }
