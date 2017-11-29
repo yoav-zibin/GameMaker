@@ -10,12 +10,14 @@ function GridListCustom(Component) {
       <div style={styles.gridListContainer}>
         <GridList cellHeight={180} style={styles.gridList}>
           <Subheader>{props.header}</Subheader>
-          {Object.keys(props.data).map((key, index) => {
-            let tile = props.data[key];
-            return (
-              <Component {...props} image={tile} key={key} keyProp={key} />
-            );
-          })}
+          {Object.keys(props.data)
+            .reverse()
+            .map((key, index) => {
+              let tile = props.data[key];
+              return (
+                <Component {...props} image={tile} key={key} keyProp={key} />
+              );
+            })}
         </GridList>
       </div>
     );

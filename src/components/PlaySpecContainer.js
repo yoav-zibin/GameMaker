@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from '../styles';
 import constants from '../constants';
-import { elementsRef, imagesDbRef, specsRef } from '../firebase';
+import { elementsRef, imagesDbRef, specsRef, auth } from '../firebase';
 import SpecList from './gamespec/SpecList';
 import GameSpecBuilder from './GameSpecBuilder';
 
@@ -39,6 +39,8 @@ class PlaySpecContainer extends React.Component {
     diceElements: [],
     cardsDeckElements: [],
     piecesDeckElements: [],
+    currentUserElements: [],
+    recentElements: [],
     gameIcon50: [],
     gameIcon512: [],
     gameIcon50x50: constants.GAMEICON_50x50,
@@ -62,6 +64,8 @@ class PlaySpecContainer extends React.Component {
     let that = this;
     let icon = imagesDbRef.orderByChild('height');
     let elements = elementsRef.orderByChild('elementKind');
+    let userElements = elementsRef.orderByChild('uploaderUid');
+    let recentEles = elementsRef.orderByChild('createdOn');
 
     icon
       .equalTo(50)
@@ -154,6 +158,21 @@ class PlaySpecContainer extends React.Component {
           piecesDeckElements: data.val()
         });
       });
+
+    userElements
+      .equalTo(auth.currentUser.uid)
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          currentUserElements: data.val()
+        });
+      });
+
+    recentEles.once('value').then(function(data) {
+      that.setState({
+        recentElements: data.val()
+      });
+    });
 
     imagesDbRef.once('value').then(function(data) {
       that.setState({
@@ -273,6 +292,67 @@ class PlaySpecContainer extends React.Component {
     });
   }
 
+  handleClickShuffle = () => {
+    let items = this.getItems();
+    let decks = this.getDecks();
+    let map = {};
+    let itemList = [];
+    for (let i = 0; i < decks.length; i++) {
+      map[i + 1] = [];
+    }
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].parentDeck === -1) {
+        itemList.push(items[i]);
+      }
+    }
+
+    for (let deck = 0; deck < decks.length; deck++) {
+      let element = decks[deck].element;
+      for (let i = 0; i < element.deckElements.length; i++) {
+        let offset = decks[deck].offset;
+        let x = offset.x + i;
+        let y = offset.y + i;
+        offset = { x, y };
+        let deckElementId = element.deckElements[i].deckMemberElementId;
+        let elementPiece = this.state.allElements[deckElementId];
+        let parentDeck = deck + 1;
+        let degree = 360;
+        let currentImage = 0;
+        map[deck + 1].push({
+          element: elementPiece,
+          offset,
+          eleKey: deckElementId,
+          currentImage,
+          degree,
+          parentDeck
+        });
+      }
+    }
+
+    for (let key in map) {
+      let value = map[key];
+      let len = value.length;
+      if (len < 1) continue;
+      while (len > 0) {
+        len--;
+        let current = Math.floor(Math.random() * (len + 1));
+        let tmp = value[current];
+        value[current] = value[len];
+        value[len] = tmp;
+      }
+      let parentDeck = value[0].parentDeck;
+      for (let i = 0; i < value.length; i++) {
+        let offset = decks[parentDeck - 1].offset;
+        let x = offset.x + i;
+        let y = offset.y + i;
+        offset = { x, y };
+        value[i].offset = offset;
+      }
+      itemList = itemList.concat(value);
+    }
+    this.setItems(itemList);
+  };
+
   handleGameIcon512(key) {
     this.setState({
       gameIcon512x512: key
@@ -338,6 +418,9 @@ class PlaySpecContainer extends React.Component {
             setValue={this.setValue.bind(this)}
             getValue={this.getValue.bind(this)}
             specType={this.state.specType}
+            recentElements={this.state.recentElements}
+            currentUserElements={this.state.currentUserElements}
+            handleClickShuffle={this.handleClickShuffle.bind(this)}
           />
         );
       }
@@ -352,6 +435,7 @@ class PlaySpecContainer extends React.Component {
     const { stepIndex } = this.state;
     if (stepIndex > 0) {
       this.setState({ stepIndex: stepIndex - 1 });
+      this.setDecks([]);
     }
   };
 
@@ -388,7 +472,7 @@ class PlaySpecContainer extends React.Component {
             let decks = this.getDecks();
             let deckCount = this.getDeckCount();
             deckCount.push(element.deckElements.length);
-            decks.push(element);
+            decks.push({ element, offset });
             parentDeck = decks.length;
             for (let i = 0; i < element.deckElements.length; i++) {
               offset = { x: x + i, y: y + i };

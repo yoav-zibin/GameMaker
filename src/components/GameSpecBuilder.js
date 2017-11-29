@@ -5,6 +5,7 @@ import PieceList from './gamespec/PieceList';
 import Board from './gamespec/Board';
 import styles from '../styles';
 import withDragDropContext from './withDragDropContext';
+import RaisedButton from 'material-ui/RaisedButton';
 
 const flexStyle = {
   width: '70%',
@@ -25,6 +26,8 @@ const GameSpecBuilder = props => {
     diceElements,
     cardsDeckElements,
     piecesDeckElements,
+    recentElements,
+    currentUserElements,
     setItems,
     setBoardSize,
     getItems,
@@ -34,11 +37,14 @@ const GameSpecBuilder = props => {
     specType,
     setDecks,
     getDecks,
+    handleClickShuffle,
     setDeckCount,
     getDeckCount
   } = props;
 
   let elements = [
+    { key: 'My Uploads', data: currentUserElements },
+    { key: 'Recent Uploads', data: recentElements },
     { key: 'standard', data: standardElements },
     { key: 'toggable', data: toggableElements },
     { key: 'card', data: cardElements },
@@ -56,12 +62,14 @@ const GameSpecBuilder = props => {
             props.setValue(newValue);
           }}
         >
-          <MenuItem value={0} primaryText="standard" />
-          <MenuItem value={1} primaryText="toggable" />
-          <MenuItem value={2} primaryText="card" />
-          <MenuItem value={3} primaryText="dice" />
-          <MenuItem value={4} primaryText="cardsDeck" />
-          <MenuItem value={5} primaryText="piecesDeck" />
+          <MenuItem value={0} primaryText="My Uploads" />
+          <MenuItem value={1} primaryText="Recent Uploads" />
+          <MenuItem value={2} primaryText="standard" />
+          <MenuItem value={3} primaryText="toggable" />
+          <MenuItem value={4} primaryText="card" />
+          <MenuItem value={5} primaryText="dice" />
+          <MenuItem value={6} primaryText="cardsDeck" />
+          <MenuItem value={7} primaryText="piecesDeck" />
         </DropDownMenu>
         <PieceList data={elements[props.getValue()].data} />
       </div>
@@ -78,6 +86,16 @@ const GameSpecBuilder = props => {
         setDeckCount={setDeckCount}
         getDeckCount={getDeckCount}
       />
+      <div>
+        <RaisedButton
+          label="shuffle"
+          disabled={specType !== 'PlaySpec'}
+          primary={true}
+          onClick={event => {
+            handleClickShuffle();
+          }}
+        />
+      </div>
     </div>
   );
 };
