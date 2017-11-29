@@ -151,7 +151,6 @@ class Board extends React.Component {
       item.element.elementKind === 'card' &&
       item.parentDeck > 0
     ) {
-      console.log('start');
       let deckIndex = item.parentDeck;
       let deckCount = this.props.getDeckCount();
       let count = 1;
@@ -160,7 +159,7 @@ class Board extends React.Component {
           count++;
         }
       }
-      if (count === deckCount[deckIndex - 1]) {
+      if (count >= deckCount[deckIndex - 1]) {
         deckCount[deckIndex - 1]--;
         this.props.setDeckCount(deckCount);
         if (
