@@ -23,7 +23,75 @@ const boxTarget = {
     let eleKey = item.key;
     let currentImage = 0;
     let degree = 360;
-    items.push({ element, offset, eleKey, currentImage, degree });
+
+    if (
+      element.elementKind === 'cardsDeck' ||
+      element.elementKind === 'piecesDeck'
+    ) {
+      let decks = props.getDecks();
+      switch (props.specType) {
+        case 'SpecBuilder': {
+          decks.push(element);
+          let parentDeck = decks.length;
+          items.push({
+            element,
+            offset,
+            eleKey,
+            currentImage,
+            degree,
+            parentDeck
+          });
+          break;
+        }
+
+        case 'SpecTest': {
+          decks.push(element);
+          let parentDeck = decks.length;
+          items.push({
+            element,
+            offset,
+            eleKey,
+            currentImage,
+            degree,
+            parentDeck
+          });
+          break;
+        }
+
+        case 'PlaySpec': {
+          decks.push(element);
+          let parentDeck = decks.length;
+          let deckCount = props.getDeckCount();
+          deckCount.push(element.deckElements.length);
+          for (let i = 0; i < element.deckElements.length; i++) {
+            let elementPiece =
+              props.allElements[element.deckElements[i].deckMemberElementId];
+            let x = offset.x;
+            let y = offset.y;
+            let newOffset = { x: x + i, y: y + i };
+            items.push({
+              element: elementPiece,
+              offset: newOffset,
+              eleKey,
+              currentImage,
+              degree,
+              parentDeck
+            });
+          }
+          props.setDeckCount(deckCount);
+          break;
+        }
+
+        default: {
+          break;
+        }
+      }
+      props.setDecks(decks);
+    } else {
+      let parentDeck = -1;
+      items.push({ element, offset, eleKey, currentImage, degree, parentDeck });
+    }
+
     props.setItems(items);
     return { name: 'Board' };
   }
@@ -73,26 +141,62 @@ class Board extends React.Component {
   handleDragEnd = index => {
     let items = this.props.getItems();
     let item = items[index];
+
     let position = this.refs[
       'canvasImage' + index
     ].refs.image.getAbsolutePosition();
+
     if (
-      position.x < 0 ||
-      position.x > this.width ||
-      position.y < 0 ||
-      position.y > this.height
+      this.props.specType === 'PlaySpec' &&
+      item.element.elementKind === 'card' &&
+      item.parentDeck > 0
     ) {
-      items.splice(index, 1);
+      let deckIndex = item.parentDeck;
+      let deckCount = this.props.getDeckCount();
+      let count = 1;
+      for (let i = 0; i < index; i++) {
+        if (items[i].parentDeck === deckIndex) {
+          count++;
+        }
+      }
+      if (count >= deckCount[deckIndex - 1]) {
+        deckCount[deckIndex - 1]--;
+        this.props.setDeckCount(deckCount);
+        if (
+          position.x < 0 ||
+          position.x > this.width ||
+          position.y < 0 ||
+          position.y > this.height
+        ) {
+          items.splice(index, 1);
+          this.props.setItems(items);
+          return;
+        } else {
+          item.offset.x = position.x;
+          item.offset.y = position.y;
+          items[index] = item;
+        }
+      }
       this.props.setItems(items);
-      return;
     } else {
-      item.offset.x = position.x;
-      item.offset.y = position.y;
-      items[index] = item;
+      if (
+        position.x < 0 ||
+        position.x > this.width ||
+        position.y < 0 ||
+        position.y > this.height
+      ) {
+        items.splice(index, 1);
+        this.props.setItems(items);
+        return;
+      } else {
+        item.offset.x = position.x;
+        item.offset.y = position.y;
+        items[index] = item;
+      }
+      items.splice(index, 1);
+      items.push(item);
+      this.props.setItems(items);
     }
-    items.splice(index, 1);
-    items.push(item);
-    this.props.setItems(items);
   };
 
   handleClickOn = index => {
@@ -126,7 +230,7 @@ class Board extends React.Component {
       this.props.boardImage.width / parseInt(this.width, 10);
     this.imageHeightRatio =
       this.props.boardImage.height / parseInt(this.height, 10);
-
+    //console.log(this.props.getItems())
     return connectDropTarget(
       <div style={flexElement}>
         <Stage ref="stage" width={this.width} height={this.height}>

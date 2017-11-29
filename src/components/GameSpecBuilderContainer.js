@@ -23,9 +23,12 @@ class GameSpecBuilderContainer extends React.Component {
     finished: false,
     shouldDisplayWarningSnackBar: false,
     items: [],
+    decks: [],
+    deckCount: [],
     specName: '',
     specNameErrorText: '',
-    value: 0
+    value: 0,
+    specType: 'SpecBuilder'
   };
 
   initialBoardState = {
@@ -38,6 +41,7 @@ class GameSpecBuilderContainer extends React.Component {
     diceElements: [],
     cardsDeckElements: [],
     piecesDeckElements: [],
+    allElements: [],
     allSpecs: [],
     gameIcon50: [],
     gameIcon512: [],
@@ -171,11 +175,12 @@ class GameSpecBuilderContainer extends React.Component {
         allImages: data.val()
       });
     });
-    /*elementsRef.once('value').then(function(data) {
+
+    elementsRef.once('value').then(function(data) {
       that.setState({
-        playElements: data.val()
+        allElements: data.val()
       });
-    });*/
+    });
 
     specsRef.once('value').then(function(data) {
       that.setState({
@@ -188,8 +193,24 @@ class GameSpecBuilderContainer extends React.Component {
     return this.state.items;
   }
 
+  getDecks() {
+    return this.state.decks;
+  }
+
+  getDeckCount() {
+    return this.state.deckCount;
+  }
+
+  setDeckCount(deckCount) {
+    this.setState({ deckCount });
+  }
+
   setItems(items) {
     this.setState({ items });
+  }
+
+  setDecks(decks) {
+    this.setState({ decks });
   }
 
   setBoardSize(num) {
@@ -321,6 +342,10 @@ class GameSpecBuilderContainer extends React.Component {
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
+            setDecks={this.setDecks.bind(this)}
+            getDecks={this.getDecks.bind(this)}
+            setDeckCount={this.setDeckCount.bind(this)}
+            getDeckCount={this.getDeckCount.bind(this)}
             standardElements={this.state.standardElements}
             toggableElements={this.state.toggableElements}
             cardElements={this.state.cardElements}
@@ -329,8 +354,10 @@ class GameSpecBuilderContainer extends React.Component {
             piecesDeckElements={this.state.piecesDeckElements}
             boardImage={this.state.boardImages[this.state.selectedBoard]}
             allImages={this.state.allImages}
+            allElements={this.state.allElements}
             setValue={this.setValue.bind(this)}
             getValue={this.getValue.bind(this)}
+            specType={this.state.specType}
           />
         );
       }

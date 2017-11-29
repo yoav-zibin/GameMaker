@@ -14,12 +14,6 @@ const SpecViewer = props => {
 
   props.items.forEach((item, index) => {
     let deckIndex = -1;
-    if (
-      item.element.elementKind === 'card' ||
-      item.element.elementKind.endsWith('Deck')
-    ) {
-      deckIndex = 1;
-    }
     let piece = {
       deckPieceIndex: deckIndex,
       initialState: {
