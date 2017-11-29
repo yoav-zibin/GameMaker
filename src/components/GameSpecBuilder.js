@@ -38,6 +38,8 @@ const GameSpecBuilder = props => {
     setDecks,
     getDecks,
     handleClickShuffle
+    setDeckCount,
+    getDeckCount
   } = props;
 
   let elements = [
@@ -81,6 +83,8 @@ const GameSpecBuilder = props => {
         specType={specType}
         setDecks={setDecks}
         getDecks={getDecks}
+        setDeckCount={setDeckCount}
+        getDeckCount={getDeckCount}
       />
       <div>
         <RaisedButton
