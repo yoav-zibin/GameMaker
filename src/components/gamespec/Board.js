@@ -61,17 +61,24 @@ const boxTarget = {
         case 'PlaySpec': {
           decks.push(element);
           let parentDeck = decks.length;
+          let deckCount = props.getDeckCount();
+          deckCount.push(element.deckElements.length);
           for (let i = 0; i < element.deckElements.length; i++) {
-            let elementPiece = props.allElements[element.deckElements[i]];
+            let elementPiece =
+              props.allElements[element.deckElements[i].deckMemberElementId];
+            let x = offset.x;
+            let y = offset.y;
+            let newOffset = { x: x + i, y: y + i };
             items.push({
-              elementPiece,
-              offset,
+              element: elementPiece,
+              offset: newOffset,
               eleKey,
               currentImage,
               degree,
               parentDeck
             });
           }
+          props.setDeckCount(deckCount);
           break;
         }
 
@@ -84,7 +91,7 @@ const boxTarget = {
       let parentDeck = -1;
       items.push({ element, offset, eleKey, currentImage, degree, parentDeck });
     }
-    
+
     props.setItems(items);
     return { name: 'Board' };
   }
