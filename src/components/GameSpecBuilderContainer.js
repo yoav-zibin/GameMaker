@@ -24,6 +24,7 @@ class GameSpecBuilderContainer extends React.Component {
     shouldDisplayWarningSnackBar: false,
     items: [],
     decks: [],
+    deckCount: [],
     specName: '',
     specNameErrorText: '',
     value: 0,
@@ -196,6 +197,14 @@ class GameSpecBuilderContainer extends React.Component {
     return this.state.decks;
   }
 
+  getDeckCount() {
+    return this.state.deckCount;
+  }
+
+  setDeckCount(deckCount) {
+    this.setState({ deckCount });
+  }
+
   setItems(items) {
     this.setState({ items });
   }
@@ -335,6 +344,8 @@ class GameSpecBuilderContainer extends React.Component {
             getItems={this.getItems.bind(this)}
             setDecks={this.setDecks.bind(this)}
             getDecks={this.getDecks.bind(this)}
+            setDeckCount={this.setDeckCount.bind(this)}
+            getDeckCount={this.getDeckCount.bind(this)}
             standardElements={this.state.standardElements}
             toggableElements={this.state.toggableElements}
             cardElements={this.state.cardElements}

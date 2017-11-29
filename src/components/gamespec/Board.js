@@ -134,26 +134,63 @@ class Board extends React.Component {
   handleDragEnd = index => {
     let items = this.props.getItems();
     let item = items[index];
+
     let position = this.refs[
       'canvasImage' + index
     ].refs.image.getAbsolutePosition();
+
     if (
-      position.x < 0 ||
-      position.x > this.width ||
-      position.y < 0 ||
-      position.y > this.height
+      this.props.specType === 'PlaySpec' &&
+      item.element.elementKind === 'card' &&
+      item.parentDeck > 0
     ) {
-      items.splice(index, 1);
+      console.log('start');
+      let deckIndex = item.parentDeck;
+      let deckCount = this.props.getDeckCount();
+      let count = 1;
+      for (let i = 0; i < index; i++) {
+        if (items[i].parentDeck === deckIndex) {
+          count++;
+        }
+      }
+      if (count === deckCount[deckIndex - 1]) {
+        deckCount[deckIndex - 1]--;
+        this.props.setDeckCount(deckCount);
+        if (
+          position.x < 0 ||
+          position.x > this.width ||
+          position.y < 0 ||
+          position.y > this.height
+        ) {
+          items.splice(index, 1);
+          this.props.setItems(items);
+          return;
+        } else {
+          item.offset.x = position.x;
+          item.offset.y = position.y;
+          items[index] = item;
+        }
+      }
       this.props.setItems(items);
-      return;
     } else {
-      item.offset.x = position.x;
-      item.offset.y = position.y;
-      items[index] = item;
+      if (
+        position.x < 0 ||
+        position.x > this.width ||
+        position.y < 0 ||
+        position.y > this.height
+      ) {
+        items.splice(index, 1);
+        this.props.setItems(items);
+        return;
+      } else {
+        item.offset.x = position.x;
+        item.offset.y = position.y;
+        items[index] = item;
+      }
+      items.splice(index, 1);
+      items.push(item);
+      this.props.setItems(items);
     }
-    items.splice(index, 1);
-    items.push(item);
-    this.props.setItems(items);
   };
 
   handleClickOn = index => {
