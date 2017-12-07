@@ -29,67 +29,52 @@ const boxTarget = {
       element.elementKind === 'piecesDeck'
     ) {
       let decks = props.getDecks();
-      switch (props.specType) {
-        case 'SpecBuilder': {
-          decks.push({ element, offset });
-          let parentDeck = decks.length;
-          items.push({
-            element,
-            offset,
-            eleKey,
-            currentImage,
-            degree,
-            parentDeck
-          });
-          break;
-        }
-
-        case 'SpecTest': {
-          decks.push({ element, offset });
-          let parentDeck = decks.length;
-          items.push({
-            element,
-            offset,
-            eleKey,
-            currentImage,
-            degree,
-            parentDeck
-          });
-          break;
-        }
-
-        case 'PlaySpec': {
-          decks.push({ element, offset });
-          let parentDeck = decks.length;
-          let deckCount = props.getDeckCount();
-          deckCount.push(element.deckElements.length);
-          for (let i = 0; i < element.deckElements.length; i++) {
-            let elementPiece =
-              props.allElements[element.deckElements[i].deckMemberElementId];
-            let x = offset.x;
-            let y = offset.y;
-            let newOffset = { x: x + i, y: y + i };
-            items.push({
-              element: elementPiece,
-              offset: newOffset,
-              eleKey,
-              currentImage,
-              degree,
-              parentDeck
-            });
-          }
-          props.setDeckCount(deckCount);
-          break;
-        }
-
-        default: {
-          break;
-        }
+      decks.push({ element, offset });
+      let parentDeck = decks.length;
+      let deckCount = props.getDeckCount();
+      deckCount.push(element.deckElements.length);
+      let deckIndex = -1;
+      items.push({
+        element,
+        offset,
+        eleKey,
+        currentImage,
+        degree,
+        parentDeck,
+        deckIndex
+      });
+      deckIndex = items.length - 1;
+      for (let i = 0; i < element.deckElements.length; i++) {
+        let elementPiece =
+          props.allElements[element.deckElements[i].deckMemberElementId];
+        let x = offset.x;
+        let y = offset.y;
+        let newOffset = { x: x + i, y: y + i };
+        items.push({
+          element: elementPiece,
+          offset: newOffset,
+          eleKey: element.deckElements[i].deckMemberElementId,
+          currentImage,
+          degree,
+          parentDeck,
+          deckIndex
+        });
       }
+      props.setDeckCount(deckCount);
+
       props.setDecks(decks);
     } else {
       let parentDeck = -1;
-      items.push({ element, offset, eleKey, currentImage, degree, parentDeck });
+      let deckIndex = -1;
+      items.push({
+        element,
+        offset,
+        eleKey,
+        currentImage,
+        degree,
+        parentDeck,
+        deckIndex
+      });
     }
 
     props.setItems(items);
@@ -148,7 +133,6 @@ class Board extends React.Component {
     ].refs.image.getAbsolutePosition();
 
     if (
-      this.props.specType === 'PlaySpec' &&
       item.element.elementKind === 'card' &&
       item.parentDeck > 0 &&
       decks[item.parentDeck - 1].element.elementKind === 'cardsDeck'

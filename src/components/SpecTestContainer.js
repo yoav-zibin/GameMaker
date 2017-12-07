@@ -441,7 +441,15 @@ class SpecTestContainer extends React.Component {
           let y = piecesList[i]['initialState']['y'] * 512 / 100;
           let offset = { x: x, y: y };
           let currentImage = piecesList[i]['initialState']['currentImageIndex'];
-          itemList.push({ element, offset, eleKey, degree, currentImage });
+          let deckIndex = piecesList[i]['deckPieceIndex'];
+          itemList.push({
+            element,
+            offset,
+            eleKey,
+            degree,
+            currentImage,
+            deckIndex
+          });
         }
         this.setItems(itemList);
       }

@@ -465,6 +465,7 @@ class PlaySpecContainer extends React.Component {
           let offset = { x: x, y: y };
           let currentImage = piecesList[i]['initialState']['currentImageIndex'];
           let parentDeck = -1;
+          let deckIndex = piecesList[i]['deckPieceIndex'];
           if (
             element.elementKind === 'cardsDeck' ||
             element.elementKind === 'piecesDeck'
@@ -474,19 +475,16 @@ class PlaySpecContainer extends React.Component {
             deckCount.push(element.deckElements.length);
             decks.push({ element, offset });
             parentDeck = decks.length;
-            for (let i = 0; i < element.deckElements.length; i++) {
-              offset = { x: x + i, y: y + i };
-              let deckElementId = element.deckElements[i].deckMemberElementId;
-              let elementPiece = this.state.allElements[deckElementId];
-              itemList.push({
-                element: elementPiece,
-                offset,
-                eleKey: deckElementId,
-                currentImage,
-                degree,
-                parentDeck
-              });
-            }
+            itemList.push({
+              element,
+              offset,
+              eleKey,
+              currentImage,
+              degree,
+              parentDeck,
+              deckIndex
+            });
+
             this.setDeckCount(deckCount);
             this.setDecks(decks);
           } else {
@@ -496,7 +494,8 @@ class PlaySpecContainer extends React.Component {
               eleKey,
               currentImage,
               degree,
-              parentDeck
+              parentDeck,
+              deckIndex
             });
           }
         }

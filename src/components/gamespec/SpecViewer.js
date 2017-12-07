@@ -13,9 +13,8 @@ const SpecViewer = props => {
   let pieces = [];
 
   props.items.forEach((item, index) => {
-    let deckIndex = -1;
     let piece = {
-      deckPieceIndex: deckIndex,
+      deckPieceIndex: item.deckIndex,
       initialState: {
         currentImageIndex: item.currentImage,
         x: Math.round(item.offset.x / props.boardSize * 10000) / 100,
