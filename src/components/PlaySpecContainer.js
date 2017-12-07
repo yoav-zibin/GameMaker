@@ -343,9 +343,9 @@ class PlaySpecContainer extends React.Component {
       }
       let parentDeck = value[0].deckIndex;
       for (let i = 0; i < value.length; i++) {
-        let offset = decks[parentDeck].offset;
-        let x = offset.x + i;
-        let y = offset.y + i;
+        let offset = decks[parentDeck].cardOffsets[i];
+        let x = offset.x;
+        let y = offset.y;
         offset = { x, y };
         value[i].offset = offset;
       }
@@ -473,7 +473,9 @@ class PlaySpecContainer extends React.Component {
             element.elementKind === 'cardsDeck' ||
             element.elementKind === 'piecesDeck'
           ) {
+            let decks = this.getDecks();
             deckCount.push(element.deckElements.length);
+            decks.push({ eleKey, element, offset, cardOffsets: [] });
             itemList.push({
               element,
               offset,
@@ -484,6 +486,24 @@ class PlaySpecContainer extends React.Component {
               deckIndex
             });
           } else {
+            if (
+              element.elementKind === 'card' &&
+              piecesList[i]['deckPieceIndex'] !== -1
+            ) {
+              let decks = this.getDecks();
+              for (let j = 0; j < decks.length; j++) {
+                if (
+                  piecesList[piecesList[i]['deckPieceIndex']].pieceElementId ===
+                  decks[j].eleKey
+                ) {
+                  let x = offset.x;
+                  let y = offset.y;
+                  let cardOffset = { x, y };
+                  decks[j].cardOffsets.push(cardOffset);
+                }
+              }
+              this.setDecks(decks);
+            }
             deckCount.push(0);
             itemList.push({
               element,
