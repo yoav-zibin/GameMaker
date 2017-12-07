@@ -100,7 +100,7 @@ class GameSpecBuilderContainer extends React.Component {
           }
         }
         that.setState({
-          gameIcon50: height50
+          gameIcon50: icon50
         });
       });
 
@@ -116,7 +116,7 @@ class GameSpecBuilderContainer extends React.Component {
           }
         }
         that.setState({
-          gameIcon512: height512
+          gameIcon512: icon512
         });
       });
 
@@ -360,6 +360,7 @@ class GameSpecBuilderContainer extends React.Component {
       case 1: {
         return (
           <GameSpecBuilder
+            notify={this.notify.bind(this)}
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
