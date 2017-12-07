@@ -141,6 +141,7 @@ class Board extends React.Component {
   handleDragEnd = index => {
     let items = this.props.getItems();
     let item = items[index];
+    let decks = this.props.getDecks();
 
     let position = this.refs[
       'canvasImage' + index
@@ -149,7 +150,8 @@ class Board extends React.Component {
     if (
       this.props.specType === 'PlaySpec' &&
       item.element.elementKind === 'card' &&
-      item.parentDeck > 0
+      item.parentDeck > 0 &&
+      decks[item.parentDeck - 1].element.elementKind === 'cardsDeck'
     ) {
       let deckIndex = item.parentDeck;
       let deckCount = this.props.getDeckCount();
