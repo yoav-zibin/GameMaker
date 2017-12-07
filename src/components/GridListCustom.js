@@ -25,8 +25,7 @@ function GridListCustom(Component) {
     } else {
       return (
         <div style={styles.gridListContainer}>
-          {' '}
-          You didn't upload any element yet!{' '}
+          You didn't upload any element yet!
         </div>
       );
     }
