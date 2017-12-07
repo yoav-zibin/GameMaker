@@ -301,7 +301,7 @@ class PlaySpecContainer extends React.Component {
       map[i + 1] = [];
     }
     for (let i = 0; i < items.length; i++) {
-      if (items[i].parentDeck === -1) {
+      if (items[i].deckIndex === -1) {
         itemList.push(items[i]);
       }
     }
@@ -324,7 +324,8 @@ class PlaySpecContainer extends React.Component {
           eleKey: deckElementId,
           currentImage,
           degree,
-          parentDeck
+          parentDeck,
+          deckIndex: deck
         });
       }
     }
@@ -340,9 +341,9 @@ class PlaySpecContainer extends React.Component {
         value[current] = value[len];
         value[len] = tmp;
       }
-      let parentDeck = value[0].parentDeck;
+      let parentDeck = value[0].deckIndex;
       for (let i = 0; i < value.length; i++) {
-        let offset = decks[parentDeck - 1].offset;
+        let offset = decks[parentDeck].offset;
         let x = offset.x + i;
         let y = offset.y + i;
         offset = { x, y };
