@@ -360,6 +360,7 @@ class GameSpecBuilderContainer extends React.Component {
       case 1: {
         return (
           <GameSpecBuilder
+            notify={this.notify.bind(this)}
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}

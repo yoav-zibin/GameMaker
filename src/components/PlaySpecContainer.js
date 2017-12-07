@@ -400,6 +400,7 @@ class PlaySpecContainer extends React.Component {
       case 1: {
         return (
           <GameSpecBuilder
+            notify={this.notify.bind(this)}
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
@@ -458,6 +459,7 @@ class PlaySpecContainer extends React.Component {
         let itemList = [];
         let piecesList = specContent['pieces'];
         let degree = 360;
+        let deckCount = this.getDeckCount();
         for (let i = 0; i < piecesList.length; i++) {
           let eleKey = piecesList[i]['pieceElementId'];
           let element = this.state.allElements[eleKey];
@@ -471,11 +473,7 @@ class PlaySpecContainer extends React.Component {
             element.elementKind === 'cardsDeck' ||
             element.elementKind === 'piecesDeck'
           ) {
-            let decks = this.getDecks();
-            let deckCount = this.getDeckCount();
             deckCount.push(element.deckElements.length);
-            decks.push({ element, offset });
-            parentDeck = decks.length;
             itemList.push({
               element,
               offset,
@@ -485,10 +483,8 @@ class PlaySpecContainer extends React.Component {
               parentDeck,
               deckIndex
             });
-
-            this.setDeckCount(deckCount);
-            this.setDecks(decks);
           } else {
+            deckCount.push(0);
             itemList.push({
               element,
               offset,
@@ -501,6 +497,7 @@ class PlaySpecContainer extends React.Component {
           }
         }
         this.setItems(itemList);
+        this.setDeckCount(deckCount);
       }
       this.updateStepIndex(stepIndex);
     } else {

@@ -344,6 +344,7 @@ class SpecTestContainer extends React.Component {
       case 1: {
         return (
           <GameSpecBuilder
+            notify={this.notify.bind(this)}
             setBoardSize={this.setBoardSize.bind(this)}
             setItems={this.setItems.bind(this)}
             getItems={this.getItems.bind(this)}
@@ -434,6 +435,7 @@ class SpecTestContainer extends React.Component {
         let itemList = [];
         let piecesList = specContent['pieces'];
         let degree = 360;
+        let deckCount = this.getDeckCount();
         for (let i = 0; i < piecesList.length; i++) {
           let eleKey = piecesList[i]['pieceElementId'];
           let element = this.state.allElements[eleKey];
@@ -442,6 +444,15 @@ class SpecTestContainer extends React.Component {
           let offset = { x: x, y: y };
           let currentImage = piecesList[i]['initialState']['currentImageIndex'];
           let deckIndex = piecesList[i]['deckPieceIndex'];
+
+          if (
+            element.elementKind === 'cardsDeck' ||
+            element.elementKind === 'piecesDeck'
+          ) {
+            deckCount.push(element.deckElements.length);
+          } else {
+            deckCount.push(0);
+          }
           itemList.push({
             element,
             offset,
@@ -451,6 +462,7 @@ class SpecTestContainer extends React.Component {
             deckIndex
           });
         }
+        this.setDeckCount(deckCount);
         this.setItems(itemList);
       }
       if (auth.currentUser.uid !== this.vars.selectedUid) {
