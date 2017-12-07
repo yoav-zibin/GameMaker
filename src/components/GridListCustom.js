@@ -23,7 +23,12 @@ function GridListCustom(Component) {
         </div>
       );
     } else {
-      return <div style={styles.gridListContainer}> </div>;
+      return (
+        <div style={styles.gridListContainer}>
+          {' '}
+          You didn't upload any element yet!{' '}
+        </div>
+      );
     }
   };
 }
