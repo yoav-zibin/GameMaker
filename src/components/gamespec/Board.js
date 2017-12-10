@@ -120,7 +120,6 @@ class Board extends React.Component {
   handleDragEnd = index => {
     let items = this.props.getItems();
     let item = items[index];
-    let decks = this.props.getDecks();
 
     let position = this.refs[
       'canvasImage' + index

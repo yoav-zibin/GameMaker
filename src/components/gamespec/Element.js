@@ -54,13 +54,13 @@ class Element extends React.Component {
     else return data;
   }
 
-  renderCardChip(data) {
+  renderCardChip(data, index) {
     let card = this.props.getCardElements()[data];
-    let index = card['images'][0]['imageId'];
-    let image = this.props.images[index];
+    let imageId = card['images'][0]['imageId'];
+    let image = this.props.images[imageId];
     return (
       <Chip
-        key={data}
+        key={index}
         onRequestDelete={() => this.handleRequestDeleteCard(data)}
       >
         <Avatar src={image.downloadURL} />
