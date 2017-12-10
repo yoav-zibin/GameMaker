@@ -68,7 +68,6 @@ class SpecTestContainer extends React.Component {
     let that = this;
     let icon = imagesDbRef.orderByChild('height');
     let elements = elementsRef.orderByChild('elementKind');
-    let userElements = elementsRef.orderByChild('uploaderUid');
     let recentEles = elementsRef.orderByChild('createdOn');
 
     icon
@@ -160,15 +159,6 @@ class SpecTestContainer extends React.Component {
       .then(function(data) {
         that.setState({
           piecesDeckElements: data.val()
-        });
-      });
-
-    userElements
-      .equalTo(auth.currentUser.uid)
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          currentUserElements: data.val()
         });
       });
 
@@ -468,6 +458,16 @@ class SpecTestContainer extends React.Component {
       if (auth.currentUser.uid !== this.vars.selectedUid) {
         this.notify(constants.SPEC_UPLOAD_SAME_UID);
       }
+      let that = this;
+      let userElements = elementsRef.orderByChild('uploaderUid');
+      userElements
+        .equalTo(auth.currentUser.uid)
+        .once('value')
+        .then(function(data) {
+          that.setState({
+            currentUserElements: data.val()
+          });
+        });
       this.updateStepIndex(stepIndex);
     } else if (stepIndex === 1) {
       this.updateStepIndex(stepIndex);

@@ -407,6 +407,7 @@ class ElementCreatorContainer extends React.Component {
                   this.setState({ images: imgs });
                   this.setState({ cardElements: eles });
                   this.setState({ selectedImages: [] });
+                  this.setState({ selectedElements: [] });
                 }}
               />
             </div>
