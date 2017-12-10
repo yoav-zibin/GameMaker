@@ -67,7 +67,6 @@ class GameSpecBuilderContainer extends React.Component {
     let images = imagesDbRef.orderByChild('isBoardImage');
     let icon = imagesDbRef.orderByChild('height');
     let elements = elementsRef.orderByChild('elementKind');
-    let userElements = elementsRef.orderByChild('uploaderUid');
     let recentEles = elementsRef.orderByChild('createdOn');
 
     images
@@ -171,15 +170,6 @@ class GameSpecBuilderContainer extends React.Component {
       .then(function(data) {
         that.setState({
           piecesDeckElements: data.val()
-        });
-      });
-
-    userElements
-      .equalTo(auth.currentUser.uid)
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          currentUserElements: data.val()
         });
       });
 
@@ -440,6 +430,16 @@ class GameSpecBuilderContainer extends React.Component {
         this.notify(constants.NO_BOARD_SELECTED_ERROR);
         return;
       }
+      let that = this;
+      let userElements = elementsRef.orderByChild('uploaderUid');
+      userElements
+        .equalTo(auth.currentUser.uid)
+        .once('value')
+        .then(function(data) {
+          that.setState({
+            currentUserElements: data.val()
+          });
+        });
       this.updateStepIndex(stepIndex);
     } else if (stepIndex === 2) {
       if (

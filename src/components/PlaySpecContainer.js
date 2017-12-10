@@ -64,7 +64,6 @@ class PlaySpecContainer extends React.Component {
     let that = this;
     let icon = imagesDbRef.orderByChild('height');
     let elements = elementsRef.orderByChild('elementKind');
-    let userElements = elementsRef.orderByChild('uploaderUid');
     let recentEles = elementsRef.orderByChild('createdOn');
 
     icon
@@ -156,15 +155,6 @@ class PlaySpecContainer extends React.Component {
       .then(function(data) {
         that.setState({
           piecesDeckElements: data.val()
-        });
-      });
-
-    userElements
-      .equalTo(auth.currentUser.uid)
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          currentUserElements: data.val()
         });
       });
 
@@ -519,6 +509,16 @@ class PlaySpecContainer extends React.Component {
         this.setItems(itemList);
         this.setDeckCount(deckCount);
       }
+      let that = this;
+      let userElements = elementsRef.orderByChild('uploaderUid');
+      userElements
+        .equalTo(auth.currentUser.uid)
+        .once('value')
+        .then(function(data) {
+          that.setState({
+            currentUserElements: data.val()
+          });
+        });
       this.updateStepIndex(stepIndex);
     } else {
       this.updateStepIndex(stepIndex);

@@ -128,10 +128,8 @@ class ElementCreatorContainer extends React.Component {
 
   handleElementGridTileClickBoard(key) {
     let selectedEle = this.getSelectedElements();
-    if (selectedEle.indexOf(key) === -1) {
-      selectedEle.push(key);
-      this.setSelectedElements(selectedEle);
-    }
+    selectedEle.push(key);
+    this.setSelectedElements(selectedEle);
   }
 
   handleElementCreatorChange = (element, e, newValue) => {
@@ -407,6 +405,7 @@ class ElementCreatorContainer extends React.Component {
                   this.setState({ images: imgs });
                   this.setState({ cardElements: eles });
                   this.setState({ selectedImages: [] });
+                  this.setState({ selectedElements: [] });
                 }}
               />
             </div>
