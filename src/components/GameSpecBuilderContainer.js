@@ -99,7 +99,7 @@ class GameSpecBuilderContainer extends React.Component {
           }
         }
         that.setState({
-          gameIcon50: icon50
+          gameIcon50: height50
         });
       });
 
@@ -115,7 +115,7 @@ class GameSpecBuilderContainer extends React.Component {
           }
         }
         that.setState({
-          gameIcon512: icon512
+          gameIcon512: height512
         });
       });
 

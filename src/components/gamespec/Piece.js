@@ -53,7 +53,7 @@ class Piece extends Component {
     return connectDragSource(
       <div key={keyProp} style={{ opacity, height }}>
         <GridTile style={styles.hoverCursorPointer} title={image.name}>
-          <img src={this.state.imageURL} alt={image.id} />
+          <img alt={image.id} />
         </GridTile>
       </div>
     );

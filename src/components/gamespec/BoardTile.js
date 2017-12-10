@@ -18,7 +18,7 @@ const BoardTile = props => {
         handleGridTileClick(keyProp, image);
       }}
     >
-      <img src={image.downloadURL} alt={image.id} />
+      <img alt={image.id} />
     </GridTile>
   );
 };
