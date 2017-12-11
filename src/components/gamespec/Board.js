@@ -150,8 +150,13 @@ class Board extends React.Component {
           position.x > 0 &&
           position.x < this.width &&
           position.y > 0 &&
-          position.y < this.height
+          position.y < this.height &&
+          this.props.specType !== 'playSpec'
         ) {
+          item.offset.x = position.x;
+          item.offset.y = position.y;
+          items[index] = item;
+        } else {
           item.offset.x = position.x;
           item.offset.y = position.y;
           items[index] = item;
@@ -164,7 +169,28 @@ class Board extends React.Component {
         position.y < 0 ||
         position.y > this.height
       ) {
-        items.splice(index, 1);
+        if (
+          items[index].element.elementKind === 'pieceDeck' ||
+          items[index].element.elementKind === 'cardsDeck'
+        ) {
+          let indexArray = [];
+          indexArray.push(index);
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].deckIndex === index) {
+              indexArray.push(index);
+            }
+          }
+
+          indexArray.sort(function(a, b) {
+            return a - b;
+          });
+
+          for (let j = indexArray.length - 1; j >= 0; j--) {
+            this.handleDelete(indexArray[j]);
+          }
+        } else {
+          this.handleDelete(index);
+        }
       } else {
         item.offset.x = position.x;
         item.offset.y = position.y;
@@ -175,6 +201,18 @@ class Board extends React.Component {
     }
     this.props.setItems(items);
   };
+
+  handleDelete(index) {
+    let items = this.props.getItems();
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].deckIndex > index) {
+        items[i].deckIndex--;
+      }
+    }
+    items.splice(index, 1);
+    this.props.setItems(items);
+  }
 
   handleClickOn = index => {
     let items = this.props.getItems();
