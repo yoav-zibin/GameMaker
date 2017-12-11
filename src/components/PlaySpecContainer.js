@@ -9,6 +9,7 @@ import GameSpecBuilder from './GameSpecBuilder';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
@@ -32,6 +33,7 @@ class PlaySpecContainer extends React.Component {
     otherImages: [],
     allImages: [],
     allSpecs: [],
+    searchedSpec: [],
     allElements: [],
     standardElements: [],
     toggableElements: [],
@@ -175,6 +177,12 @@ class PlaySpecContainer extends React.Component {
         allSpecs: data.val()
       });
     });
+
+    specsRef.once('value').then(function(data) {
+      that.setState({
+        searchedSpec: data.val()
+      });
+    });
   }
 
   getItems() {
@@ -276,6 +284,16 @@ class PlaySpecContainer extends React.Component {
     });
   }
 
+  handleNameChange = (e, value) => {
+    let specs = this.state.allSpecs;
+    let result = {};
+    for (let specKey in specs) {
+      if (specs[specKey].gameName.toLowerCase().indexOf(value) !== -1)
+        result[specKey] = specs[specKey];
+    }
+    this.setState({ searchedSpec: result });
+  };
+
   handleGameIcon50(key) {
     this.setState({
       gameIcon50x50: key
@@ -375,11 +393,17 @@ class PlaySpecContainer extends React.Component {
       case 0: {
         return (
           <div>
+            <TextField
+              hintText="Search by name..."
+              onChange={(e, newValue) => {
+                this.handleNameChange(e, newValue);
+              }}
+            />
             <SpecList
               cellHeight={180}
               header="Specs"
               handleGridTileClick={this.handleGridTileClickBoard.bind(this)}
-              data={this.state.allSpecs}
+              data={this.state.searchedSpec}
               selectedKey={this.state.selectedSpec}
               images={this.state.allImages}
             />

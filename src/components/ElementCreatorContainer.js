@@ -23,6 +23,7 @@ class ElementCreatorContainer extends React.Component {
     shouldDisplayWarningSnackBar: false,
     elementKind: 0,
     images: [],
+    searchedImages: [],
     cardElements: []
   };
 
@@ -50,6 +51,16 @@ class ElementCreatorContainer extends React.Component {
           images: data.val()
         });
       });
+
+    images
+      .equalTo(false)
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          searchedImages: data.val()
+        });
+      });
+
     elements
       .equalTo('card')
       .once('value')
@@ -87,6 +98,10 @@ class ElementCreatorContainer extends React.Component {
 
   setSelectedElements(eles) {
     this.setState({ selectedElements: eles });
+  }
+
+  setSearchedImages(imgs) {
+    this.setState({ searchedImages: imgs });
   }
 
   getCardElements() {
@@ -184,6 +199,7 @@ class ElementCreatorContainer extends React.Component {
         return (
           <ElementCreator
             images={this.state.images}
+            searchedImages={this.state.searchedImages}
             handleGridTileClick={this.handleGridTileClickBoard.bind(this)}
             getSelectedImages={this.getSelectedImages.bind(this)}
             setSelectedImages={this.setSelectedImages.bind(this)}
@@ -194,6 +210,7 @@ class ElementCreatorContainer extends React.Component {
             )}
             getSelectedElements={this.getSelectedElements.bind(this)}
             setSelectedElements={this.setSelectedElements.bind(this)}
+            setSearchedImages={this.setSearchedImages.bind(this)}
           />
         );
       }

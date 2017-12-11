@@ -13,6 +13,7 @@ import firebase from 'firebase';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
@@ -33,6 +34,7 @@ class GameSpecBuilderContainer extends React.Component {
 
   initialBoardState = {
     boardImages: [],
+    searchedBoard: [],
     otherImages: [],
     allImages: [],
     standardElements: [],
@@ -75,6 +77,15 @@ class GameSpecBuilderContainer extends React.Component {
       .then(function(data) {
         that.setState({
           boardImages: data.val()
+        });
+      });
+
+    images
+      .equalTo(true)
+      .once('value')
+      .then(function(data) {
+        that.setState({
+          searchedBoard: data.val()
         });
       });
 
@@ -269,6 +280,16 @@ class GameSpecBuilderContainer extends React.Component {
     }
   };
 
+  handleNameChange = (e, value) => {
+    let boardImg = this.state.boardImages;
+    let result = {};
+    for (let imgKey in boardImg) {
+      if (boardImg[imgKey].name.toLowerCase().indexOf(value) !== -1)
+        result[imgKey] = boardImg[imgKey];
+    }
+    this.setState({ searchedBoard: result });
+  };
+
   handleClickShuffle = () => {};
 
   setValue(val) {
@@ -336,11 +357,17 @@ class GameSpecBuilderContainer extends React.Component {
       case 0: {
         return (
           <div>
+            <TextField
+              hintText="Search by name..."
+              onChange={(e, newValue) => {
+                this.handleNameChange(e, newValue);
+              }}
+            />
             <BoardList
               cellHeight={180}
               header="Boards"
               handleGridTileClick={this.handleGridTileClickBoard.bind(this)}
-              data={this.state.boardImages}
+              data={this.state.searchedBoard}
               selectedKey={this.state.selectedBoard}
             />
           </div>

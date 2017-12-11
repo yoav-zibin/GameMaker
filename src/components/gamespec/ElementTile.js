@@ -25,7 +25,7 @@ const ElementTile = props => {
         handleGridTileClick(keyProp, image);
       }}
     >
-      <img src={showImage.downloadURL} alt={showImage.id} />
+      <img alt={showImage.id} />
     </GridTile>
   );
 };
