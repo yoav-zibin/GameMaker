@@ -125,6 +125,9 @@ class Board extends React.Component {
       'canvasImage' + index
     ].refs.image.getAbsolutePosition();
 
+    this.refs['canvasImage' + index].refs.image.cache();
+    this.refs['canvasImage' + index].refs.image.drawHitFromCache();
+
     if (
       item.element.elementKind === 'card' &&
       item.deckIndex >= 0 &&
@@ -196,8 +199,6 @@ class Board extends React.Component {
         item.offset.y = position.y;
         items[index] = item;
       }
-      //items.splice(index, 1);
-      //items.push(item);
     }
     this.props.setItems(items);
   };
@@ -217,6 +218,8 @@ class Board extends React.Component {
   handleClickOn = index => {
     let items = this.props.getItems();
     let item = items[index];
+    this.refs['canvasImage' + index].refs.image.cache();
+    this.refs['canvasImage' + index].refs.image.drawHitFromCache();
     if (item && item.element.elementKind === 'toggable') {
       item.currentImage = (item.currentImage + 1) % item.element.images.length;
       items[index] = item;
