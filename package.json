@@ -6,7 +6,7 @@
   "devDependencies": {
     "react-scripts": "1.0.10",
     "enzyme": "^2.7.1",
-    "react-addons-test-utils": "^15.4.2",
+    "react-addons-test-utils": "^15.4.2"
   },
   "dependencies": {
     "firebase": "^4.1.3",
