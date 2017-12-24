@@ -14,6 +14,7 @@ class CanvasImage extends React.Component {
   componentWillReceiveProps(nextProps) {
     const image = new window.Image();
     image.src = nextProps.src;
+    image.crossOrigin = 'Anonymous';
     image.onload = () => {
       this.setState({
         image: image
@@ -24,6 +25,7 @@ class CanvasImage extends React.Component {
   setImage = () => {
     const image = new window.Image();
     image.src = this.props.src;
+    image.crossOrigin = 'Anonymous';
     image.onload = () => {
       this.setState({
         image: image

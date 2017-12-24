@@ -1,4 +1,5 @@
 import React from 'react';
+//import LazyLoad from 'react-lazyload';
 
 import { GridList } from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';

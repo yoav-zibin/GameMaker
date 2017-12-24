@@ -1,5 +1,7 @@
 import React from 'react';
 
+import TextField from 'material-ui/TextField';
+
 import BoardList from './gamespec/BoardList';
 import ElementList from './gamespec/ElementList';
 import Element from './gamespec/Element';
@@ -19,6 +21,7 @@ const flexElement = {
 const ElementCreator = props => {
   let {
     images,
+    searchedImages,
     handleGridTileClick,
     getSelectedImages,
     setSelectedImages,
@@ -26,15 +29,33 @@ const ElementCreator = props => {
     getCardElements,
     handleElementGridTileClickBoard,
     getSelectedElements,
-    setSelectedElements
+    setSelectedElements,
+    setSearchedImages
   } = props;
+
+  const handleNameChange = (e, value) => {
+    let Img = props.images;
+    let result = {};
+    for (let imgKey in Img) {
+      if (Img[imgKey].name.toLowerCase().indexOf(value) !== -1)
+        result[imgKey] = Img[imgKey];
+    }
+    setSearchedImages(result);
+  };
+
   if (props.getElementKind() === 4 || props.getElementKind() === 5) {
     return (
       <div style={flexStyle}>
         <div style={flexElement}>
+          <TextField
+            hintText="Search by image name..."
+            onChange={(e, newValue) => {
+              handleNameChange(e, newValue);
+            }}
+          />
           <BoardList
             header="Images"
-            data={images}
+            data={searchedImages}
             handleGridTileClick={handleGridTileClick}
           />
           <ElementList
@@ -59,9 +80,15 @@ const ElementCreator = props => {
     return (
       <div style={flexStyle}>
         <div style={flexElement}>
+          <TextField
+            hintText="Search by image name..."
+            onChange={(e, newValue) => {
+              handleNameChange(e, newValue);
+            }}
+          />
           <BoardList
             header="Images"
-            data={images}
+            data={searchedImages}
             handleGridTileClick={handleGridTileClick}
           />
         </div>
