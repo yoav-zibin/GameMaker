@@ -13,6 +13,7 @@ class CanvasImage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const image = new window.Image();
+    image.crossOrigin = 'Anonymous';
     image.src = nextProps.src;
     image.crossOrigin = 'Anonymous';
     image.onload = () => {
