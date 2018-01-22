@@ -1,17 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import './index.css';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+import * as injectTapEventPlugin from 'react-tap-event-plugin';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { Route, BrowserRouter } from 'react-router-dom';
 
-import config from './config.json';
+import * as config from './config.json';
 
 injectTapEventPlugin();
 
 ReactDOM.render(
-  <BrowserRouter basename={config.basename || '/'}>
+  // tslint:disable-next-line: no-any
+  <BrowserRouter basename={(config as any).basename || '/'}>
     <div>
       <Route path="/" component={App} />
     </div>
