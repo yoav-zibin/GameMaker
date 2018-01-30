@@ -49,10 +49,12 @@ class Piece extends Component {
     const { image } = this.props;
     const opacity = isDragging ? 0.4 : 1;
     const height = 'inherit';
-
     return connectDragSource(
       <div key={keyProp} style={{ opacity, height }}>
-        <GridTile style={styles.hoverCursorPointer} title={image.name}>
+        <GridTile
+          style={styles.hoverCursorPointer}
+          title={image.name || keyProp}
+        >
           <img alt={image.id} />
         </GridTile>
       </div>

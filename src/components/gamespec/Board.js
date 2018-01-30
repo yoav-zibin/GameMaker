@@ -117,12 +117,14 @@ class Board extends React.Component {
     });
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    for (let i = 0; i < this.props.getItems().length; i++) {
-      this.refs['canvasImage' + i].refs.image.cache();
-      this.refs['canvasImage' + i].refs.image.drawHitFromCache();
-    }
-  }
+  componentWillUpdate = (nextProps, nextState) => {
+    // for (let i = 0; i < this.props.getItems().length; i++) {
+    //   if (this.refs && this.refs['canvasImage' + i]) {
+    //     this.refs['canvasImage' + i].refs.image.cache();
+    //     this.refs['canvasImage' + i].refs.image.drawHitFromCache();
+    //   }
+    // }
+  };
 
   handleDragEnd = index => {
     let items = this.props.getItems();
