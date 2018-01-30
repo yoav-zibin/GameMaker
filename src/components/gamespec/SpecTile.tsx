@@ -1,18 +1,20 @@
-import React from 'react';
+import * as React from 'react';
 import { blue500 } from 'material-ui/styles/colors';
 import { GridTile } from 'material-ui/GridList';
 
 import styles from '../../styles';
 
-const showName = image => {
-  if (image.name !== undefined) return image.name;
-  else return image.elementKind;
-};
+interface SpecTileProps {
+  keyProp: string;
+  selectedKey: string;
+  handleGridTileClick: (keyProp: string, image: any) => void;
+  image: any;
+  images: any[];
+}
 
-const ElementTile = props => {
+const SpecTile: React.StatelessComponent<SpecTileProps> = (props: SpecTileProps) => {
   let originalBackgroundTitle = 'rgba(0, 0, 0, 0.4)';
   let { keyProp, selectedKey, handleGridTileClick, image, images } = props;
-  let showImage = images[image['images'][0]['imageId']];
 
   return (
     <GridTile
@@ -20,14 +22,17 @@ const ElementTile = props => {
       titleBackground={
         selectedKey === keyProp ? blue500 : originalBackgroundTitle
       }
-      title={showName(image)}
+      title={image.gameName}
       onClick={e => {
         handleGridTileClick(keyProp, image);
       }}
     >
-      <img alt={showImage.id} />
+      <img
+        src={images[image.gameIcon512x512].downloadURL}
+        alt={images[image.gameIcon512x512].id}
+      />
     </GridTile>
   );
 };
 
-export default ElementTile;
+export default SpecTile;

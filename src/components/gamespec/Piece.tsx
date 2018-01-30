@@ -1,12 +1,23 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { DragSource } from 'react-dnd';
+import * as React from 'react';
+import { DragSource, DragSourceSpec, DragSourceCollector } from 'react-dnd';
 import { GridTile } from 'material-ui/GridList';
 import ItemTypes from './ItemTypes';
 import styles from '../../styles';
 import { imagesDbRef } from '../../firebase';
 
-const pieceSource = {
+interface PieceProps {
+  connectDragSource: any;
+  image: any;
+  isDragging: boolean;
+  keyProp: string;
+}
+
+interface PieceState {
+  imageKey: string;
+  imageURL: string;
+}
+
+const pieceSource: DragSourceSpec<PieceProps> = {
   beginDrag(props, monitor, component) {
     return {
       element: props.image,
@@ -15,20 +26,15 @@ const pieceSource = {
   }
 };
 
-class Piece extends Component {
-  initialState = {
-    imageKey: '',
-    imageURL: ''
-  };
+class Piece extends React.Component<PieceProps, PieceState> {
 
-  state = Object.assign({}, this.initialState);
-
-  static propTypes = {
-    connectDragSource: PropTypes.func.isRequired,
-    isDragging: PropTypes.bool.isRequired,
-    image: PropTypes.object.isRequired,
-    keyProp: PropTypes.string.isRequired
-  };
+  constructor(props: PieceProps) {
+    super(props)
+    this.state = {
+      imageKey: '',
+      imageURL: ''
+    };
+  }
 
   componentDidMount() {
     const { image } = this.props;
@@ -36,7 +42,7 @@ class Piece extends Component {
     let imageKey = image.images[0].imageId;
     let img = imagesDbRef.child(imageKey);
     img.on('value', function(snap) {
-      if (snap.val() !== null) {
+      if (snap !== null && snap.val() !== null) {
         that.setState({
           imageURL: snap.val().downloadURL
         });
@@ -62,7 +68,7 @@ class Piece extends Component {
   }
 }
 
-let collect = (connect, monitor) => ({
+let collect: DragSourceCollector = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
 });

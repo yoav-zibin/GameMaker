@@ -1,4 +1,4 @@
-import spacing from 'material-ui/styles/spacing';
+import * as spacing from 'material-ui/styles/spacing';
 
 const styles = {
   block: {
@@ -11,7 +11,7 @@ const styles = {
     zIndex: 2
   },
   root: {
-    paddingTop: spacing.desktopKeylineIncrement,
+    paddingTop: spacing.default.desktopKeylineIncrement,
     minHeight: 400
   },
   raisedButtonStyle: {
