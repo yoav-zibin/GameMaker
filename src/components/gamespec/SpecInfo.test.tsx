@@ -1,5 +1,5 @@
 import { shallow } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import SpecInfo from './SpecInfo';
 
 it('should render correct value', () => {
@@ -20,7 +20,7 @@ it('should render correct value', () => {
   const wrapper = shallow(
     <SpecInfo
       handleIcon50CLick={props.handleIcon50CLick}
-      handleIcon512Click={props.handleGameIcon512}
+      handleIcon512Click={props.handleIcon512Click}
       gameIcon50={props.gameIcon50}
       gameIcon512={props.gameIcon512}
       setYoutube={props.setYoutube}
