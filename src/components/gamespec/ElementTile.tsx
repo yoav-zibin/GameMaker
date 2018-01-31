@@ -5,8 +5,11 @@ import { GridTile } from 'material-ui/GridList';
 import styles from '../../styles';
 
 const showName = (image: any) => {
-  if (image.name !== undefined) return image.name;
-  else return image.elementKind;
+  if (image.name !== undefined)  {
+    return image.name;
+  } else {
+    return image.elementKind;
+  }
 };
 
 interface ElementTileProps {
@@ -20,7 +23,7 @@ interface ElementTileProps {
 const ElementTile: React.StatelessComponent<ElementTileProps> = (props: ElementTileProps) => {
   let originalBackgroundTitle = 'rgba(0, 0, 0, 0.4)';
   let { keyProp, selectedKey, handleGridTileClick, image, images } = props;
-  let showImage = images[image['images'][0]['imageId']];
+  let showImage = images[image.images[0].imageId];
 
   return (
     <GridTile
@@ -29,7 +32,7 @@ const ElementTile: React.StatelessComponent<ElementTileProps> = (props: ElementT
         selectedKey === keyProp ? blue500 : originalBackgroundTitle
       }
       title={showName(image)}
-      onClick={e => {
+      onTouchTap={e => {
         handleGridTileClick(keyProp, image);
       }}
     >

@@ -54,7 +54,7 @@ class ElementCreatorContainer extends React.Component {
         .then(function(data) {
           let currentImages = data.val();
           let finalImages = {};
-
+          if (!currentImages) return;
           Object.keys(currentImages).forEach(key => {
             if (currentImages[key].isBoardImage === false) {
               finalImages[key] = currentImages[key];
@@ -71,6 +71,7 @@ class ElementCreatorContainer extends React.Component {
         .once('value')
         .then(function(data) {
           let cardElements = data.val();
+          if (!cardElements) return;
           let finalCardElements = {};
           Object.keys(cardElements).forEach(key => {
             if (cardElements[key].elementKind === 'card') {

@@ -16,7 +16,7 @@ const SelectableList = makeSelectable(List);
 interface SidebarProps {
   docked: boolean;
   open: boolean;
-  onRequestChangeNavDrawer: (opening: boolean, reason: string) => void;
+  onRequestChangeNavDrawer: (opening: boolean) => void;
   location: {
     pathname: string;
   };
@@ -37,16 +37,12 @@ const Sidebar: React.StatelessComponent<SidebarProps> = (props: SidebarProps) =>
         onChange={props.onChangeList}
       >
         <ListItem
-          leftAvatar={
-            <Avatar icon={<ImageAddAPhoto />} backgroundColor={blue500} />
-          }
+          leftAvatar={<Avatar icon={<ImageAddAPhoto />} backgroundColor={blue500} />}
           primaryText={constants.NAV_UPLOAD_IMAGE_TEXT}
           value="/"
         />
         <ListItem
-          leftAvatar={
-            <Avatar icon={<CreateElements />} backgroundColor={blue500} />
-          }
+          leftAvatar={<Avatar icon={<CreateElements />} backgroundColor={blue500} />}
           primaryText={constants.NAV_CREATE_ELEMENT_TEXT}
           value="/create"
         />

@@ -23,7 +23,7 @@ const SpecTile: React.StatelessComponent<SpecTileProps> = (props: SpecTileProps)
         selectedKey === keyProp ? blue500 : originalBackgroundTitle
       }
       title={image.gameName}
-      onClick={e => {
+      onTouchTap={e => {
         handleGridTileClick(keyProp, image);
       }}
     >

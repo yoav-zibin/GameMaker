@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DragSource, DragSourceSpec, DragSourceCollector } from 'react-dnd';
+import { DragSource, DragSourceSpec, DragSourceCollector, DragSourceMonitor } from 'react-dnd';
 import { GridTile } from 'material-ui/GridList';
 import ItemTypes from './ItemTypes';
 import styles from '../../styles';
@@ -18,7 +18,7 @@ interface PieceState {
 }
 
 const pieceSource: DragSourceSpec<PieceProps> = {
-  beginDrag(props, monitor, component) {
+  beginDrag(props: PieceProps, monitor: DragSourceMonitor, component: Piece) {
     return {
       element: props.image,
       key: props.keyProp
@@ -29,7 +29,7 @@ const pieceSource: DragSourceSpec<PieceProps> = {
 class Piece extends React.Component<PieceProps, PieceState> {
 
   constructor(props: PieceProps) {
-    super(props)
+    super(props);
     this.state = {
       imageKey: '',
       imageURL: ''
@@ -41,7 +41,7 @@ class Piece extends React.Component<PieceProps, PieceState> {
     let that = this;
     let imageKey = image.images[0].imageId;
     let img = imagesDbRef.child(imageKey);
-    img.on('value', function(snap) {
+    img.on('value', function(snap: any) {
       if (snap !== null && snap.val() !== null) {
         that.setState({
           imageURL: snap.val().downloadURL

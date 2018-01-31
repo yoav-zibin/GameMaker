@@ -1,8 +1,10 @@
 import * as React from 'react';
-
+// import { BrowserRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import withWidth, { LARGE } from 'material-ui/utils/withWidth';
+import * as PropTypes from 'prop-types';
+// import withWidth, { LARGE } from 'material-ui/utils/withWidth';
+import { LARGE } from 'material-ui/utils/withWidth';
 
 import Sidebar from './Sidebar';
 
@@ -23,6 +25,10 @@ interface NavigationMasterState {
 
 class NavigationMaster extends React.Component<NavigationMasterProps, NavigationMasterState> {
 
+  static contextTypes = {
+    router: PropTypes.object
+  };
+
   constructor(props: NavigationMasterProps) {
     super(props);
     this.state = {
@@ -34,7 +40,7 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
     this.setState({
       navDrawerOpen: !this.state.navDrawerOpen
     });
-  };
+  }
 
   handleChangeList = (event: React.SyntheticEvent<{}>, value: any) => {
     if (value) {
@@ -43,17 +49,17 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
         navDrawerOpen: false
       });
     }
-  };
+  }
 
   handleChangeRequestNavDrawer = (open: boolean) => {
     this.setState({
       navDrawerOpen: open
     });
-  };
+  }
 
   handleLogoutClick = () => {
     auth.signOut();
-  };
+  }
 
   render() {
     let navDrawerOpen = this.state.navDrawerOpen;
@@ -73,7 +79,7 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
     return (
       <div>
         <AppBar
-          onLeftIconButtonClick={this.handleTouchTapLeftIconButton}
+          onLeftIconButtonTouchTap={this.handleTouchTapLeftIconButton}
           title={constants.TITLE_TEXT}
           zDepth={0}
           iconElementRight={
@@ -86,14 +92,15 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
           docked={docked}
           location={this.props.location}
           onRequestChangeNavDrawer={this.handleChangeRequestNavDrawer}
-          onChangeList={this.handleChangeList.bind(this)}
+          onChangeList={(e, v) => this.handleChangeList(e, v)}
           open={navDrawerOpen}
           isAuthenticated={isAuthenticated()}
-          onLogoutClick={this.handleLogoutClick.bind(this)}
+          onLogoutClick={() => this.handleLogoutClick()}
         />
       </div>
     );
   }
 }
 
-export default withWidth()(NavigationMaster);
+export default NavigationMaster;
+// export default withWidth()(NavigationMaster);
