@@ -1,8 +1,13 @@
 import RaisedButton from 'material-ui/RaisedButton';
-import React from 'react';
+import * as React from 'react';
 import styles from '../../styles';
 
-const Logout = props => {
+interface LogoutProps {
+  isAuthenticated: boolean;
+  handleClick: React.MouseEventHandler<{}>;
+}
+
+const Logout: React.StatelessComponent<LogoutProps> = (props: LogoutProps) => {
   if (props.isAuthenticated) {
     return (
       <RaisedButton

@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
@@ -11,22 +10,33 @@ import { auth, isAuthenticated } from '../../firebase';
 import constants from '../../constants';
 import styles from '../../styles';
 
-class NavigationMaster extends React.Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired
+interface NavigationMasterProps {
+  location: {
+    pathname: string;
   };
+  width: number;
+}
 
-  state = {
-    navDrawerOpen: false
-  };
+interface NavigationMasterState {
+  navDrawerOpen: boolean;
+}
 
-  handleTouchTapLeftIconButton = () => {
+class NavigationMaster extends React.Component<NavigationMasterProps, NavigationMasterState> {
+
+  constructor(props: NavigationMasterProps) {
+    super(props);
+    this.state = {
+      navDrawerOpen: false
+    };
+  }
+
+  handleTouchTapLeftIconButton: React.MouseEventHandler<{}> = () => {
     this.setState({
       navDrawerOpen: !this.state.navDrawerOpen
     });
   };
 
-  handleChangeList = (event, value) => {
+  handleChangeList = (event: React.SyntheticEvent<{}>, value: any) => {
     if (value) {
       this.context.router.history.push(value);
       this.setState({
@@ -35,7 +45,7 @@ class NavigationMaster extends React.Component {
     }
   };
 
-  handleChangeRequestNavDrawer = open => {
+  handleChangeRequestNavDrawer = (open: boolean) => {
     this.setState({
       navDrawerOpen: open
     });
@@ -63,13 +73,13 @@ class NavigationMaster extends React.Component {
     return (
       <div>
         <AppBar
-          onLeftIconButtonTouchTap={this.handleTouchTapLeftIconButton}
+          onLeftIconButtonClick={this.handleTouchTapLeftIconButton}
           title={constants.TITLE_TEXT}
           zDepth={0}
           iconElementRight={
             <IconButton iconClassName="muidocs-icon-custom-github" href="/" />
           }
-          style={styles.appBar}
+          style={styles.appBar as React.CSSProperties}
           showMenuIconButton={showMenuIconButton}
         />
         <Sidebar
