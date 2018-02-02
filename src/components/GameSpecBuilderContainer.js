@@ -35,7 +35,6 @@ class GameSpecBuilderContainer extends React.Component {
   initialBoardState = {
     boardImages: [],
     searchedBoard: [],
-    otherImages: [],
     allImages: [],
     standardElements: [],
     toggableElements: [],
@@ -89,15 +88,6 @@ class GameSpecBuilderContainer extends React.Component {
         });
       });
 
-    images
-      .equalTo(false)
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          otherImages: data.val()
-        });
-      });
-
     icon
       .equalTo(50)
       .once('value')
@@ -129,78 +119,78 @@ class GameSpecBuilderContainer extends React.Component {
           gameIcon512: height512
         });
       });
-
-    elements
-      .equalTo('standard')
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          standardElements: data.val()
-        });
-      });
-
-    elements
-      .equalTo('toggable')
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          toggableElements: data.val()
-        });
-      });
-
-    elements
-      .equalTo('card')
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          cardElements: data.val()
-        });
-      });
-
-    elements
-      .equalTo('dice')
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          diceElements: data.val()
-        });
-      });
-
-    elements
-      .equalTo('cardsDeck')
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          cardsDeckElements: data.val()
-        });
-      });
-
-    elements
-      .equalTo('piecesDeck')
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          piecesDeckElements: data.val()
-        });
-      });
-
-    recentEles.once('value').then(function(data) {
-      that.setState({
-        recentElements: data.val()
-      });
-    });
-
+    //
+    // elements
+    //   .equalTo('standard')
+    //   .once('value')
+    //   .then(function(data) {
+    //     that.setState({
+    //       standardElements: data.val()
+    //     });
+    //   });
+    //
+    // elements
+    //   .equalTo('toggable')
+    //   .once('value')
+    //   .then(function(data) {
+    //     that.setState({
+    //       toggableElements: data.val()
+    //     });
+    //   });
+    //
+    // elements
+    //   .equalTo('card')
+    //   .once('value')
+    //   .then(function(data) {
+    //     that.setState({
+    //       cardElements: data.val()
+    //     });
+    //   });
+    //
+    // elements
+    //   .equalTo('dice')
+    //   .once('value')
+    //   .then(function(data) {
+    //     that.setState({
+    //       diceElements: data.val()
+    //     });
+    //   });
+    //
+    // elements
+    //   .equalTo('cardsDeck')
+    //   .once('value')
+    //   .then(function(data) {
+    //     that.setState({
+    //       cardsDeckElements: data.val()
+    //     });
+    //   });
+    //
+    // elements
+    //   .equalTo('piecesDeck')
+    //   .once('value')
+    //   .then(function(data) {
+    //     that.setState({
+    //       piecesDeckElements: data.val()
+    //     });
+    //   });
+    //
+    // recentEles.once('value').then(function(data) {
+    //   that.setState({
+    //     recentElements: data.val()
+    //   });
+    // });
+    //
     imagesDbRef.once('value').then(function(data) {
       that.setState({
         allImages: data.val()
       });
     });
-
-    elementsRef.once('value').then(function(data) {
-      that.setState({
-        allElements: data.val()
-      });
-    });
+    //
+    // elementsRef.once('value').then(function(data) {
+    //   that.setState({
+    //     allElements: data.val()
+    //   });
+    // });
 
     specsRef.once('value').then(function(data) {
       that.setState({

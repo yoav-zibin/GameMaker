@@ -150,10 +150,10 @@ class Board extends React.Component<BoardProps, BoardState> {
   }
 
   componentWillUpdate(nextProps: BoardProps, nextState: BoardState) {
-    for (let i = 0; i < this.props.getItems().length; i++) {
-      ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().cache();
-      ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().drawHitFromCache(1);
-    }
+    // for (let i = 0; i < this.props.getItems().length; i++) {
+      // ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().cache();
+      // ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().drawHitFromCache(1);
+    // }
   }
 
   handleDragEnd = (index: any) => {

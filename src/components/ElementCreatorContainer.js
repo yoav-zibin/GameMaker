@@ -40,35 +40,49 @@ class ElementCreatorContainer extends React.Component {
 
   componentDidMount() {
     let that = this;
-    let images = imagesDbRef.orderByChild('isBoardImage');
-    let elements = elementsRef.orderByChild('elementKind');
+    let images = imagesDbRef.orderByChild('uploaderUid');
+    let userElements = elementsRef.orderByChild('uploaderUid');
 
-    images
-      .equalTo(false)
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          images: data.val()
-        });
-      });
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        this.notify('You need to login to view this');
+        return;
+      }
+      images
+        .equalTo(auth.currentUser.uid)
+        .once('value')
+        .then(function(data) {
+          let currentImages = data.val();
+          let finalImages = {};
 
-    images
-      .equalTo(false)
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          searchedImages: data.val()
+          Object.keys(currentImages).forEach(key => {
+            if (currentImages[key].isBoardImage === false) {
+              finalImages[key] = currentImages[key];
+            }
+          });
+          that.setState({
+            images: finalImages,
+            searchedImages: finalImages
+          });
         });
-      });
 
-    elements
-      .equalTo('card')
-      .once('value')
-      .then(function(data) {
-        that.setState({
-          cardElements: data.val()
+      userElements
+        .equalTo(auth.currentUser.uid)
+        .once('value')
+        .then(function(data) {
+          let cardElements = data.val();
+          let finalCardElements = {};
+          Object.keys(cardElements).forEach(key => {
+            if (cardElements[key].elementKind === 'card') {
+              finalCardElements[key] = cardElements[key];
+            }
+          });
+
+          that.setState({
+            cardElements: finalCardElements
+          });
         });
-      });
+    });
   }
 
   notify = message => {

@@ -55,21 +55,10 @@ const GameSpecBuilder = props => {
     return (
       <div style={flexStyle}>
         <div style={flexElement}>
-          <DropDownMenu
-            value={props.getValue()}
-            onChange={(e, newValue) => {
-              props.setValue(newValue);
-            }}
-          >
-            <MenuItem value={0} primaryText="My Uploads" />
-            <MenuItem value={1} primaryText="standard" />
-            <MenuItem value={2} primaryText="toggable" />
-            <MenuItem value={3} primaryText="card" />
-            <MenuItem value={4} primaryText="dice" />
-            <MenuItem value={5} primaryText="cardsDeck" />
-            <MenuItem value={6} primaryText="piecesDeck" />
-          </DropDownMenu>
-          <PieceList data={elements[props.getValue()].data} />
+          <PieceList
+            header="Your Uploads"
+            data={elements[props.getValue()].data}
+          />
         </div>
         <Board
           setBoardSize={setBoardSize}
