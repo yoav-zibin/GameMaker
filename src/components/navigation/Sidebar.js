@@ -44,6 +44,11 @@ const Sidebar = props => {
           value="/build"
         />
         <ListItem
+          leftAvatar={<Avatar icon={<Update />} backgroundColor={blue500} />}
+          primaryText={constants.NAV_UPDATE_SPEC_TEXT}
+          value="/update"
+        />
+        <ListItem
           leftAvatar={<Avatar icon={<Games />} backgroundColor={blue500} />}
           primaryText={constants.NAV_PLAY_SPEC_TEXT}
           value="/play"
