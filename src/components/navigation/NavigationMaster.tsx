@@ -34,26 +34,26 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
     this.setState({
       navDrawerOpen: !this.state.navDrawerOpen
     });
-  };
+  }
 
-  handleChangeList = (event: React.SyntheticEvent<{}>, value: any) => {
+  handleChangeList = (event?: React.SyntheticEvent<{}>, value?: any) => {
     if (value) {
       this.context.router.history.push(value);
       this.setState({
         navDrawerOpen: false
       });
     }
-  };
+  }
 
   handleChangeRequestNavDrawer = (open: boolean) => {
     this.setState({
       navDrawerOpen: open
     });
-  };
+  }
 
   handleLogoutClick = () => {
     auth.signOut();
-  };
+  }
 
   render() {
     let navDrawerOpen = this.state.navDrawerOpen;
@@ -73,7 +73,7 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
     return (
       <div>
         <AppBar
-          onLeftIconButtonClick={this.handleTouchTapLeftIconButton}
+          onLeftIconButtonTouchTap={this.handleTouchTapLeftIconButton}
           title={constants.TITLE_TEXT}
           zDepth={0}
           iconElementRight={
@@ -86,10 +86,10 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
           docked={docked}
           location={this.props.location}
           onRequestChangeNavDrawer={this.handleChangeRequestNavDrawer}
-          onChangeList={this.handleChangeList.bind(this)}
+          onChangeList={() => this.handleChangeList()}
           open={navDrawerOpen}
           isAuthenticated={isAuthenticated()}
-          onLogoutClick={this.handleLogoutClick.bind(this)}
+          onLogoutClick={() => this.handleLogoutClick()}
         />
       </div>
     );

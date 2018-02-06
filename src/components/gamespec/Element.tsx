@@ -80,7 +80,7 @@ class Element extends React.Component<ElementProps, ElementState> {
 
   renderCardChip(data: any, index: number) {
     let card = this.props.getCardElements()[data];
-    let imageId = card['images'][0]['imageId'];
+    let imageId = card.images[0].imageId;
     let image = this.props.images[imageId];
     return (
       <Chip

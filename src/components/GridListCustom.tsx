@@ -1,5 +1,5 @@
 import * as React from 'react';
-//import LazyLoad from 'react-lazyload';
+// import LazyLoad from 'react-lazyload';
 
 import { GridList } from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';

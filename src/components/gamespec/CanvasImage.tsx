@@ -56,10 +56,10 @@ class CanvasImage extends React.Component<CanvasImageProps, CanvasImageState> {
         image: image
       });
     };
-  };
+  }
 
   render() {
-    return <Konva.Image ref="image" {...this.props} image={this.state.image} />;
+    return <Konva.Image ref={() => 'image'} {...this.props} image={this.state.image} />;
   }
 }
 

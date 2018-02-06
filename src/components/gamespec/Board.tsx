@@ -44,7 +44,7 @@ interface BoardItem {
 }
 
 const boxTarget: DropTargetSpec<BoardProps> = {
-  drop(props, monitor: DropTargetMonitor, component: Board) {
+  drop(props: BoardProps, monitor: DropTargetMonitor, component: Board) {
     let offset = monitor.getClientOffset(),
       item = monitor.getItem() as any;
 
@@ -142,7 +142,7 @@ class Board extends React.Component<BoardProps, BoardState> {
     this.props.setBoardSize(this.width);
     let that = this;
     that.setState({ items: this.props.getItems() });
-    imagesDbRef.once('value').then(function(data) {
+    imagesDbRef.once('value').then(function(data: any) {
       that.setState({
         images: data.val()
       });
@@ -162,10 +162,10 @@ class Board extends React.Component<BoardProps, BoardState> {
 
     let position = ((this.refs[
       'canvasImage' + index
-    ] as CanvasImage).refs['image'] as Image).getNativeNode().getAbsolutePosition();
+    ] as CanvasImage).refs.image as Image).getNativeNode().getAbsolutePosition();
 
-    //this.refs['canvasImage' + index].refs.image.cache();
-    //this.refs['canvasImage' + index].refs.image.drawHitFromCache();
+    // this.refs['canvasImage' + index].refs.image.cache();
+    // this.refs['canvasImage' + index].refs.image.drawHitFromCache();
 
     if (
       item.element.elementKind === 'card' &&
@@ -223,7 +223,7 @@ class Board extends React.Component<BoardProps, BoardState> {
             }
           }
 
-          indexArray.sort(function(a, b) {
+          indexArray.sort(function(a: number, b: number) {
             return a - b;
           });
 
@@ -240,7 +240,7 @@ class Board extends React.Component<BoardProps, BoardState> {
       }
     }
     this.props.setItems(items);
-  };
+  }
 
   handleDelete(index: number) {
     let items = this.props.getItems();
@@ -257,8 +257,8 @@ class Board extends React.Component<BoardProps, BoardState> {
   handleClickOn = (index: number) => {
     let items = this.props.getItems();
     let item = items[index];
-    //this.refs['canvasImage' + index].refs.image.cache();
-    //this.refs['canvasImage' + index].refs.image.drawHitFromCache();
+    // this.refs['canvasImage' + index].refs.image.cache();
+    // this.refs['canvasImage' + index].refs.image.drawHitFromCache();
     if (item && item.element.elementKind === 'toggable') {
       item.currentImage = (item.currentImage + 1) % item.element.images.length;
       items[index] = item;
@@ -279,7 +279,7 @@ class Board extends React.Component<BoardProps, BoardState> {
       items[index] = item;
       this.props.setItems(items);
     }
-  };
+  }
 
   render() {
     const { connectDropTarget } = this.props;
@@ -289,7 +289,7 @@ class Board extends React.Component<BoardProps, BoardState> {
       this.props.boardImage.height / this.height;
     return connectDropTarget(
       <div style={flexElement}>
-        <Stage ref="stage" width={this.width} height={this.height}>
+        <Stage ref={() => 'stage'} width={this.width} height={this.height}>
           <Layer>
             <CanvasImage
               width={this.width}
