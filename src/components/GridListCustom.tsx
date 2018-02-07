@@ -1,16 +1,17 @@
-import React from 'react';
-//import LazyLoad from 'react-lazyload';
+import * as React from 'react';
+// import LazyLoad from 'react-lazyload';
 
 import { GridList } from 'material-ui/GridList';
 import Subheader from 'material-ui/Subheader';
 import styles from '../styles';
+import { CSSProperties } from 'react';
 
-function GridListCustom(Component) {
-  return props => {
+function GridListCustom(Component: React.StatelessComponent | React.ComponentClass) {
+  return (props: any) => {
     if (props.data !== null) {
       return (
-        <div style={styles.gridListContainer}>
-          <GridList cellHeight={180} style={styles.gridList}>
+        <div style={styles.gridListContainer as CSSProperties}>
+          <GridList cellHeight={180} style={styles.gridList as CSSProperties}>
             <Subheader>{props.header}</Subheader>
             {Object.keys(props.data)
               .reverse()
@@ -25,7 +26,7 @@ function GridListCustom(Component) {
       );
     } else {
       return (
-        <div style={styles.gridListContainer}>
+        <div style={styles.gridListContainer as CSSProperties}>
           You didn't upload any element yet!
         </div>
       );

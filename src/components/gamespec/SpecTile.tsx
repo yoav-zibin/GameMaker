@@ -1,12 +1,21 @@
-import React from 'react';
+import * as React from 'react';
 import { blue500 } from 'material-ui/styles/colors';
 import { GridTile } from 'material-ui/GridList';
 
 import styles from '../../styles';
 
-const SpecTile = props => {
+interface SpecTileProps {
+  keyProp: string;
+  selectedKey: string;
+  handleGridTileClick: (keyProp: string, image: any) => void;
+  image: any;
+  images: any[];
+}
+
+const SpecTile: React.StatelessComponent<SpecTileProps> = (props: SpecTileProps) => {
   let originalBackgroundTitle = 'rgba(0, 0, 0, 0.4)';
   let { keyProp, selectedKey, handleGridTileClick, image, images } = props;
+
   return (
     <GridTile
       style={styles.hoverCursorPointer}
@@ -14,7 +23,7 @@ const SpecTile = props => {
         selectedKey === keyProp ? blue500 : originalBackgroundTitle
       }
       title={image.gameName}
-      onClick={e => {
+      onTouchTap={e => {
         handleGridTileClick(keyProp, image);
       }}
     >

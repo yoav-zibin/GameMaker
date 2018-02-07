@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import Drawer from 'material-ui/Drawer';
 import { List, ListItem, makeSelectable } from 'material-ui/List';
 import constants from '../../constants';
@@ -13,7 +13,19 @@ import Update from 'material-ui/svg-icons/action/update';
 
 const SelectableList = makeSelectable(List);
 
-const Sidebar = props => {
+interface SidebarProps {
+  docked: boolean;
+  open: boolean;
+  onRequestChangeNavDrawer: (opening: boolean) => void;
+  location: {
+    pathname: string;
+  };
+  onChangeList: (e: React.SyntheticEvent<{}>, value: any) => void;
+  isAuthenticated: boolean;
+  onLogoutClick: React.MouseEventHandler<{}>;
+}
+
+const Sidebar: React.StatelessComponent<SidebarProps> = (props: SidebarProps) => {
   return (
     <Drawer
       docked={props.docked}
@@ -25,16 +37,12 @@ const Sidebar = props => {
         onChange={props.onChangeList}
       >
         <ListItem
-          leftAvatar={
-            <Avatar icon={<ImageAddAPhoto />} backgroundColor={blue500} />
-          }
+          leftAvatar={<Avatar icon={<ImageAddAPhoto />} backgroundColor={blue500} />}
           primaryText={constants.NAV_UPLOAD_IMAGE_TEXT}
           value="/"
         />
         <ListItem
-          leftAvatar={
-            <Avatar icon={<CreateElements />} backgroundColor={blue500} />
-          }
+          leftAvatar={<Avatar icon={<CreateElements />} backgroundColor={blue500} />}
           primaryText={constants.NAV_CREATE_ELEMENT_TEXT}
           value="/create"
         />

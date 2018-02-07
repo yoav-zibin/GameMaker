@@ -1,26 +1,26 @@
 import { shallow } from 'enzyme';
-import React from 'react';
+import * as React from 'react';
 import SpecInfo from './SpecInfo';
 
 it('should render correct value', () => {
   const props = {
-    handleIcon50CLick: () => {},
-    handleIcon512Click: () => {},
-    handleGameIcon50: () => {},
+    handleIcon50CLick: () => { return; },
+    handleIcon512Click: () => { return; },
+    handleGameIcon50: () => { return; },
     gameIcon50: [],
     gameIcon512: [],
-    setYoutube: () => {},
-    setWiki: () => {},
-    getYoutube: () => {},
-    getWiki: () => {},
-    getGameIcon50: () => {},
-    getGameIcon512: () => {}
+    setYoutube: () => { return; },
+    setWiki: () => { return; },
+    getYoutube: () => { return; },
+    getWiki: () => { return; },
+    getGameIcon50: () => { return; },
+    getGameIcon512: () => { return; }
   };
 
   const wrapper = shallow(
     <SpecInfo
       handleIcon50CLick={props.handleIcon50CLick}
-      handleIcon512Click={props.handleGameIcon512}
+      handleIcon512Click={props.handleIcon512Click}
       gameIcon50={props.gameIcon50}
       gameIcon512={props.gameIcon512}
       setYoutube={props.setYoutube}

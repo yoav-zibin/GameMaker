@@ -1,13 +1,24 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { DragSource } from 'react-dnd';
+import * as React from 'react';
+import { DragSource, DragSourceSpec, DragSourceCollector, DragSourceMonitor } from 'react-dnd';
 import { GridTile } from 'material-ui/GridList';
 import ItemTypes from './ItemTypes';
 import styles from '../../styles';
 import { imagesDbRef } from '../../firebase';
 
-const pieceSource = {
-  beginDrag(props, monitor, component) {
+interface PieceProps {
+  connectDragSource: any;
+  image: any;
+  isDragging: boolean;
+  keyProp: string;
+}
+
+interface PieceState {
+  imageKey: string;
+  imageURL: string;
+}
+
+const pieceSource: DragSourceSpec<PieceProps> = {
+  beginDrag(props: PieceProps, monitor: DragSourceMonitor, component: Piece) {
     return {
       element: props.image,
       key: props.keyProp
@@ -15,28 +26,23 @@ const pieceSource = {
   }
 };
 
-class Piece extends Component {
-  initialState = {
-    imageKey: '',
-    imageURL: ''
-  };
+class Piece extends React.Component<PieceProps, PieceState> {
 
-  state = Object.assign({}, this.initialState);
-
-  static propTypes = {
-    connectDragSource: PropTypes.func.isRequired,
-    isDragging: PropTypes.bool.isRequired,
-    image: PropTypes.object.isRequired,
-    keyProp: PropTypes.string.isRequired
-  };
+  constructor(props: PieceProps) {
+    super(props);
+    this.state = {
+      imageKey: '',
+      imageURL: ''
+    };
+  }
 
   componentDidMount() {
     const { image } = this.props;
     let that = this;
     let imageKey = image.images[0].imageId;
     let img = imagesDbRef.child(imageKey);
-    img.on('value', function(snap) {
-      if (snap.val() !== null) {
+    img.on('value', function(snap: any) {
+      if (snap !== null && snap.val() !== null) {
         that.setState({
           imageURL: snap.val().downloadURL
         });
@@ -49,10 +55,12 @@ class Piece extends Component {
     const { image } = this.props;
     const opacity = isDragging ? 0.4 : 1;
     const height = 'inherit';
-
     return connectDragSource(
       <div key={keyProp} style={{ opacity, height }}>
-        <GridTile style={styles.hoverCursorPointer} title={image.name}>
+        <GridTile
+          style={styles.hoverCursorPointer}
+          title={image.name || keyProp}
+        >
           <img alt={image.id} />
         </GridTile>
       </div>
@@ -60,7 +68,7 @@ class Piece extends Component {
   }
 }
 
-let collect = (connect, monitor) => ({
+let collect: DragSourceCollector = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
 });

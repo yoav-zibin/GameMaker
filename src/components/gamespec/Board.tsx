@@ -1,21 +1,57 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { DropTarget } from 'react-dnd';
+import * as React from 'react';
+import { DropTargetSpec, 
+  DropTarget, 
+  DropTargetConnector, 
+  DropTargetMonitor,
+  ConnectDropTarget } from 'react-dnd';
 import ItemTypes from './ItemTypes';
-import { Layer, Stage } from 'react-konva';
+import { Layer, Stage, Image } from 'react-konva';
 import { imagesDbRef } from '../../firebase';
-
 import CanvasImage from './CanvasImage';
 
-const boxTarget = {
-  drop(props, monitor, component) {
+interface BoardProps {
+  setBoardSize: (width: number) => void;
+  getItems: () => BoardItem[];
+  getDeckCount: () => number[];
+  setDeckCount: (deckcount: number[]) => void;
+  specType: string;
+  allElements: any[];
+  setItems: (item: any[]) => void;
+  boardImage: {
+    downloadURL: string;
+    width: number;
+    height: number;
+  };
+  connectDropTarget: ConnectDropTarget;
+  allImages: any[];
+}
+
+interface BoardState {
+  items: BoardItem[];
+  images: any[];
+}
+
+interface BoardItem {
+  element: any;
+  offset: {
+    x: number;
+    y: number;
+  };
+  eleKey: any;
+  currentImage: any;
+  degree: number;
+  deckIndex: number;
+}
+
+const boxTarget: DropTargetSpec<BoardProps> = {
+  drop(props: BoardProps, monitor: DropTargetMonitor, component: Board) {
     let offset = monitor.getClientOffset(),
-      item = monitor.getItem();
+      item = monitor.getItem() as any;
 
     let items = props.getItems();
-    let rect = component.refs.stage
+    let rect = (component.refs.stage as Stage)
       .getStage()
-      .getContainer()
+      .container()
       .getBoundingClientRect();
     offset.x = offset.x - rect.left;
     offset.y = offset.y - rect.top;
@@ -80,60 +116,56 @@ const flexElement = {
   position: 'relative',
   width: '60%',
   float: 'right'
-};
+} as React.CSSProperties;
 
-let collect = (connect, monitor) => ({
+let collect = (connect: DropTargetConnector, monitor: DropTargetMonitor) => ({
   connectDropTarget: connect.dropTarget(),
   isOver: monitor.isOver(),
   canDrop: monitor.canDrop()
 });
 
-class Board extends React.Component {
-  width = '512';
-  height = '512';
+class Board extends React.Component<BoardProps, BoardState> {
+  width: number = 512;
+  height: number = 512;
   imageWidthRatio = 1;
   imageHeightRatio = 1;
-  canvasDiv;
-  static propTypes = {
-    connectDropTarget: PropTypes.func.isRequired,
-    isOver: PropTypes.bool.isRequired,
-    canDrop: PropTypes.bool.isRequired,
-    boardImage: PropTypes.object.isRequired
-  };
 
-  state = {
-    items: [],
-    images: []
-  };
+  constructor(props: BoardProps) {
+    super(props);
+    this.state = {
+      items: [],
+      images: []
+    };
+  }
 
   componentDidMount() {
     this.props.setBoardSize(this.width);
     let that = this;
     that.setState({ items: this.props.getItems() });
-    imagesDbRef.once('value').then(function(data) {
+    imagesDbRef.once('value').then(function(data: any) {
       that.setState({
         images: data.val()
       });
     });
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    for (let i = 0; i < this.props.getItems().length; i++) {
-      this.refs['canvasImage' + i].refs.image.cache();
-      this.refs['canvasImage' + i].refs.image.drawHitFromCache();
-    }
+  componentWillUpdate(nextProps: BoardProps, nextState: BoardState) {
+    // for (let i = 0; i < this.props.getItems().length; i++) {
+      // ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().cache();
+      // ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().drawHitFromCache(1);
+    // }
   }
 
-  handleDragEnd = index => {
+  handleDragEnd = (index: any) => {
     let items = this.props.getItems();
     let item = items[index];
 
-    let position = this.refs[
+    let position = ((this.refs[
       'canvasImage' + index
-    ].refs.image.getAbsolutePosition();
+    ] as CanvasImage).refs.image as Image).getNativeNode().getAbsolutePosition();
 
-    //this.refs['canvasImage' + index].refs.image.cache();
-    //this.refs['canvasImage' + index].refs.image.drawHitFromCache();
+    // this.refs['canvasImage' + index].refs.image.cache();
+    // this.refs['canvasImage' + index].refs.image.drawHitFromCache();
 
     if (
       item.element.elementKind === 'card' &&
@@ -191,7 +223,7 @@ class Board extends React.Component {
             }
           }
 
-          indexArray.sort(function(a, b) {
+          indexArray.sort(function(a: number, b: number) {
             return a - b;
           });
 
@@ -208,9 +240,9 @@ class Board extends React.Component {
       }
     }
     this.props.setItems(items);
-  };
+  }
 
-  handleDelete(index) {
+  handleDelete(index: number) {
     let items = this.props.getItems();
 
     for (let i = 0; i < items.length; i++) {
@@ -222,11 +254,11 @@ class Board extends React.Component {
     this.props.setItems(items);
   }
 
-  handleClickOn = index => {
+  handleClickOn = (index: number) => {
     let items = this.props.getItems();
     let item = items[index];
-    //this.refs['canvasImage' + index].refs.image.cache();
-    //this.refs['canvasImage' + index].refs.image.drawHitFromCache();
+    // this.refs['canvasImage' + index].refs.image.cache();
+    // this.refs['canvasImage' + index].refs.image.drawHitFromCache();
     if (item && item.element.elementKind === 'toggable') {
       item.currentImage = (item.currentImage + 1) % item.element.images.length;
       items[index] = item;
@@ -247,17 +279,17 @@ class Board extends React.Component {
       items[index] = item;
       this.props.setItems(items);
     }
-  };
+  }
 
   render() {
     const { connectDropTarget } = this.props;
     this.imageWidthRatio =
-      this.props.boardImage.width / parseInt(this.width, 10);
+      this.props.boardImage.width / this.width;
     this.imageHeightRatio =
-      this.props.boardImage.height / parseInt(this.height, 10);
+      this.props.boardImage.height / this.height;
     return connectDropTarget(
       <div style={flexElement}>
-        <Stage ref="stage" width={this.width} height={this.height}>
+        <Stage ref={() => 'stage'} width={this.width} height={this.height}>
           <Layer>
             <CanvasImage
               width={this.width}

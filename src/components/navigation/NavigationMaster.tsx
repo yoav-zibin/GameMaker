@@ -1,9 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
+import * as React from 'react';
+// import { BrowserRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import withWidth, { LARGE } from 'material-ui/utils/withWidth';
+import * as PropTypes from 'prop-types';
+// import withWidth, { LARGE } from 'material-ui/utils/withWidth';
+import { LARGE } from 'material-ui/utils/withWidth';
 
 import Sidebar from './Sidebar';
 
@@ -11,39 +12,54 @@ import { auth, isAuthenticated } from '../../firebase';
 import constants from '../../constants';
 import styles from '../../styles';
 
-class NavigationMaster extends React.Component {
+interface NavigationMasterProps {
+  location: {
+    pathname: string;
+  };
+  width: number;
+}
+
+interface NavigationMasterState {
+  navDrawerOpen: boolean;
+}
+
+class NavigationMaster extends React.Component<NavigationMasterProps, NavigationMasterState> {
+
   static contextTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object
   };
 
-  state = {
-    navDrawerOpen: false
-  };
+  constructor(props: NavigationMasterProps) {
+    super(props);
+    this.state = {
+      navDrawerOpen: false
+    };
+  }
 
-  handleTouchTapLeftIconButton = () => {
+  handleTouchTapLeftIconButton: React.MouseEventHandler<{}> = () => {
     this.setState({
       navDrawerOpen: !this.state.navDrawerOpen
     });
-  };
+  }
 
-  handleChangeList = (event, value) => {
+  handleChangeList = (event: React.SyntheticEvent<{}>, value: any) => {
     if (value) {
       this.context.router.history.push(value);
       this.setState({
         navDrawerOpen: false
       });
     }
-  };
+  }
 
-  handleChangeRequestNavDrawer = open => {
+  handleChangeRequestNavDrawer = (open: boolean) => {
     this.setState({
       navDrawerOpen: open
     });
-  };
+  }
 
   handleLogoutClick = () => {
     auth.signOut();
-  };
+  }
 
   render() {
     let navDrawerOpen = this.state.navDrawerOpen;
@@ -69,21 +85,22 @@ class NavigationMaster extends React.Component {
           iconElementRight={
             <IconButton iconClassName="muidocs-icon-custom-github" href="/" />
           }
-          style={styles.appBar}
+          style={styles.appBar as React.CSSProperties}
           showMenuIconButton={showMenuIconButton}
         />
         <Sidebar
           docked={docked}
           location={this.props.location}
           onRequestChangeNavDrawer={this.handleChangeRequestNavDrawer}
-          onChangeList={this.handleChangeList.bind(this)}
+          onChangeList={(e, v) => this.handleChangeList(e, v)}
           open={navDrawerOpen}
           isAuthenticated={isAuthenticated()}
-          onLogoutClick={this.handleLogoutClick.bind(this)}
+          onLogoutClick={() => this.handleLogoutClick()}
         />
       </div>
     );
   }
 }
 
-export default withWidth()(NavigationMaster);
+export default NavigationMaster;
+// export default withWidth()(NavigationMaster);

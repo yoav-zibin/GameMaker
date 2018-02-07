@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import TextField from 'material-ui/TextField';
 import constants from '../../constants';
 import styles from '../../styles';
@@ -9,7 +9,20 @@ const flexStyle = {
   ...styles.center
 };
 
-const SpecInfo = props => {
+interface SpecInfoProps {
+  getWiki: () => any;
+  setWiki: () => void;
+  getYoutube: () => any;
+  setYoutube: () => void;
+  handleIcon50CLick: () => void;
+  gameIcon50: any;
+  getGameIcon50: () => void;
+  handleIcon512Click: () => void;
+  gameIcon512: any;
+  getGameIcon512: () => void;
+}
+
+const SpecInfo: React.StatelessComponent<SpecInfoProps> = (props: SpecInfoProps) => {
   return (
     <div>
       <div style={flexStyle}>
