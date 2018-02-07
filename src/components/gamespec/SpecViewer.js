@@ -38,13 +38,6 @@ const SpecViewer = props => {
         value={props.specName}
         onChange={props.setSpecName}
       />
-      <ContentEditable
-        html={JSON.stringify(pieces, null, 2)}
-        disabled={false}
-        onChange={props.handleSpecChange}
-        tagName="pre"
-        style={{ textAlign: 'left', backgroundColor: '#eee' }}
-      />
     </div>
   );
 };
