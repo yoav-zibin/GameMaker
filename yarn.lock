@@ -21,7 +21,7 @@
   version "22.0.1"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.0.1.tgz#6370a6d60cce3845e4cd5d00bf65f654264685bc"
 
-"@types/material-ui@^0.18.8":
+"@types/material-ui@^0.18.5":
   version "0.18.5"
   resolved "https://registry.yarnpkg.com/@types/material-ui/-/material-ui-0.18.5.tgz#27f791226cc297f5df58ff811067fa44c5599dd3"
   dependencies:

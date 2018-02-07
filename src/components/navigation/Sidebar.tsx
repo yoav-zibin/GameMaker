@@ -16,7 +16,7 @@ const SelectableList = makeSelectable(List);
 interface SidebarProps {
   docked: boolean;
   open: boolean;
-  onRequestChangeNavDrawer: (opening: boolean, reason: string) => void;
+  onRequestChangeNavDrawer: (opening: boolean) => void;
   location: {
     pathname: string;
   };

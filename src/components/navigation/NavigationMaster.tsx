@@ -1,8 +1,10 @@
 import * as React from 'react';
-
+// import { BrowserRouter } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import withWidth, { LARGE } from 'material-ui/utils/withWidth';
+import * as PropTypes from 'prop-types';
+// import withWidth, { LARGE } from 'material-ui/utils/withWidth';
+import { LARGE } from 'material-ui/utils/withWidth';
 
 import Sidebar from './Sidebar';
 
@@ -23,6 +25,10 @@ interface NavigationMasterState {
 
 class NavigationMaster extends React.Component<NavigationMasterProps, NavigationMasterState> {
 
+  static contextTypes = {
+    router: PropTypes.object
+  };
+
   constructor(props: NavigationMasterProps) {
     super(props);
     this.state = {
@@ -36,7 +42,7 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
     });
   }
 
-  handleChangeList = (event?: React.SyntheticEvent<{}>, value?: any) => {
+  handleChangeList = (event: React.SyntheticEvent<{}>, value: any) => {
     if (value) {
       this.context.router.history.push(value);
       this.setState({
@@ -86,7 +92,7 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
           docked={docked}
           location={this.props.location}
           onRequestChangeNavDrawer={this.handleChangeRequestNavDrawer}
-          onChangeList={() => this.handleChangeList()}
+          onChangeList={(e, v) => this.handleChangeList(e, v)}
           open={navDrawerOpen}
           isAuthenticated={isAuthenticated()}
           onLogoutClick={() => this.handleLogoutClick()}
@@ -96,4 +102,5 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
   }
 }
 
-export default withWidth()(NavigationMaster);
+export default NavigationMaster;
+// export default withWidth()(NavigationMaster);

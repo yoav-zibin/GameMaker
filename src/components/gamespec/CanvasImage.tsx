@@ -23,13 +23,21 @@ interface CanvasImageProps {
   rotation?: number;
   draggable?: boolean;
   onDragEnd?: (e: any) => void;
+  item?: any;
 }
 
 interface CanvasImageState {
-  image: HTMLImageElement;
+  image: any;
 }
 
 class CanvasImage extends React.Component<CanvasImageProps, CanvasImageState> {
+
+  constructor(props: CanvasImageProps) {
+    super(props);
+    this.state = {
+      image: null
+    };
+  }
 
   componentDidMount() {
     this.setImage();
@@ -39,7 +47,6 @@ class CanvasImage extends React.Component<CanvasImageProps, CanvasImageState> {
     const image = new window.Image();
     image.crossOrigin = 'Anonymous';
     image.src = nextProps.src;
-    image.crossOrigin = 'Anonymous';
     image.onload = () => {
       this.setState({
         image: image

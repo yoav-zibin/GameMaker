@@ -306,7 +306,7 @@ class Board extends React.Component<BoardProps, BoardState> {
                   onClick={() => {
                     this.handleClickOn(index);
                   }}
-                  // item={item}
+                  item={item}
                   width={
                     this.props.allImages[
                       item.element.images[item.currentImage].imageId
