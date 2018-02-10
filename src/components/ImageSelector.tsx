@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Toggle from 'material-ui/Toggle';
 import TextField from 'material-ui/TextField';
@@ -7,14 +7,21 @@ import styles from '../styles';
 
 import './ImageSelector.css';
 
-const ImageSelector = props => {
+interface ImageSelectorProps {
+  label: string;
+  handleChange: (iden: string, e: any, newVal?: string | boolean) => void;
+  imageIdErrorText: string;
+  imageName: string;
+}
+
+const ImageSelector: React.StatelessComponent<ImageSelectorProps> = (props: ImageSelectorProps) => {
   return (
     <div style={styles.block} className="image-selector-div">
       <div>
         <RaisedButton
           containerElement="label"
           label={props.label}
-          onChange={e => {
+          onClick={(e: any) => {
             props.handleChange(constants.IMAGE_PATH_IDENTIFIER, e);
           }}
         >
