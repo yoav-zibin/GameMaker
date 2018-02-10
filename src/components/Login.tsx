@@ -1,12 +1,12 @@
-import React from 'react';
+import * as React from 'react';
 import { auth, googleProvider, isAuthenticated, db } from '../firebase';
-import Redirect from 'react-router-dom/Redirect';
+import { Redirect } from 'react-router-dom';
 import Card from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import { red500 } from 'material-ui/styles/colors';
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 const raisedButtonStyle = {
   margin: 16
 };
@@ -15,7 +15,11 @@ const attentionTextStyle = {
   paddingTop: 20
 };
 
-class Login extends React.Component {
+interface LoginProps {
+  location: any;
+}
+
+class Login extends React.Component<LoginProps> {
   state = {
     email: '',
     password: '',
@@ -27,6 +31,11 @@ class Login extends React.Component {
     if (isAuthenticated()) {
       let user = auth.currentUser;
       let usersRef = db.ref('users');
+      
+      if (!user) {
+        return;
+      }
+
       let userData = {
         privateFields: {
           email: user.email,
@@ -40,7 +49,7 @@ class Login extends React.Component {
         },
         publicFields: {
           avatarImageUrl:
-            user.photoUrl ||
+            (user.photoURL) ? user.photoURL :
             'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png',
           displayName: user.displayName || user.email,
           isConnected: true,
@@ -48,7 +57,7 @@ class Login extends React.Component {
         }
       };
 
-      usersRef.child(user.uid).transaction(function(currentUserData) {
+      usersRef.child(user.uid).transaction(function(currentUserData: any) {
         if (
           currentUserData === null ||
           !currentUserData.privateFields.email ||
@@ -56,12 +65,14 @@ class Login extends React.Component {
             userData.publicFields.lastSeen
         ) {
           return userData;
+        } else {
+          return null;
         }
       });
     }
-  };
+  }
 
-  handleSubmit = evt => {
+  handleSubmit = (evt: React.SyntheticEvent<{}>) => {
     evt.preventDefault();
     auth
       .signInWithEmailAndPassword(this.state.email, this.state.password)
@@ -69,22 +80,22 @@ class Login extends React.Component {
         this.createUserIfNotExists();
         this.setState({ redirectToReferrer: true });
       });
-  };
+  }
 
   toggleSignInWithEmail = () => {
     this.setState({
       signInWithEmailActive: !this.state.signInWithEmailActive
     });
-  };
+  }
 
   loginWithGoogle = () => {
     auth.signInWithPopup(googleProvider).then(
-      function(result) {
+      (result: any) => {
         this.createUserIfNotExists();
         this.setState({ redirectToReferrer: true });
-      }.bind(this)
+      }
     );
-  };
+  }
 
   render() {
     const { from } = this.props.location.state || '/';
@@ -126,14 +137,14 @@ class Login extends React.Component {
                 value={this.state.email}
                 errorText=""
                 floatingLabelText="Email"
-                onChange={e => this.setState({ email: e.target.value })}
+                onChange={e => this.setState({ email: (e.target as HTMLTextAreaElement).value })}
               />
               <br />
               <TextField
                 value={this.state.password}
                 errorText=""
                 floatingLabelText="Password"
-                onChange={e => this.setState({ password: e.target.value })}
+                onChange={e => this.setState({ password: (e.target as HTMLTextAreaElement).value })}
               />
               <br />
               <RaisedButton label="Back" onClick={this.toggleSignInWithEmail} />
