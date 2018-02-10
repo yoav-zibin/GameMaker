@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import TextField from 'material-ui/TextField';
 
@@ -16,9 +16,23 @@ const flexElement = {
   position: 'relative',
   width: '40%',
   float: 'left'
-};
+} as React.CSSProperties;
 
-const ElementCreator = props => {
+interface ElementCreatorProps {
+  images: any[];
+  searchedImages: any;
+  handleGridTileClick: (key: any) => void;
+  getSelectedImages: () => any;
+  setSelectedImages: (images: any) => void;
+  getElementKind: () => number;
+  getCardElements: () => any;
+  handleElementGridTileClickBoard: () => any;
+  getSelectedElements: () => any;
+  setSelectedElements: (elements: any) => void;
+  setSearchedImages: (images: any) => void;
+}
+
+const ElementCreator: React.StatelessComponent<ElementCreatorProps> = (props: ElementCreatorProps) => {
   let {
     images,
     searchedImages,
@@ -33,12 +47,13 @@ const ElementCreator = props => {
     setSearchedImages
   } = props;
 
-  const handleNameChange = (e, value) => {
+  const handleNameChange = (e: any, value: any) => {
     let Img = props.images;
     let result = {};
     for (let imgKey in Img) {
-      if (Img[imgKey].name.toLowerCase().indexOf(value) !== -1)
+      if (Img[imgKey].name.toLowerCase().indexOf(value) !== -1) {
         result[imgKey] = Img[imgKey];
+      }
     }
     setSearchedImages(result);
   };

@@ -15,10 +15,10 @@ interface ElementProps {
   getElementKind: () => number;
   getSelectedImages: () => any[];
   setSelectedImages: (images: any[]) => void;
-  getSelectedElements: () => any[];
-  setSelectedElements: (elements: any[]) => void;
+  getSelectedElements?: () => any[];
+  setSelectedElements?: (elements: any[]) => void;
   images: any[];
-  getCardElements: () => any[];
+  getCardElements?: () => any[];
 }
 
 interface ElementState {
@@ -38,6 +38,9 @@ class Element extends React.Component<ElementProps, ElementState> {
 
   componentDidMount() {
     this.setState({ selected_images: this.props.getSelectedImages() });
+    if (!this.props.getSelectedElements) {
+      return;
+    }
     if (this.props.getElementKind() === 4 || this.props.getElementKind() === 5) {
       this.setState({ selected_cards: this.props.getSelectedElements() });
     }
@@ -57,6 +60,9 @@ class Element extends React.Component<ElementProps, ElementState> {
     let index = data.indexOf(key);
     data.splice(index, 1);
     this.setState({ selected_cards: data });
+    if (!this.props.setSelectedElements) {
+      return;
+    }
     this.props.setSelectedElements(this.state.selected_cards);
     return;
   }
@@ -79,6 +85,9 @@ class Element extends React.Component<ElementProps, ElementState> {
   }
 
   renderCardChip(data: any, index: number) {
+    if (!this.props.getCardElements) {
+      return;
+    }
     let card = this.props.getCardElements()[data];
     let imageId = card.images[0].imageId;
     let image = this.props.images[imageId];
