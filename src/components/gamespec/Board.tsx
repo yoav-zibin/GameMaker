@@ -149,23 +149,14 @@ class Board extends React.Component<BoardProps, BoardState> {
     });
   }
 
-<<<<<<< HEAD:src/components/gamespec/Board.js
-  componentWillUpdate = (nextProps, nextState) => {
+  componentWillUpdate(nextProps: BoardProps, nextState: BoardState) {
     // for (let i = 0; i < this.props.getItems().length; i++) {
     //   if (this.refs && this.refs['canvasImage' + i]) {
     //     this.refs['canvasImage' + i].refs.image.cache();
     //     this.refs['canvasImage' + i].refs.image.drawHitFromCache();
     //   }
     // }
-  };
-=======
-  componentWillUpdate(nextProps: BoardProps, nextState: BoardState) {
-    for (let i = 0; i < this.props.getItems().length; i++) {
-      ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().cache();
-      ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().drawHitFromCache(1);
-    }
   }
->>>>>>> d9664c5... Finished Migrating most of gamespec:src/components/gamespec/Board.tsx
 
   handleDragEnd = (index: any) => {
     let items = this.props.getItems();

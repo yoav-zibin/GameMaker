@@ -21,6 +21,7 @@
     "react-scripts-ts": "^2.12.0"
   },
   "dependencies": {
+    "@types/react-dnd-html5-backend": "^2.1.8",
     "@types/react-tap-event-plugin": "^0.0.30",
     "firebase": "^4.1.3",
     "gh-pages": "^1.0.0",
