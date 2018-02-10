@@ -10,7 +10,7 @@ import './ImageSelector.css';
 interface ImageSelectorProps {
   label: string;
   handleChange: (iden: string, e: any, newVal?: string | boolean) => void;
-  imageIdErrorText: string;
+  imageIdErrorText?: string;
   imageName: string;
 }
 
