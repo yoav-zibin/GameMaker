@@ -13,17 +13,17 @@ const flexElement = {
 
 interface ElementProps {
   getElementKind: () => number;
-  getSelectedImages: () => any[];
-  setSelectedImages: (images: any[]) => void;
-  getSelectedElements: () => any[];
-  setSelectedElements: (elements: any[]) => void;
-  images: any[];
-  getCardElements: () => any[];
+  getSelectedImages: () => string[];
+  setSelectedImages: (images: string[]) => void;
+  getSelectedElements?: () => string[];
+  setSelectedElements?: (elements: string[]) => void;
+  images: fbr.Images;
+  getCardElements?: () => fbr.Elements;
 }
 
 interface ElementState {
-  selected_images: any[];
-  selected_cards: any[];
+  selected_images: string[];
+  selected_cards: string[];
 }
 
 class Element extends React.Component<ElementProps, ElementState> {
@@ -38,12 +38,15 @@ class Element extends React.Component<ElementProps, ElementState> {
 
   componentDidMount() {
     this.setState({ selected_images: this.props.getSelectedImages() });
+    if (!this.props.getSelectedElements) {
+      return;
+    }
     if (this.props.getElementKind() === 4 || this.props.getElementKind() === 5) {
       this.setState({ selected_cards: this.props.getSelectedElements() });
     }
   }
 
-  handleRequestDelete = (key: any) => {
+  handleRequestDelete = (key: string) => {
     let data = this.state.selected_images;
     let index = data.indexOf(key);
     data.splice(index, 1);
@@ -52,16 +55,19 @@ class Element extends React.Component<ElementProps, ElementState> {
     return;
   }
 
-  handleRequestDeleteCard = (key: any) => {
+  handleRequestDeleteCard = (key: string) => {
     let data = this.state.selected_cards;
     let index = data.indexOf(key);
     data.splice(index, 1);
     this.setState({ selected_cards: data });
+    if (!this.props.setSelectedElements) {
+      return;
+    }
     this.props.setSelectedElements(this.state.selected_cards);
     return;
   }
 
-  renderChip(data: any) {
+  renderChip(data: string) {
     return (
       <Chip key={data} onRequestDelete={() => this.handleRequestDelete(data)}>
         <Avatar src={this.props.images[data].downloadURL} />
@@ -70,7 +76,7 @@ class Element extends React.Component<ElementProps, ElementState> {
     );
   }
 
-  showName(card: any, data: any) {
+  showName(card: fbr.Element, data: string | number) {
     if (card.name !== undefined) {
       return card.name;
     } else {
@@ -78,7 +84,10 @@ class Element extends React.Component<ElementProps, ElementState> {
     }
   }
 
-  renderCardChip(data: any, index: number) {
+  renderCardChip(data: string, index: number) {
+    if (!this.props.getCardElements) {
+      return;
+    }
     let card = this.props.getCardElements()[data];
     let imageId = card.images[0].imageId;
     let image = this.props.images[imageId];
