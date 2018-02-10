@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import styles from '../styles';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -6,21 +6,41 @@ import Subheader from 'material-ui/Subheader';
 import Toggle from 'material-ui/Toggle';
 import TextField from 'material-ui/TextField';
 
-const showIsDrawable = kind => {
-  if (kind === 0 || kind === 3) return false;
-  else return true;
+const showIsDrawable = (kind: number) => {
+  if (kind === 0 || kind === 3) {
+    return false;
+  } else {
+    return true;
+  }
 };
 
-const showRotatableDegree = kind => {
-  if (kind === 0) return false;
-  else return true;
+const showRotatableDegree = (kind: number) => {
+  if (kind === 0) {
+    return false;
+  } else {
+    return true;
+  }
 };
 
-const showName = name => {
-  if (name !== '') return name;
+const showName = (name: string) => {
+  if (name !== '') {
+    return name;
+  } else {
+    return undefined;
+  }
 };
 
-const ElementKindSelector = props => {
+interface ElementKindSelectorProps {
+  getElementKind: () => number;
+  setElementKind: (value: number) => void;
+  isDraggable: boolean;
+  isDrawable: boolean;
+  handleChange: (kind: string, e: any, newVal: boolean | string) => void;
+  name: string;
+  degree: number;
+}
+
+const ElementKindSelector: React.StatelessComponent<ElementKindSelectorProps> = (props: ElementKindSelectorProps) => {
   return (
     <div style={styles.block} className="element-kind-selector-div">
       <div>
