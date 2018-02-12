@@ -17,12 +17,12 @@ interface CanvasImageProps {
   src: string;
   width: number;
   height: number;
-  onClick?: (e: any) => void;
+  onClick?: (e: React.MouseEvent<{}>) => void;
   x?: number;
   y?: number;
   rotation?: number;
   draggable?: boolean;
-  onDragEnd?: (e: any) => void;
+  onDragEnd?: (e: React.SyntheticEvent<{}>) => void;
   item?: any;
 }
 

@@ -9,7 +9,7 @@ import './ImageSelector.css';
 
 interface ImageSelectorProps {
   label: string;
-  handleChange: (iden: string, e: any, newVal?: string | boolean) => void;
+  handleChange: (iden: string, e: React.SyntheticEvent<{}>, newVal?: string | boolean) => void;
   imageIdErrorText?: string;
   imageName: string;
 }
@@ -21,7 +21,7 @@ const ImageSelector: React.StatelessComponent<ImageSelectorProps> = (props: Imag
         <RaisedButton
           containerElement="label"
           label={props.label}
-          onClick={(e: any) => {
+          onClick={(e: React.MouseEvent<{}>) => {
             props.handleChange(constants.IMAGE_PATH_IDENTIFIER, e);
           }}
         >

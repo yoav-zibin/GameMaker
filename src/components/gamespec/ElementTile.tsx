@@ -13,9 +13,9 @@ const showName = (image: any) => {
 };
 
 interface ElementTileProps {
-  keyProp: any;
-  selectedKey: any;
-  handleGridTileClick: (keyProp: any, image: any) => any;
+  keyProp: string;
+  selectedKey: string;
+  handleGridTileClick: (keyProp: string, image: string) => void;
   image: any;
   images: any[];
 }

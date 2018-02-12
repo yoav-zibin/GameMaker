@@ -46,10 +46,10 @@ interface GameSpecBuilderContainerState {
   recentElements: any;
   allElements: any;
   allSpecs: any;
-  gameIcon50: any;
-  gameIcon512: any;
-  gameIcon50x50: any;
-  gameIcon512x512: any;
+  gameIcon50: string;
+  gameIcon512: string;
+  gameIcon50x50: string;
+  gameIcon512x512: string;
 }
 
 class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerProps, GameSpecBuilderContainerState> {
@@ -275,7 +275,7 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
     this.vars.spec = spec;
   }
 
-  setSpecName(e: any, newValue: string) {
+  setSpecName(e: React.SyntheticEvent<{}>, newValue: string) {
     if (this.state.allSpecs && this.state.allSpecs[newValue]) {
       this.setState({
         specNameErrorText: constants.EXISTING_SPEC_NAME_ERROR,
@@ -289,7 +289,7 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
     }
   }
 
-  setYoutube(e: any, newValue: string) {
+  setYoutube(e: React.FormEvent<{}>, newValue: string) {
     this.vars.tutorialYoutubeVideo = newValue;
   }
 
@@ -297,7 +297,7 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
     return this.vars.tutorialYoutubeVideo;
   }
 
-  setWiki(e: any, newValue: string) {
+  setWiki(e: React.FormEvent<{}>, newValue: string) {
     this.vars.wikipediaUrl = newValue;
   }
 
@@ -314,7 +314,7 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
     }
   }
 
-  handleNameChange = (e: any, value: string) => {
+  handleNameChange = (e: React.SyntheticEvent<{}>, value: string) => {
     let boardImg = this.state.boardImages;
     let result = {};
     for (let imgKey in boardImg) {
@@ -351,25 +351,25 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
     });
   }
 
-  handleGridTileClickBoard(key: any) {
+  handleGridTileClickBoard(key: string) {
     this.setState({
       selectedBoard: key
     });
   }
 
-  handleGameIcon50(key: any) {
+  handleGameIcon50(key: string) {
     this.setState({
       gameIcon50x50: key
     });
   }
 
-  handleGameIcon512(key: any) {
+  handleGameIcon512(key: string) {
     this.setState({
       gameIcon512x512: key
     });
   }
 
-  setGameIcon50(key: any) {
+  setGameIcon50(key: string) {
     this.setState({
       gameIcon50x50: key
     });
@@ -383,7 +383,7 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
     return this.state.gameIcon512x512;
   }
 
-  setGameIcon512(key: any) {
+  setGameIcon512(key: string) {
     this.setState({
       gameIcon512x512: key
     });
@@ -403,7 +403,7 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
             <BoardList
               cellHeight={180}
               header="Boards"
-              handleGridTileClick={(key: any) => this.handleGridTileClickBoard(key)}
+              handleGridTileClick={(key: string) => this.handleGridTileClickBoard(key)}
               data={this.state.searchedBoard}
               selectedKey={this.state.selectedBoard}
             />
@@ -444,12 +444,12 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
       case 2: {
         return (
           <SpecInfo
-            handleIcon50CLick={(key: any) => this.handleGameIcon50(key)}
-            handleIcon512Click={(key: any) => this.handleGameIcon512(key)}
+            handleIcon50CLick={(key: string) => this.handleGameIcon50(key)}
+            handleIcon512Click={(key: string) => this.handleGameIcon512(key)}
             gameIcon50={this.state.gameIcon50}
             gameIcon512={this.state.gameIcon512}
-            setYoutube={(e: any, newValue: string) => this.setYoutube(e, newValue)}
-            setWiki={(e: any, newValue: string) => this.setWiki(e, newValue)}
+            setYoutube={(e: React.FormEvent<{}>, newValue: string) => this.setYoutube(e, newValue)}
+            setWiki={(e: React.FormEvent<{}>, newValue: string) => this.setWiki(e, newValue)}
             getYoutube={() => this.getYoutube()}
             getWiki={() => this.getWiki()}
             getGameIcon50={() => this.getGameIcon50()}
@@ -462,13 +462,13 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
         return (
           <SpecViewer
             specName={this.state.specName}
-            setSpecName={(e: any, newVal: string) => this.setSpecName(e, newVal)}
+            setSpecName={(e: React.SyntheticEvent<{}>, newVal: string) => this.setSpecName(e, newVal)}
             specNameErrorText={this.state.specNameErrorText}
             items={this.state.items}
             spec={this.vars.spec}
             boardSize={this.vars.boardSize}
             setInitialSpec={(val: any) => this.setInitialSpec(val)}
-            handleSpecChange={(e: any) => this.handleSpecChange(e)}
+            handleSpecChange={(e: React.SyntheticEvent<{}>) => this.handleSpecChange(e)}
             boardImage={this.state.boardImages[this.state.selectedBoard]}
           />
         );

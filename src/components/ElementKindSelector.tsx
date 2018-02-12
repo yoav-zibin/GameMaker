@@ -35,7 +35,7 @@ interface ElementKindSelectorProps {
   setElementKind: (value: number) => void;
   isDraggable: boolean;
   isDrawable: boolean;
-  handleChange: (kind: string, e: any, newVal: boolean | string) => void;
+  handleChange: (kind: string, e: React.SyntheticEvent<{}>, newVal: boolean | string) => void;
   name: string;
   degree: number;
 }

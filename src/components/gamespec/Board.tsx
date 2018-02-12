@@ -39,7 +39,7 @@ interface BoardItem {
     x: number;
     y: number;
   };
-  eleKey: any;
+  eleKey: string;
   currentImage: any;
   degree: number;
   deckIndex: number;
