@@ -1,6 +1,4 @@
-import React from 'react';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
+import * as React from 'react';
 import PieceList from './gamespec/PieceList';
 import Board from './gamespec/Board';
 import styles from '../styles';
@@ -16,9 +14,35 @@ const flexElement = {
   position: 'relative',
   width: '30%',
   float: 'left'
-};
+} as React.CSSProperties;
 
-const GameSpecBuilder = props => {
+interface GameSpecBuilderProps {
+  standardElements: any[];
+  toggableElements: any[];
+  cardElements: any[];
+  diceElements: any[];
+  cardsDeckElements: any[];
+  piecesDeckElements: any[];
+  currentUserElements: any[];
+  setItems: (items: any[]) => void;
+  setBoardSize: (size: number) => void;
+  getItems: () => any[];
+  boardImage: any;
+  allImages: any[];
+  allElements: any[];
+  specType: string;
+  setDecks: (decks: any[]) => void;
+  getDecks: () => any[];
+  handleClickShuffle: () => void;
+  setDeckCount: (count: any[]) => void;
+  getDeckCount: () => any[];
+  getValue: () => any;
+  notify: (message: string) => void;
+  setValue: (val: number) => void;
+  recentElements: any;
+}
+
+const GameSpecBuilder: React.StatelessComponent<GameSpecBuilderProps> = (props: GameSpecBuilderProps) => {
   let {
     standardElements,
     toggableElements,
