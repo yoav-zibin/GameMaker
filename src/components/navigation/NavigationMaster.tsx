@@ -16,7 +16,8 @@ interface NavigationMasterProps {
   location: {
     pathname: string;
   };
-  width: number;
+  width?: number;
+  specBuilderOn: boolean;
 }
 
 interface NavigationMasterState {

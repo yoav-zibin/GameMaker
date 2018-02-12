@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import Route from 'react-router-dom/Route';
+import * as React from 'react';
+import { Route } from 'react-router-dom';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -17,13 +17,27 @@ import styles from './styles';
 
 import './App.css';
 
-class App extends Component {
-  state = {
-    uid: null
-  };
+interface AppProps {
+  location: any;
+}
+
+interface AppState {
+  uid: any;
+  specBuilderOn: boolean;
+}
+
+class App extends React.Component<AppProps, AppState> {
+
+  constructor(props: AppProps) {
+    super(props);
+    this.state = {
+      uid: null,
+      specBuilderOn: false
+    };
+  }
 
   componentDidMount() {
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged((user: any) => {
       if (user) {
         window.localStorage.setItem(storageKey, user.uid);
         this.setState({ uid: user.uid });
@@ -50,22 +64,22 @@ class App extends Component {
                   component={GameSpecBuilderContainer}
                 />
                 <RouteWhenAuthenticated
-                  exact
+                  exact={true}
                   path="/"
                   component={ImageUploader}
                 />
                 <RouteWhenAuthenticated
-                  exact
+                  exact={true}
                   path="/create"
                   component={ElementCreatorContainer}
                 />
                 <RouteWhenAuthenticated
-                  exact
+                  exact={true}
                   path="/update"
                   component={SpecTestContainer}
                 />
                 <RouteWhenAuthenticated
-                  exact
+                  exact={true}
                   path="/play"
                   component={PlaySpecContainer}
                 />
