@@ -20,7 +20,7 @@ const ImageSelector = props => {
           errorText={props.imageIdErrorText}
           value={props.imageNames[i]}
           onChange={(e, newValue) => {
-            props.handleChange(constants.IMAGE_ID_IDENTIFIER, e, newValue);
+            props.handleChange(constants.IMAGE_ID_IDENTIFIER, e, newValue, i);
           }}
         />
       </div>

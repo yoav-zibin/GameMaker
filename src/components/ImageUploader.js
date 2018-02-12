@@ -28,7 +28,9 @@ class ImageUploader extends React.Component {
     errorText: '',
     isBoardImage: false,
     isImageCertified: false,
-    snackbarWarning: ''
+    snackbarWarning: '',
+    widths: [],
+    heights: []
   };
 
   state = Object.assign({}, this.initialState);
@@ -41,12 +43,11 @@ class ImageUploader extends React.Component {
 
   checkImageDimensions = files => {
     let that = this;
-    return new Promise((resolve, reject) => {
-      let widths = new Array();
-      let heights = new Array();
-      console.log('checking dimensions....');
-      console.log(files.length);
-      for (let i = 0; i < files.length; i++) {
+    let promises = [];
+
+    for (let i = 0; i < files.length; i++) {
+
+      let p = new Promise(function (resolve, reject) {
         let file = files[i];
         window.URL = window.URL || window.webkitURL;
 
@@ -59,37 +60,27 @@ class ImageUploader extends React.Component {
           window.URL.revokeObjectURL(img.src);
 
           if (!that.vars.isBoardImage) {
-            widths[widths.length] = width;
-            heights[heights.length] = height;
-            // widths.push(width);
-            // heights.push(height);
-            console.log('hhhhhh');
-            // resolve({ width, height });
+            that.vars.widths.push(width);
+            that.vars.heights.push(height);
+            resolve();
           } else if (Math.max(width, height) === 1024) {
-            widths[widths.length] = width;
-            heights[heights.length] = height;
-            // widths.push(width);
-            // heights.push(height);
-            // resolve({ width, height });
+            that.vars.widths.push(width);
+            that.vars.heights.push(height);
+            resolve();
           } else if (file.size >= 0 && file.size <= 2 * 1024 * 1024) {
-            widths[widths.length] = width;
-            heights[heights.length] = height;
-            // widths.push(width);
-            // heights.push(height);
-            // resolve({ width, height });
+            that.vars.widths.push(width);
+            that.vars.heights.push(height);
+            resolve();
           } else {
             reject();
           }
         };
-      }
+      });
+      
+      promises.push(p);
+    }
 
-      // setTimeout(resolve({ widths, heights }), 10000);
-      console.log('Loading pics........................');
-      console.log(widths);
-      console.log(widths.length);
-
-      resolve({ widths, heights });
-    });
+    return promises;
   };
 
   handleUpload = (stepIndex, widths, heights) => {
@@ -102,7 +93,7 @@ class ImageUploader extends React.Component {
         .split('.')
         .pop()
         .toLowerCase();
-      console.log('Uploading....' + widths[i]);
+
       let metadata = {
         customMetadata: {
           width: widths[i],
@@ -116,7 +107,7 @@ class ImageUploader extends React.Component {
           uploaderEmail: auth.currentUser.email
         }
       };
-      console.log('~~~~~@@@@@@@@@');
+
       console.log(metadata);
       let childKey = dbRef.push().key;
       ref
@@ -171,12 +162,9 @@ class ImageUploader extends React.Component {
           this.notify(constants.NO_FILE_SELECTED_WARNING);
         }
 
-        this.checkImageDimensions(this.state.files).then(
-          // setTimeout(({ widths, heights }) => {
-          //   this.handleUpload(stepIndex, widths, heights);
-          // }, 10000),
-          ({ widths, heights }) => {
-            this.handleUpload(stepIndex, widths, heights);
+        Promise.all(this.checkImageDimensions(this.state.files)).then(
+          () => {
+            this.handleUpload(stepIndex, this.vars.widths, this.vars.heights);
           },
           () => {
             this.notify(constants.MAX_WIDTH_HEIGHT_WARNING);
@@ -198,14 +186,13 @@ class ImageUploader extends React.Component {
     }
   };
 
-  handleImageUploaderChange = (element, e, newValue) => {
+  handleImageUploaderChange = (element, e, newValue, imageIndex) => {
     switch (element) {
       case constants.IMAGE_PATH_IDENTIFIER: {
         let files = e.target.files;
         let imageLabels = '';
-        let paths = [];
         let imageNames = [];
-        // console.log(files.length);
+        let paths = [];
         for (let i = 0; i < files.length; i++) {
           let imageLabel = files[i].name.split('/').pop();
           let imageName = imageLabel.split('.');
@@ -216,7 +203,7 @@ class ImageUploader extends React.Component {
             imageLabels += ',';
           }
           paths.push(files[i].name);
-          imageNames.push(imageName);
+          imageNames.push(imageName[0]);
 
           if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
             this.vars.snackbarWarning =
@@ -227,12 +214,13 @@ class ImageUploader extends React.Component {
           }
         }
         this.vars.imageLabel = imageLabels;
+        this.state.imageNames = imageNames;
         this.setState({
           // imagePath: file.name,
           imagePaths: paths,
-          files: files,
+          files: files
           // imageName: imageName.join('.')
-          imageNames: imageNames
+          //imageNames: imageNames
         });
         break;
       }
@@ -242,8 +230,14 @@ class ImageUploader extends React.Component {
         break;
       }
 
+      console.log("newValue ");
+      console.log(newValue);
+      console.log(imageIndex);
+
       case constants.IMAGE_ID_IDENTIFIER: {
-        this.setState({ imageName: newValue });
+        var imageNames = this.state.imageNames;
+        imageNames[imageIndex] = newValue;
+        this.setState({ imageNames : imageNames });
         break;
       }
 
