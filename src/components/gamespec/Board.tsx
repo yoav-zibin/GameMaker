@@ -22,8 +22,10 @@ interface BoardProps {
     width: number;
     height: number;
   };
-  connectDropTarget: ConnectDropTarget;
+  connectDropTarget?: ConnectDropTarget;
   allImages: any[];
+  setDecks: (decks: any[]) => void;
+  getDecks: () => any[];
 }
 
 interface BoardState {
@@ -151,10 +153,8 @@ class Board extends React.Component<BoardProps, BoardState> {
 
   componentWillUpdate(nextProps: BoardProps, nextState: BoardState) {
     // for (let i = 0; i < this.props.getItems().length; i++) {
-    //   if (this.refs && this.refs['canvasImage' + i]) {
-    //     this.refs['canvasImage' + i].refs.image.cache();
-    //     this.refs['canvasImage' + i].refs.image.drawHitFromCache();
-    //   }
+      // ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().cache();
+      // ((this.refs['canvasImage' + i] as CanvasImage).refs['image'] as Image).getNativeNode().drawHitFromCache(1);
     // }
   }
 
@@ -285,6 +285,9 @@ class Board extends React.Component<BoardProps, BoardState> {
 
   render() {
     const { connectDropTarget } = this.props;
+    if (!connectDropTarget) {
+      return;
+    }
     this.imageWidthRatio =
       this.props.boardImage.width / this.width;
     this.imageHeightRatio =
