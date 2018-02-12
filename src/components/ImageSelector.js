@@ -8,6 +8,24 @@ import styles from '../styles';
 import './ImageSelector.css';
 
 const ImageSelector = props => {
+  var TextFieldHolder = [];
+  var length = props.imageNames.length;
+  for (let i = 0; i < length; i++) {
+    TextFieldHolder.push(
+      <div>
+        <TextField
+          floatingLabelText={constants.IMAGE_ID_FLOATING_LABEL}
+          floatingLabelFixed={true}
+          hintText={constants.IMAGE_ID_HINT_TEXT}
+          errorText={props.imageIdErrorText}
+          value={props.imageNames[i]}
+          onChange={(e, newValue) => {
+            props.handleChange(constants.IMAGE_ID_IDENTIFIER, e, newValue, i);
+          }}
+        />
+      </div>
+    );
+  }
   return (
     <div style={styles.block} className="image-selector-div">
       <div>
@@ -18,21 +36,27 @@ const ImageSelector = props => {
             props.handleChange(constants.IMAGE_PATH_IDENTIFIER, e);
           }}
         >
-          <input type="file" style={{ display: 'none' }} accept="image/*" />
+          <input
+            type="file"
+            multiple={true}
+            style={{ display: 'none' }}
+            accept="image/*"
+          />
         </RaisedButton>
       </div>
-      <div>
+      <div>{TextFieldHolder}</div>
+      {/* <div>
         <TextField
           floatingLabelText={constants.IMAGE_ID_FLOATING_LABEL}
           floatingLabelFixed={true}
           hintText={constants.IMAGE_ID_HINT_TEXT}
           errorText={props.imageIdErrorText}
-          value={props.imageName}
+          value={props.label}
           onChange={(e, newValue) => {
             props.handleChange(constants.IMAGE_ID_IDENTIFIER, e, newValue);
           }}
         />
-      </div>
+      </div> */}
       <div>
         <Toggle
           label={constants.BOARD_IMAGE_TOGGLE_LABEL}

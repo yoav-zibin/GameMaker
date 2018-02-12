@@ -17,10 +17,10 @@ class ImageUploader extends React.Component {
   initialState = {
     finished: false,
     stepIndex: 0,
-    imagePath: false,
-    imageName: '',
+    imagePaths: [],
+    imageNames: [],
     shouldDisplayWarningSnackBar: false,
-    file: false
+    files: false
   };
 
   initialVars = {
@@ -28,7 +28,9 @@ class ImageUploader extends React.Component {
     errorText: '',
     isBoardImage: false,
     isImageCertified: false,
-    snackbarWarning: ''
+    snackbarWarning: '',
+    widths: [],
+    heights: []
   };
 
   state = Object.assign({}, this.initialState);
@@ -39,85 +41,114 @@ class ImageUploader extends React.Component {
     this.setState({ shouldDisplayWarningSnackBar: true });
   };
 
-  checkImageDimensions = file => {
+  checkImageDimensions = files => {
     let that = this;
-    return new Promise((resolve, reject) => {
-      window.URL = window.URL || window.webkitURL;
+    let promises = [];
 
-      let img = new Image();
-      img.src = window.URL.createObjectURL(file);
-      img.onload = function() {
-        var width = img.naturalWidth,
-          height = img.naturalHeight;
+    for (let i = 0; i < files.length; i++) {
 
-        window.URL.revokeObjectURL(img.src);
+      let p = new Promise(function (resolve, reject) {
+        let file = files[i];
+        window.URL = window.URL || window.webkitURL;
 
-        if (!that.vars.isBoardImage) {
-          resolve({ width, height });
-        } else if (Math.max(width, height) === 1024) {
-          resolve({ width, height });
-        } else if (file.size >= 0 && file.size <= 2 * 1024 * 1024) {
-          resolve({ width, height });
-        } else {
-          reject();
-        }
-      };
-    });
+        let img = new Image();
+        img.src = window.URL.createObjectURL(file);
+        img.onload = function() {
+          let width = img.naturalWidth,
+            height = img.naturalHeight;
+
+          window.URL.revokeObjectURL(img.src);
+
+          if (!that.vars.isBoardImage) {
+            that.vars.widths.push(width);
+            that.vars.heights.push(height);
+            resolve();
+          } else if (Math.max(width, height) === 1024) {
+            that.vars.widths.push(width);
+            that.vars.heights.push(height);
+            resolve();
+          } else if (file.size >= 0 && file.size <= 2 * 1024 * 1024) {
+            that.vars.widths.push(width);
+            that.vars.heights.push(height);
+            resolve();
+          } else {
+            reject();
+          }
+        };
+      });
+      
+      promises.push(p);
+    }
+
+    return promises;
   };
 
-  handleUpload = (stepIndex, width, height) => {
+  handleUpload = (stepIndex, widths, heights) => {
     let that = this;
     let ref = imagesRef;
     let dbRef = imagesDbRef;
-    let extension = this.vars.imageLabel
-      .split('.')
-      .pop()
-      .toLowerCase();
+    let fileNames = this.vars.imageLabel.split(',');
+    for (let i = 0; i < this.state.files.length; i++) {
+      let extension = fileNames[i]
+        .split('.')
+        .pop()
+        .toLowerCase();
 
-    let metadata = {
-      customMetadata: {
-        width: width,
-        height: height,
-        isBoardImage: this.vars.isBoardImage,
-        name: that.state.imageName,
-        uploaderUid: auth.currentUser.uid,
-        sizeInBytes: that.state.file.size,
-        uploaderEmail: auth.currentUser.email
-      }
-    };
-    let childKey = dbRef.push().key;
-    ref
-      .child(childKey + '.' + extension)
-      .put(this.state.file, metadata)
-      .then(
-        function(snapshot) {
-          snapshot.ref.getDownloadURL().then(
-            function(url) {
-              let imageMetadataForDb = {
-                downloadURL: url,
-                createdOn: firebase.database.ServerValue.TIMESTAMP,
-                cloudStoragePath:
-                  constants.IMAGES_PATH + '/' + childKey + '.' + extension,
-                ...metadata.customMetadata
-              };
-              dbRef.child(childKey).set(imageMetadataForDb);
-              that.vars.snackbarWarning = constants.IMAGE_UPLOAD_SUCCESSFUL;
-              that.setState({
-                shouldDisplayWarningSnackBar: true,
-                stepIndex: stepIndex + 1,
-                finished: stepIndex >= 1
-              });
-            },
-            function() {
-              snapshot.ref.delete();
-              this.notify(constants.IMAGE_UPLOAD_FAILED);
-            }
-          );
-        },
-        function() {
-          this.notify(constants.IMAGE_UPLOAD_FAILED);
+      let metadata = {
+        customMetadata: {
+          width: widths[i],
+          height: heights[i],
+          isBoardImage: this.vars.isBoardImage,
+          // name: that.state.imageName,
+          // name: fileNames[i],
+          name: this.state.imageNames[i],
+          uploaderUid: auth.currentUser.uid,
+          sizeInBytes: that.state.files[i].size,
+          uploaderEmail: auth.currentUser.email
         }
-      );
+      };
+
+      console.log(metadata);
+      let childKey = dbRef.push().key;
+      ref
+        .child(childKey + '.' + extension)
+        .put(this.state.files[i], metadata)
+        .then(
+          function(snapshot) {
+            snapshot.ref.getDownloadURL().then(
+              function(url) {
+                let imageMetadataForDb = {
+                  downloadURL: url,
+                  createdOn: firebase.database.ServerValue.TIMESTAMP,
+                  cloudStoragePath:
+                    constants.IMAGES_PATH + '/' + childKey + '.' + extension,
+                  ...metadata.customMetadata
+                };
+                dbRef.child(childKey).set(imageMetadataForDb);
+                // that.vars.snackbarWarning = constants.IMAGE_UPLOAD_SUCCESSFUL;
+                // that.setState({
+                //   shouldDisplayWarningSnackBar: true,
+                //   stepIndex: stepIndex + 1,
+                //   finished: stepIndex >= 1
+                // });
+              },
+              function() {
+                snapshot.ref.delete();
+                this.notify(constants.IMAGE_UPLOAD_FAILED);
+              }
+            );
+          },
+          function() {
+            this.notify(constants.IMAGE_UPLOAD_FAILED);
+          }
+        );
+    }
+    that.vars.snackbarWarning = constants.IMAGE_UPLOAD_SUCCESSFUL;
+    that.setState({
+      shouldDisplayWarningSnackBar: true,
+      stepIndex: stepIndex + 1,
+      finished: stepIndex >= 1
+    });
   };
 
   handleNext = () => {
@@ -127,13 +158,13 @@ class ImageUploader extends React.Component {
         this.notify(constants.NOT_CERTIFIED_WARNING);
         return;
       } else {
-        if (!this.state.file) {
+        if (!this.state.files) {
           this.notify(constants.NO_FILE_SELECTED_WARNING);
         }
 
-        this.checkImageDimensions(this.state.file).then(
-          ({ width, height }) => {
-            this.handleUpload(stepIndex, width, height);
+        Promise.all(this.checkImageDimensions(this.state.files)).then(
+          () => {
+            this.handleUpload(stepIndex, this.vars.widths, this.vars.heights);
           },
           () => {
             this.notify(constants.MAX_WIDTH_HEIGHT_WARNING);
@@ -155,26 +186,41 @@ class ImageUploader extends React.Component {
     }
   };
 
-  handleImageUploaderChange = (element, e, newValue) => {
+  handleImageUploaderChange = (element, e, newValue, imageIndex) => {
     switch (element) {
       case constants.IMAGE_PATH_IDENTIFIER: {
-        let file = e.target.files[0];
-        let imageLabel = file.name.split('/').pop();
-        let imageName = imageLabel.split('.');
-        let extension = imageName.pop().toLowerCase();
+        let files = e.target.files;
+        let imageLabels = '';
+        let imageNames = [];
+        let paths = [];
+        for (let i = 0; i < files.length; i++) {
+          let imageLabel = files[i].name.split('/').pop();
+          let imageName = imageLabel.split('.');
 
-        if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
-          this.vars.snackbarWarning =
-            constants.PROPER_FORMAT_ACCEPTED_WARNING +
-            constants.ACCEPTED_IMAGE_FORMATS;
-          this.setState({ shouldDisplayWarningSnackBar: true });
-          break;
+          let extension = imageName.pop().toLowerCase();
+          imageLabels += imageLabel;
+          if (i < files.length - 1) {
+            imageLabels += ',';
+          }
+          paths.push(files[i].name);
+          imageNames.push(imageName[0]);
+
+          if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
+            this.vars.snackbarWarning =
+              constants.PROPER_FORMAT_ACCEPTED_WARNING +
+              constants.ACCEPTED_IMAGE_FORMATS;
+            this.setState({ shouldDisplayWarningSnackBar: true });
+            return;
+          }
         }
-        this.vars.imageLabel = imageLabel;
+        this.vars.imageLabel = imageLabels;
+        this.state.imageNames = imageNames;
         this.setState({
-          imagePath: file.name,
-          file: file,
-          imageName: imageName.join('.')
+          // imagePath: file.name,
+          imagePaths: paths,
+          files: files
+          // imageName: imageName.join('.')
+          //imageNames: imageNames
         });
         break;
       }
@@ -184,8 +230,14 @@ class ImageUploader extends React.Component {
         break;
       }
 
+      console.log("newValue ");
+      console.log(newValue);
+      console.log(imageIndex);
+
       case constants.IMAGE_ID_IDENTIFIER: {
-        this.setState({ imageName: newValue });
+        var imageNames = this.state.imageNames;
+        imageNames[imageIndex] = newValue;
+        this.setState({ imageNames : imageNames });
         break;
       }
 
@@ -204,8 +256,9 @@ class ImageUploader extends React.Component {
       case 0:
         return (
           <ImageSelector
-            label={this.vars.imageLabel}
-            imageName={this.state.imageName}
+            // label={this.vars.imageLabel}
+            label="Select image"
+            imageNames={this.state.imageNames}
             handleChange={this.handleImageUploaderChange.bind(this)}
           />
         );
