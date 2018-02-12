@@ -1,18 +1,22 @@
 import { isAuthenticated } from '../firebase';
-import Route from 'react-router-dom/Route';
-import Redirect from 'react-router-dom/Redirect';
-import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
+import * as React from 'react';
 
-const RouteWhenAuthenticated = ({
+interface RouteWhenAuthenticatedProps {
+  component: any;
+  path: string;
+  exact?: boolean;
+}
+
+const RouteWhenAuthenticated: React.StatelessComponent<RouteWhenAuthenticatedProps> = ({
   component: Component,
-  componentProps,
   ...rest
 }) => (
   <Route
     {...rest}
-    render={props =>
+    render={(props: any) =>
       isAuthenticated() ? (
-        <Component {...componentProps} {...props} />
+        <Component {...props} />
       ) : (
         <Redirect
           to={{
