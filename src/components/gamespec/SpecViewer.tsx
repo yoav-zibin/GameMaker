@@ -15,6 +15,9 @@ interface SpecViewerProps {
   specNameErrorText: string;
   specName: string;
   setSpecName: (e: any, name: string) => void;
+  spec: any;
+  handleSpecChange: (e: any) => void;
+  boardImage: any;
 }
 
 const SpecViewer: React.StatelessComponent<SpecViewerProps> = (props: SpecViewerProps) => {
