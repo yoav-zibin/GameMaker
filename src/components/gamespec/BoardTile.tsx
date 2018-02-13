@@ -5,9 +5,9 @@ import { GridTile } from 'material-ui/GridList';
 import styles from '../../styles';
 
 interface BoardTileProps {
-  keyProp: any;
-  selectedKey: any;
-  handleGridTileClick: (keyProp: any, image: any) => void;
+  keyProp: string;
+  selectedKey: string;
+  handleGridTileClick: (keyProp: string, image: string) => void;
   image: any;
 }
 

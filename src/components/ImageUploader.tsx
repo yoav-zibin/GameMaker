@@ -20,7 +20,7 @@ interface ImageUploaderProps {
 interface ImageUploaderState {
   finished: boolean;
   stepIndex: number;
-  imagePath: boolean;
+  imagePath: boolean | string;
   imageName: string;
   shouldDisplayWarningSnackBar: boolean;
   file: any;
@@ -28,7 +28,7 @@ interface ImageUploaderState {
 
 class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderState> {
 
-  initialState: any;
+  initialState: ImageUploaderState;
   initialVars: any;
   vars: any;
 
@@ -64,7 +64,7 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
     let that = this;
     return new Promise((resolve, reject) => {
 
-      // window.URL = window.URL || window.webkitURL;
+      window.URL = window.URL || (window as any).webkitURL;
 
       let img = new Image();
       img.src = window.URL.createObjectURL(file);
@@ -120,7 +120,7 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
       .then(
         function (snapshot: firebase.storage.UploadTaskSnapshot) {
           snapshot.ref.getDownloadURL().then(
-            function (url: any) {
+            function (url: string) {
               let imageMetadataForDb = {
                 downloadURL: url,
                 createdOn: firebase.database.ServerValue.TIMESTAMP,
@@ -186,13 +186,13 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
     }
   }
 
-  handleImageUploaderChange = (element: string, e: any, newValue: any) => {
+  handleImageUploaderChange = (element: string, e: React.SyntheticEvent<{}>, newValue: string) => {
     switch (element) {
       case constants.IMAGE_PATH_IDENTIFIER: {
-        let file = e.target.files[0];
+        let file = (e.target as HTMLInputElement).files![0];
         let imageLabel = file.name.split('/').pop();
-        let imageName = imageLabel.split('.');
-        let extension = imageName.pop().toLowerCase();
+        let imageName = imageLabel!.split('.');
+        let extension = imageName.pop()!.toLowerCase();
 
         if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
           this.vars.snackbarWarning =
@@ -226,7 +226,7 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
     }
   }
 
-  handleCertificationCheck(e: any, newValue: boolean) {
+  handleCertificationCheck(e: React.MouseEvent<{}>, newValue: boolean) {
     this.vars.isImageCertified = newValue;
   }
 
@@ -237,7 +237,8 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
           <ImageSelector
             label={this.vars.imageLabel}
             imageName={this.state.imageName}
-            handleChange={(ele: string, e: any, val: any) => this.handleImageUploaderChange(ele, e, val)}
+            handleChange={(ele: string, e: React.SyntheticEvent<{}>, val: string) => 
+            this.handleImageUploaderChange(ele, e, val)}
           />
         );
       case 1:
@@ -245,7 +246,7 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
           <Checkbox
             defaultChecked={this.vars.isImageCertified}
             label={constants.CERTIFY_IMAGE_STATEMENT}
-            onCheck={(e: any, val: boolean) => this.handleCertificationCheck(e, val)}
+            onCheck={(e: React.MouseEvent<{}>, val: boolean) => this.handleCertificationCheck(e, val)}
           />
         );
       default:

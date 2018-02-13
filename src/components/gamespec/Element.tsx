@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { CSSProperties } from 'react';
 import Chip from 'material-ui/Chip';
 import Avatar from 'material-ui/Avatar';
 import Subheader from 'material-ui/Subheader';
@@ -9,7 +8,7 @@ const flexElement = {
   width: '40%',
   float: 'right',
   margin: 4
-} as CSSProperties;
+} as React.CSSProperties;
 
 interface ElementProps {
   getElementKind: () => number;
@@ -56,13 +55,13 @@ class Element extends React.Component<ElementProps, ElementState> {
   }
 
   handleRequestDeleteCard = (key: string) => {
+    if (!this.props.setSelectedElements) {
+      return;
+    }
     let data = this.state.selected_cards;
     let index = data.indexOf(key);
     data.splice(index, 1);
     this.setState({ selected_cards: data });
-    if (!this.props.setSelectedElements) {
-      return;
-    }
     this.props.setSelectedElements(this.state.selected_cards);
     return;
   }

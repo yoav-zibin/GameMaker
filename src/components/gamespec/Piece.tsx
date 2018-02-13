@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { DragSource, DragSourceSpec, DragSourceCollector, DragSourceMonitor } from 'react-dnd';
+import { DragSource, DragSourceSpec, DragSourceCollector, DragSourceMonitor, ConnectDragSource } from 'react-dnd';
 import { GridTile } from 'material-ui/GridList';
 import ItemTypes from './ItemTypes';
 import styles from '../../styles';
 import { imagesDbRef } from '../../firebase';
 
 interface PieceProps {
-  connectDragSource: any;
+  connectDragSource: ConnectDragSource;
   image: any;
   isDragging: boolean;
   keyProp: string;
