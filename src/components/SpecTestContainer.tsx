@@ -339,19 +339,19 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
     });
   }
 
-  handleGridTileClickBoard(key: any) {
+  handleGridTileClickBoard(key: string) {
     this.setState({
       selectedSpec: key
     });
   }
 
-  handleGameIcon50(key: any) {
+  handleGameIcon50(key: string) {
     this.setState({
       gameIcon50x50: key
     });
   }
 
-  handleGameIcon512(key: any) {
+  handleGameIcon512(key: string) {
     this.setState({
       gameIcon512x512: key
     });
@@ -361,7 +361,7 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
     return;
   }
 
-  setGameIcon50(key: any) {
+  setGameIcon50(key: string) {
     this.setState({
       gameIcon50x50: key
     });
@@ -375,7 +375,7 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
     return this.state.gameIcon512x512;
   }
 
-  setGameIcon512(key: any) {
+  setGameIcon512(key: string) {
     this.setState({
       gameIcon512x512: key
     });
@@ -395,7 +395,7 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
             <SpecList
               cellHeight={180}
               header="Specs"
-              handleGridTileClick={(key: any) => this.handleGridTileClickBoard(key)}
+              handleGridTileClick={(key: string) => this.handleGridTileClickBoard(key)}
               data={this.state.searchedSpec}
               selectedKey={this.state.selectedSpec}
               images={this.state.allImages}
@@ -437,12 +437,12 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
       case 2: {
         return (
           <SpecInfo
-            handleIcon50CLick={(key: any) => this.handleGameIcon50(key)}
-            handleIcon512Click={(key: any) => this.handleGameIcon512(key)}
+            handleIcon50CLick={(key: string) => this.handleGameIcon50(key)}
+            handleIcon512Click={(key: string) => this.handleGameIcon512(key)}
             gameIcon50={this.state.gameIcon50}
             gameIcon512={this.state.gameIcon512}
-            setYoutube={(e: any, val: string) => this.setYoutube(e, val)}
-            setWiki={(e: any, val: string) => this.setWiki(e, val)}
+            setYoutube={(e: React.FormEvent<{}>, val: string) => this.setYoutube(e, val)}
+            setWiki={(e: React.FormEvent<{}>, val: string) => this.setWiki(e, val)}
             getYoutube={() => this.getYoutube()}
             getWiki={() => this.getWiki()}
             getGameIcon50={() => this.getGameIcon50()}

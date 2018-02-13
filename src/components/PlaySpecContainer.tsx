@@ -43,10 +43,10 @@ interface PlaySpecContainerState {
   piecesDeckElements: any;
   currentUserElements: any;
   recentElements: any;
-  gameIcon50: any;
-  gameIcon512: any;
-  gameIcon50x50: any;
-  gameIcon512x512: any;
+  gameIcon50: string;
+  gameIcon512: string;
+  gameIcon50x50: string;
+  gameIcon512x512: string;
 }
 
 class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpecContainerState> {
@@ -261,7 +261,7 @@ class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpec
     this.vars.spec = spec;
   }
 
-  setSpecName(e: any, newValue: string) {
+  setSpecName(e: React.SyntheticEvent<{}>, newValue: string) {
     if (this.state.allSpecs && this.state.allSpecs[newValue]) {
       this.setState({
         specNameErrorText: constants.EXISTING_SPEC_NAME_ERROR,
@@ -275,7 +275,7 @@ class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpec
     }
   }
 
-  setYoutube(e: any, newValue: string) {
+  setYoutube(e: React.FormEvent<{}>, newValue: string) {
     this.vars.tutorialYoutubeVideo = newValue;
   }
 
@@ -283,7 +283,7 @@ class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpec
     return this.vars.tutorialYoutubeVideo;
   }
 
-  setWiki(e: any, newValue: string) {
+  setWiki(e: React.FormEvent<{}>, newValue: string) {
     this.vars.wikipediaUrl = newValue;
   }
 
@@ -291,16 +291,16 @@ class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpec
     return this.vars.wikipediaUrl;
   }
 
-  handleSpecChange = (e: any) => {
+  handleSpecChange = (e: React.SyntheticEvent<{}>) => {
     // From 4 spaces to none
     try {
-      this.vars.spec = e.target.value;
+      this.vars.spec = (e.target as HTMLTextAreaElement).value;
     } catch (e) {
       this.notify(constants.JSON_MALFORMED_ERROR + e.message);
     }
   }
 
-  setValue(val: any) {
+  setValue(val: number) {
     this.setState({
       value: val
     });
@@ -328,7 +328,7 @@ class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpec
     });
   }
 
-  handleNameChange = (e: any, value: string) => {
+  handleNameChange = (e: React.SyntheticEvent<{}>, value: string) => {
     let specs = this.state.allSpecs;
     let result = {};
     for (let specKey in specs) {
@@ -339,7 +339,7 @@ class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpec
     this.setState({ searchedSpec: result });
   }
 
-  handleGameIcon50(key: any) {
+  handleGameIcon50(key: string) {
     this.setState({
       gameIcon50x50: key
     });
@@ -412,13 +412,13 @@ class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpec
     this.setItems(itemList);
   }
 
-  handleGameIcon512(key: any) {
+  handleGameIcon512(key: string) {
     this.setState({
       gameIcon512x512: key
     });
   }
 
-  setGameIcon50(key: any) {
+  setGameIcon50(key: string) {
     this.setState({
       gameIcon50x50: key
     });
@@ -432,7 +432,7 @@ class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpec
     return this.state.gameIcon512x512;
   }
 
-  setGameIcon512(key: any) {
+  setGameIcon512(key: string) {
     this.setState({
       gameIcon512x512: key
     });

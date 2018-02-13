@@ -43,7 +43,7 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
     });
   }
 
-  handleChangeList = (event: React.SyntheticEvent<{}>, value: any) => {
+  handleChangeList = (event: React.SyntheticEvent<{}>, value: string) => {
     if (value) {
       this.context.router.history.push(value);
       this.setState({

@@ -193,7 +193,7 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
     this.setSelectedElements(selectedEle);
   }
 
-  handleElementCreatorChange = (element: any, e: any, newValue: any) => {
+  handleElementCreatorChange = (element: any, e: React.SyntheticEvent<{}>, newValue: any) => {
     switch (element) {
       case 'draggable': {
         this.vars.isDraggable = newValue;
@@ -233,7 +233,7 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
           <ElementKindSelector
             getElementKind={() => this.getElementKind()}
             setElementKind={(val: number) => this.setElementKind(val)}
-            handleChange={(s: any, e: any, val: any) => this.handleElementCreatorChange(s, e, val)}
+            handleChange={(s: any, e: React.SyntheticEvent<{}>, val: any) => this.handleElementCreatorChange(s, e, val)}
             isDraggable={this.vars.isDraggable}
             isDrawable={this.vars.isDrawable}
             name={this.vars.name}

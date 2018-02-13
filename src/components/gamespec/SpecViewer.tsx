@@ -10,14 +10,14 @@ const flexStyle = {
 
 interface SpecViewerProps {
   items: any;
-  setInitialSpec: (spec: any) => void;
+  setInitialSpec: (spec: string) => void;
   boardSize: number;
   specNameErrorText: string;
   specName: string;
-  setSpecName: (e: any, name: string) => void;
-  spec: any;
-  handleSpecChange: (e: any) => void;
-  boardImage: any;
+  setSpecName: (e: React.FormEvent<{}>, name: string) => void;
+  spec: string;
+  handleSpecChange: (e: React.SyntheticEvent<{}>) => void;
+  boardImage: fbr.Image;
 }
 
 const SpecViewer: React.StatelessComponent<SpecViewerProps> = (props: SpecViewerProps) => {
