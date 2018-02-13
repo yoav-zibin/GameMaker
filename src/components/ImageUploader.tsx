@@ -1,5 +1,5 @@
-import React from 'react';
-import firebase from 'firebase';
+import * as React from 'react';
+import * as firebase from 'firebase';
 
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
@@ -13,40 +13,62 @@ import styles from '../styles';
 
 import { imagesRef, imagesDbRef, auth } from '../firebase';
 
-class ImageUploader extends React.Component {
-  initialState = {
-    finished: false,
-    stepIndex: 0,
-    imagePath: false,
-    imageName: '',
-    shouldDisplayWarningSnackBar: false,
-    file: false
-  };
+interface ImageUploaderProps {
 
-  initialVars = {
-    imageLabel: 'Select image',
-    errorText: '',
-    isBoardImage: false,
-    isImageCertified: false,
-    snackbarWarning: ''
-  };
+}
 
-  state = Object.assign({}, this.initialState);
-  vars = Object.assign({}, this.initialVars);
+interface ImageUploaderState {
+  finished: boolean;
+  stepIndex: number;
+  imagePath: boolean | string;
+  imageName: string;
+  shouldDisplayWarningSnackBar: boolean;
+  file: any;
+}
 
-  notify = message => {
+class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderState> {
+
+  initialState: ImageUploaderState;
+  initialVars: any;
+  vars: any;
+
+  constructor(props: ImageUploaderProps) {
+    super(props);
+    this.initialState = {
+      finished: false,
+      stepIndex: 0,
+      imagePath: false,
+      imageName: '',
+      shouldDisplayWarningSnackBar: false,
+      file: false
+    };
+
+    this.initialVars = {
+      imageLabel: 'Select image',
+      errorText: '',
+      isBoardImage: false,
+      isImageCertified: false,
+      snackbarWarning: ''
+    };
+
+    this.state = Object.assign({}, this.initialState);
+    this.vars = Object.assign({}, this.initialVars);
+  }
+
+  notify = (message: string) => {
     this.vars.snackbarWarning = message;
     this.setState({ shouldDisplayWarningSnackBar: true });
-  };
+  }
 
-  checkImageDimensions = file => {
+  checkImageDimensions = (file: any) => {
     let that = this;
     return new Promise((resolve, reject) => {
-      window.URL = window.URL || window.webkitURL;
+
+      window.URL = window.URL || (window as any).webkitURL;
 
       let img = new Image();
       img.src = window.URL.createObjectURL(file);
-      img.onload = function() {
+      img.onload = function () {
         var width = img.naturalWidth,
           height = img.naturalHeight;
 
@@ -63,17 +85,21 @@ class ImageUploader extends React.Component {
         }
       };
     });
-  };
+  }
 
-  handleUpload = (stepIndex, width, height) => {
+  handleUpload = (stepIndex: number, width: string, height: string) => {
     let that = this;
     let ref = imagesRef;
     let dbRef = imagesDbRef;
+
     let extension = this.vars.imageLabel
       .split('.')
       .pop()
       .toLowerCase();
 
+    if (!auth.currentUser) {
+      return;
+    }
     let metadata = {
       customMetadata: {
         width: width,
@@ -84,15 +110,17 @@ class ImageUploader extends React.Component {
         sizeInBytes: that.state.file.size,
         uploaderEmail: auth.currentUser.email
       }
-    };
+    } as firebase.storage.SettableMetadata;
+
     let childKey = dbRef.push().key;
+
     ref
       .child(childKey + '.' + extension)
       .put(this.state.file, metadata)
       .then(
-        function(snapshot) {
+        function (snapshot: firebase.storage.UploadTaskSnapshot) {
           snapshot.ref.getDownloadURL().then(
-            function(url) {
+            function (url: string) {
               let imageMetadataForDb = {
                 downloadURL: url,
                 createdOn: firebase.database.ServerValue.TIMESTAMP,
@@ -100,25 +128,28 @@ class ImageUploader extends React.Component {
                   constants.IMAGES_PATH + '/' + childKey + '.' + extension,
                 ...metadata.customMetadata
               };
-              dbRef.child(childKey).set(imageMetadataForDb);
-              that.vars.snackbarWarning = constants.IMAGE_UPLOAD_SUCCESSFUL;
-              that.setState({
-                shouldDisplayWarningSnackBar: true,
-                stepIndex: stepIndex + 1,
-                finished: stepIndex >= 1
-              });
+              if (childKey !== null) {
+
+                dbRef.child(childKey).set(imageMetadataForDb);
+                that.vars.snackbarWarning = constants.IMAGE_UPLOAD_SUCCESSFUL;
+                that.setState({
+                  shouldDisplayWarningSnackBar: true,
+                  stepIndex: stepIndex + 1,
+                  finished: stepIndex >= 1
+                });
+              }
             },
-            function() {
+            function () {
               snapshot.ref.delete();
-              this.notify(constants.IMAGE_UPLOAD_FAILED);
+              that.notify(constants.IMAGE_UPLOAD_FAILED);
             }
           );
         },
-        function() {
-          this.notify(constants.IMAGE_UPLOAD_FAILED);
+        function () {
+          that.notify(constants.IMAGE_UPLOAD_FAILED);
         }
       );
-  };
+  }
 
   handleNext = () => {
     const { stepIndex } = this.state;
@@ -146,22 +177,22 @@ class ImageUploader extends React.Component {
         finished: stepIndex >= 1
       });
     }
-  };
+  }
 
   handlePrev = () => {
     const { stepIndex } = this.state;
     if (stepIndex > 0) {
       this.setState({ stepIndex: stepIndex - 1 });
     }
-  };
+  }
 
-  handleImageUploaderChange = (element, e, newValue) => {
+  handleImageUploaderChange = (element: string, e: React.SyntheticEvent<{}>, newValue: string) => {
     switch (element) {
       case constants.IMAGE_PATH_IDENTIFIER: {
-        let file = e.target.files[0];
+        let file = (e.target as HTMLInputElement).files![0];
         let imageLabel = file.name.split('/').pop();
-        let imageName = imageLabel.split('.');
-        let extension = imageName.pop().toLowerCase();
+        let imageName = imageLabel!.split('.');
+        let extension = imageName.pop()!.toLowerCase();
 
         if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
           this.vars.snackbarWarning =
@@ -193,20 +224,21 @@ class ImageUploader extends React.Component {
         break;
       }
     }
-  };
+  }
 
-  handleCertificationCheck(e, newValue) {
+  handleCertificationCheck(e: React.MouseEvent<{}>, newValue: boolean) {
     this.vars.isImageCertified = newValue;
   }
 
-  getStepContent(stepIndex) {
+  getStepContent(stepIndex: number) {
     switch (stepIndex) {
       case 0:
         return (
           <ImageSelector
             label={this.vars.imageLabel}
             imageName={this.state.imageName}
-            handleChange={this.handleImageUploaderChange.bind(this)}
+            handleChange={(ele: string, e: React.SyntheticEvent<{}>, val: string) => 
+            this.handleImageUploaderChange(ele, e, val)}
           />
         );
       case 1:
@@ -214,11 +246,11 @@ class ImageUploader extends React.Component {
           <Checkbox
             defaultChecked={this.vars.isImageCertified}
             label={constants.CERTIFY_IMAGE_STATEMENT}
-            onCheck={this.handleCertificationCheck.bind(this)}
+            onCheck={(e: React.MouseEvent<{}>, val: boolean) => this.handleCertificationCheck(e, val)}
           />
         );
       default:
-        return "You're a long way from home sonny jim!";
+        return 'You\'re a long way from home sonny jim!';
     }
   }
 
@@ -258,23 +290,23 @@ class ImageUploader extends React.Component {
               />
             </div>
           ) : (
-            <div>
-              <div>{this.getStepContent(stepIndex)}</div>
-              <div style={{ marginTop: 12 }}>
-                <FlatButton
-                  label="Back"
-                  disabled={stepIndex === 0}
-                  onTouchTap={this.handlePrev}
-                  style={{ marginRight: 12 }}
-                />
-                <RaisedButton
-                  label={stepIndex === 1 ? 'Upload' : 'Next'}
-                  primary={true}
-                  onTouchTap={this.handleNext}
-                />
+              <div>
+                <div>{this.getStepContent(stepIndex)}</div>
+                <div style={{ marginTop: 12 }}>
+                  <FlatButton
+                    label="Back"
+                    disabled={stepIndex === 0}
+                    onTouchTap={this.handlePrev}
+                    style={{ marginRight: 12 }}
+                  />
+                  <RaisedButton
+                    label={stepIndex === 1 ? 'Upload' : 'Next'}
+                    primary={true}
+                    onTouchTap={this.handleNext}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       </div>
     );

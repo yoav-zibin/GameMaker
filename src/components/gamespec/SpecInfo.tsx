@@ -11,13 +11,13 @@ const flexStyle = {
 
 interface SpecInfoProps {
   getWiki: () => any;
-  setWiki: () => void;
+  setWiki: (e: React.FormEvent<{}>, newVal: string) => void;
   getYoutube: () => any;
-  setYoutube: () => void;
-  handleIcon50CLick: () => void;
+  setYoutube: (e: React.FormEvent<{}>, newVal: string) => void;
+  handleIcon50CLick: (key: string) => void;
   gameIcon50: any;
   getGameIcon50: () => void;
-  handleIcon512Click: () => void;
+  handleIcon512Click: (key: string) => void;
   gameIcon512: any;
   getGameIcon512: () => void;
 }

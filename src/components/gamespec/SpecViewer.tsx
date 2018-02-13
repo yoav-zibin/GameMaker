@@ -1,5 +1,4 @@
-import React from 'react';
-import ContentEditable from 'react-contenteditable';
+import * as React from 'react';
 import TextField from 'material-ui/TextField';
 import constants from '../../constants';
 import styles from '../../styles';
@@ -9,10 +8,22 @@ const flexStyle = {
   ...styles.center
 };
 
-const SpecViewer = props => {
-  let pieces = [];
+interface SpecViewerProps {
+  items: any;
+  setInitialSpec: (spec: string) => void;
+  boardSize: number;
+  specNameErrorText: string;
+  specName: string;
+  setSpecName: (e: React.FormEvent<{}>, name: string) => void;
+  spec: string;
+  handleSpecChange: (e: React.SyntheticEvent<{}>) => void;
+  boardImage: fbr.Image;
+}
 
-  props.items.forEach((item, index) => {
+const SpecViewer: React.StatelessComponent<SpecViewerProps> = (props: SpecViewerProps) => {
+  let pieces: any = [];
+
+  props.items.forEach((item: any, index: number) => {
     let piece = {
       deckPieceIndex: item.deckIndex,
       initialState: {

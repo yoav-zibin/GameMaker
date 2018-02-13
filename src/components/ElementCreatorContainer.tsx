@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import styles from '../styles';
 import constants from '../constants';
@@ -6,7 +6,7 @@ import { imagesDbRef, elementsRef, auth } from '../firebase';
 import ElementCreator from './ElementCreator';
 import ElementKindSelector from './ElementKindSelector';
 
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
@@ -14,47 +14,76 @@ import FlatButton from 'material-ui/FlatButton';
 
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
-class ElementCreatorContainer extends React.Component {
-  initialState = {
-    selectedImages: [],
-    selectedElements: [],
-    stepIndex: 0,
-    finished: false,
-    shouldDisplayWarningSnackBar: false,
-    elementKind: 0,
-    images: [],
-    searchedImages: [],
-    cardElements: []
-  };
+interface ElementCreatorContainerProps {
 
-  initialVars = {
-    snackbarWarning: '',
-    isDraggable: false,
-    isDrawable: false,
-    rotatableDegrees: 360,
-    name: ''
-  };
+}
 
-  state = Object.assign({}, this.initialState);
-  vars = Object.assign({}, this.initialVars);
+interface ElementCreatorContainerState {
+  selectedImages: string[];
+  selectedElements: string[];
+  stepIndex: number;
+  finished: boolean;
+  shouldDisplayWarningSnackBar: boolean;
+  elementKind: number;
+  images: fbr.Images;
+  searchedImages: fbr.Images;
+  cardElements: fbr.Elements;
+}
+
+class ElementCreatorContainer extends React.Component<ElementCreatorContainerProps, ElementCreatorContainerState> {
+  
+  vars: any;
+  initialVars: any;
+  initialState: ElementCreatorContainerState;
+
+  constructor(props: ElementCreatorContainerProps) {
+    super(props);
+    this.initialState = {
+      selectedImages: [],
+      selectedElements: [],
+      stepIndex: 0,
+      finished: false,
+      shouldDisplayWarningSnackBar: false,
+      elementKind: 0,
+      images: {},
+      searchedImages: {},
+      cardElements: {}
+    };
+    this.state = Object.assign({}, this.initialState);
+    this.initialVars = {
+      snackbarWarning: '',
+      isDraggable: false,
+      isDrawable: false,
+      rotatableDegrees: 360,
+      name: ''
+    };
+    this.vars = Object.assign({}, this.initialVars);
+  }
 
   componentDidMount() {
     let that = this;
     let images = imagesDbRef.orderByChild('uploaderUid');
     let userElements = elementsRef.orderByChild('uploaderUid');
 
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged((user: any) => {
       if (!user) {
         this.notify('You need to login to view this');
         return;
       }
+
+      if (!auth.currentUser) {
+        return;
+      }
+
       images
         .equalTo(auth.currentUser.uid)
         .once('value')
-        .then(function(data) {
+        .then(function(data: any) {
           let currentImages = data.val();
           let finalImages = {};
-          if (!currentImages) return;
+          if (!currentImages) {
+            return;
+          }
           Object.keys(currentImages).forEach(key => {
             if (currentImages[key].isBoardImage === false) {
               finalImages[key] = currentImages[key];
@@ -69,9 +98,11 @@ class ElementCreatorContainer extends React.Component {
       userElements
         .equalTo(auth.currentUser.uid)
         .once('value')
-        .then(function(data) {
+        .then(function(data: any) {
           let cardElements = data.val();
-          if (!cardElements) return;
+          if (!cardElements) {
+            return;
+          }
           let finalCardElements = {};
           Object.keys(cardElements).forEach(key => {
             if (cardElements[key].elementKind === 'card') {
@@ -86,16 +117,16 @@ class ElementCreatorContainer extends React.Component {
     });
   }
 
-  notify = message => {
+  notify = (message: string) => {
     this.vars.snackbarWarning = message;
     this.setState({ shouldDisplayWarningSnackBar: true });
-  };
+  }
 
   getElementKind() {
     return this.state.elementKind;
   }
 
-  setElementKind(kind) {
+  setElementKind(kind: number) {
     this.setState({ elementKind: kind });
   }
 
@@ -103,7 +134,7 @@ class ElementCreatorContainer extends React.Component {
     return this.state.selectedImages;
   }
 
-  setSelectedImages(images) {
+  setSelectedImages(images: string[]) {
     this.setState({ selectedImages: images });
   }
 
@@ -111,11 +142,11 @@ class ElementCreatorContainer extends React.Component {
     return this.state.selectedElements;
   }
 
-  setSelectedElements(eles) {
+  setSelectedElements(eles: string[]) {
     this.setState({ selectedElements: eles });
   }
 
-  setSearchedImages(imgs) {
+  setSearchedImages(imgs: fbr.Images) {
     this.setState({ searchedImages: imgs });
   }
 
@@ -123,15 +154,15 @@ class ElementCreatorContainer extends React.Component {
     return this.state.cardElements;
   }
 
-  updateStepIndex(stepIndex) {
+  updateStepIndex(stepIndex: number) {
     this.setState({
       stepIndex: stepIndex + 1,
       finished: stepIndex >= 1
     });
   }
 
-  checkImageWidthAndHeight = imgs => {
-    let images = this.state.images;
+  checkImageWidthAndHeight = (imgs: string[]) => {
+    let images: fbr.Images = this.state.images;
     return new Promise((resolve, reject) => {
       let height = images[imgs[0]].height;
       let width = images[imgs[0]].width;
@@ -146,23 +177,23 @@ class ElementCreatorContainer extends React.Component {
       }
       resolve({ width, height });
     });
-  };
+  }
 
-  handleGridTileClickBoard(key) {
-    let selectedImg = this.getSelectedImages();
+  handleGridTileClickBoard(key: string) {
+    let selectedImg: any = this.getSelectedImages();
     if (selectedImg.indexOf(key) === -1) {
       selectedImg.push(key);
       this.setSelectedImages(selectedImg);
     }
   }
 
-  handleElementGridTileClickBoard(key) {
-    let selectedEle = this.getSelectedElements();
+  handleElementGridTileClickBoard(key: string) {
+    let selectedEle: string[] = this.getSelectedElements();
     selectedEle.push(key);
     this.setSelectedElements(selectedEle);
   }
 
-  handleElementCreatorChange = (element, e, newValue) => {
+  handleElementCreatorChange = (element: any, e: React.SyntheticEvent<{}>, newValue: any) => {
     switch (element) {
       case 'draggable': {
         this.vars.isDraggable = newValue;
@@ -193,16 +224,16 @@ class ElementCreatorContainer extends React.Component {
         break;
       }
     }
-  };
+  }
 
-  getStepContent(stepIndex) {
+  getStepContent(stepIndex: number) {
     switch (stepIndex) {
       case 0: {
         return (
           <ElementKindSelector
-            getElementKind={this.getElementKind.bind(this)}
-            setElementKind={this.setElementKind.bind(this)}
-            handleChange={this.handleElementCreatorChange.bind(this)}
+            getElementKind={() => this.getElementKind()}
+            setElementKind={(val: number) => this.setElementKind(val)}
+            handleChange={(s: any, e: React.SyntheticEvent<{}>, val: any) => this.handleElementCreatorChange(s, e, val)}
             isDraggable={this.vars.isDraggable}
             isDrawable={this.vars.isDrawable}
             name={this.vars.name}
@@ -215,23 +246,21 @@ class ElementCreatorContainer extends React.Component {
           <ElementCreator
             images={this.state.images}
             searchedImages={this.state.searchedImages}
-            handleGridTileClick={this.handleGridTileClickBoard.bind(this)}
-            getSelectedImages={this.getSelectedImages.bind(this)}
-            setSelectedImages={this.setSelectedImages.bind(this)}
-            getElementKind={this.getElementKind.bind(this)}
-            getCardElements={this.getCardElements.bind(this)}
-            handleElementGridTileClickBoard={this.handleElementGridTileClickBoard.bind(
-              this
-            )}
-            getSelectedElements={this.getSelectedElements.bind(this)}
-            setSelectedElements={this.setSelectedElements.bind(this)}
-            setSearchedImages={this.setSearchedImages.bind(this)}
+            handleGridTileClick={(key: string) => { this.handleGridTileClickBoard(key); }}
+            getSelectedImages={() => this.getSelectedImages()}
+            setSelectedImages={(val: string[]) => this.setSelectedImages(val)}
+            getElementKind={() => this.getElementKind()}
+            getCardElements={() => this.getCardElements()}
+            handleElementGridTileClickBoard={(key: string) => this.handleElementGridTileClickBoard(key)}
+            getSelectedElements={() => this.getSelectedElements()}
+            setSelectedElements={(val: string[]) => this.setSelectedElements(val)}
+            setSearchedImages={(val: fbr.Images) => this.setSearchedImages(val)}
           />
         );
       }
 
       default: {
-        break;
+        return;
       }
     }
   }
@@ -241,9 +270,14 @@ class ElementCreatorContainer extends React.Component {
     if (stepIndex > 0) {
       this.setState({ stepIndex: stepIndex - 1 });
     }
-  };
+  }
 
-  handleCreateElement = (width, height, stepIndex) => {
+  handleCreateElement = (width: number, height: number, stepIndex: number) => {
+
+    if (!auth.currentUser) {
+      return;
+    }
+
     let value = {
       isDraggable: this.vars.isDraggable,
       isDrawable: false,
@@ -252,10 +286,16 @@ class ElementCreatorContainer extends React.Component {
       uploaderUid: auth.currentUser.uid,
       createdOn: firebase.database.ServerValue.TIMESTAMP,
       width: width,
-      height: height
+      height: height,
+      name: '',
+      elementKind: 'standard',
+      images: [{}],
+      deckElements: [{}]
     };
 
-    if (this.vars.name !== '') value['name'] = this.vars.name;
+    if (this.vars.name !== '') {
+      value.name = this.vars.name;
+    }
 
     switch (this.state.elementKind) {
       case 0: {
@@ -264,10 +304,10 @@ class ElementCreatorContainer extends React.Component {
           return;
         }
         let imageKey = this.state.selectedImages[0];
-        value['isDrawable'] = this.vars.isDrawable;
-        value['rotatableDegrees'] = this.vars.rotatableDegrees;
-        value['elementKind'] = 'standard';
-        value['images'] = [{ imageId: imageKey }];
+        value.isDrawable = this.vars.isDrawable;
+        value.rotatableDegrees = this.vars.rotatableDegrees;
+        value.elementKind = 'standard';
+        value.images = [{ imageId: imageKey }];
         break;
       }
       case 1: {
@@ -280,8 +320,8 @@ class ElementCreatorContainer extends React.Component {
         for (let i = 0; i < len; i++) {
           imageList.push({ imageId: this.state.selectedImages[i] });
         }
-        value['elementKind'] = 'toggable';
-        value['images'] = imageList;
+        value.elementKind = 'toggable';
+        value.images = imageList;
         break;
       }
       case 2: {
@@ -299,8 +339,8 @@ class ElementCreatorContainer extends React.Component {
         for (let i = 0; i < len; i++) {
           imageList.push({ imageId: this.state.selectedImages[i] });
         }
-        value['elementKind'] = 'dice';
-        value['images'] = imageList;
+        value.elementKind = 'dice';
+        value.images = imageList;
         break;
       }
       case 3: {
@@ -314,9 +354,9 @@ class ElementCreatorContainer extends React.Component {
         for (let i = 0; i < len; i++) {
           imageList.push({ imageId: this.state.selectedImages[i] });
         }
-        value['elementKind'] = 'card';
-        value['isDrawable'] = this.vars.isDrawable;
-        value['images'] = imageList;
+        value.elementKind = 'card';
+        value.isDrawable = this.vars.isDrawable;
+        value.images = imageList;
         break;
       }
       case 4: {
@@ -326,8 +366,8 @@ class ElementCreatorContainer extends React.Component {
         }
 
         let imageKey = this.state.selectedImages[0];
-        value['elementKind'] = 'cardsDeck';
-        value['images'] = [{ imageId: imageKey }];
+        value.elementKind = 'cardsDeck';
+        value.images = [{ imageId: imageKey }];
         let len = this.state.selectedElements.length;
         let cardList = [];
         for (let i = 0; i < len; i++) {
@@ -335,7 +375,7 @@ class ElementCreatorContainer extends React.Component {
             deckMemberElementId: this.state.selectedElements[i]
           });
         }
-        value['deckElements'] = cardList;
+        value.deckElements = cardList;
         break;
       }
       case 5: {
@@ -345,8 +385,8 @@ class ElementCreatorContainer extends React.Component {
         }
 
         let imageKey = this.state.selectedImages[0];
-        value['elementKind'] = 'piecesDeck';
-        value['images'] = [{ imageId: imageKey }];
+        value.elementKind = 'piecesDeck';
+        value.images = [{ imageId: imageKey }];
         let len = this.state.selectedElements.length;
         let cardList = [];
         for (let i = 0; i < len; i++) {
@@ -354,7 +394,7 @@ class ElementCreatorContainer extends React.Component {
             deckMemberElementId: this.state.selectedElements[i]
           });
         }
-        value['deckElements'] = cardList;
+        value.deckElements = cardList;
         break;
       }
 
@@ -364,6 +404,9 @@ class ElementCreatorContainer extends React.Component {
     }
 
     let childKey = elementsRef.push().key;
+    if (!childKey) {
+      return;
+    }
     elementsRef
       .child(childKey)
       .set(value)
@@ -376,7 +419,7 @@ class ElementCreatorContainer extends React.Component {
           this.notify(constants.ELEMENT_CREATE_FAILED);
         }
       );
-  };
+  }
 
   handleNext = () => {
     const { stepIndex } = this.state;
@@ -397,7 +440,7 @@ class ElementCreatorContainer extends React.Component {
     } else {
       this.updateStepIndex(stepIndex);
     }
-  };
+  }
 
   render() {
     const { stepIndex, finished } = this.state;

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import styles from '../styles';
 import constants from '../constants';
@@ -13,54 +13,98 @@ import TextField from 'material-ui/TextField';
 
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper';
 
-class PlaySpecContainer extends React.Component {
-  initialState = {
-    selectedSpec: '',
-    stepIndex: 0,
-    finished: false,
-    shouldDisplayWarningSnackBar: false,
-    items: [],
-    decks: [],
-    deckCount: [],
-    specName: '',
-    specNameErrorText: '',
-    value: 0,
-    selectedSpecContent: '',
-    specType: 'PlaySpec'
-  };
+interface PlaySpecContainerProps {
 
-  initialBoardState = {
-    otherImages: [],
-    allImages: [],
-    allSpecs: [],
-    searchedSpec: [],
-    allElements: [],
-    standardElements: [],
-    toggableElements: [],
-    cardElements: [],
-    diceElements: [],
-    cardsDeckElements: [],
-    piecesDeckElements: [],
-    currentUserElements: [],
-    recentElements: [],
-    gameIcon50: [],
-    gameIcon512: [],
-    gameIcon50x50: constants.GAMEICON_50x50,
-    gameIcon512x512: constants.GAMEICON_512x512
-  };
+}
 
-  initialVars = {
-    boardImage: '',
-    snackbarWarning: '',
-    boardSize: 0,
-    spec: [],
-    tutorialYoutubeVideo: constants.YOUTUBE_VIDEO,
-    wikipediaUrl: constants.WIKI_URL,
-    selectedUid: ''
-  };
+interface PlaySpecContainerState {
+  selectedSpec: string;
+  stepIndex: number;
+  finished: boolean;
+  shouldDisplayWarningSnackBar: boolean;
+  items: any;
+  decks: any;
+  deckCount: any;
+  specName: string;
+  specNameErrorText: string;
+  value: number;
+  selectedSpecContent: string;
+  specType: string;
+  otherImages: any;
+  allImages: any;
+  allSpecs: any;
+  searchedSpec: any;
+  allElements: any;
+  standardElements: any;
+  toggableElements: any;
+  cardElements: any;
+  diceElements: any;
+  cardsDeckElements: any;
+  piecesDeckElements: any;
+  currentUserElements: any;
+  recentElements: any;
+  gameIcon50: string;
+  gameIcon512: string;
+  gameIcon50x50: string;
+  gameIcon512x512: string;
+}
 
-  state = Object.assign({}, this.initialState, this.initialBoardState);
-  vars = Object.assign({}, this.initialVars);
+class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpecContainerState> {
+  initialState: any;
+  initialBoardState: any;
+  initialVars: any;
+  vars: any;
+
+  constructor(props: PlaySpecContainerProps) {
+    super(props);
+    this.initialState = {
+      selectedSpec: '',
+      stepIndex: 0,
+      finished: false,
+      shouldDisplayWarningSnackBar: false,
+      items: [],
+      decks: [],
+      deckCount: [],
+      specName: '',
+      specNameErrorText: '',
+      value: 0,
+      selectedSpecContent: '',
+      specType: 'PlaySpec'
+    };
+
+    this.initialBoardState = {
+      otherImages: [],
+      allImages: [],
+      allSpecs: [],
+      searchedSpec: [],
+      allElements: [],
+      standardElements: [],
+      toggableElements: [],
+      cardElements: [],
+      diceElements: [],
+      cardsDeckElements: [],
+      piecesDeckElements: [],
+      currentUserElements: [],
+      recentElements: [],
+      gameIcon50: [],
+      gameIcon512: [],
+      gameIcon50x50: constants.GAMEICON_50x50,
+      gameIcon512x512: constants.GAMEICON_512x512
+    };
+
+    this.initialVars = {
+      boardImage: '',
+      snackbarWarning: '',
+      boardSize: 0,
+      spec: [],
+      tutorialYoutubeVideo: constants.YOUTUBE_VIDEO,
+      wikipediaUrl: constants.WIKI_URL,
+      selectedUid: ''
+    };
+
+    this.state = Object.assign({}, this.initialState, this.initialBoardState);
+    this.vars = Object.assign({}, this.initialVars);
+  }
 
   componentDidMount() {
     let that = this;
@@ -71,7 +115,7 @@ class PlaySpecContainer extends React.Component {
     icon
       .equalTo(50)
       .once('value')
-      .then(function(data) {
+      .then(function (data: firebase.database.DataSnapshot) {
         let height50 = data.val();
         let icon50 = [];
         for (let i = 0; i < height50.length; i++) {
@@ -87,7 +131,7 @@ class PlaySpecContainer extends React.Component {
     icon
       .equalTo(512)
       .once('value')
-      .then(function(data) {
+      .then(function (data: firebase.database.DataSnapshot) {
         let height512 = data.val();
         let icon512 = [];
         for (let i = 0; i < height512.length; i++) {
@@ -100,7 +144,7 @@ class PlaySpecContainer extends React.Component {
         });
       });
 
-    elementsRef.once('value').then(function(data) {
+    elementsRef.once('value').then(function (data: firebase.database.DataSnapshot) {
       that.setState({
         allElements: data.val()
       });
@@ -109,7 +153,7 @@ class PlaySpecContainer extends React.Component {
     elements
       .equalTo('standard')
       .once('value')
-      .then(function(data) {
+      .then(function (data: firebase.database.DataSnapshot) {
         that.setState({
           standardElements: data.val()
         });
@@ -118,7 +162,7 @@ class PlaySpecContainer extends React.Component {
     elements
       .equalTo('toggable')
       .once('value')
-      .then(function(data) {
+      .then(function (data: firebase.database.DataSnapshot) {
         that.setState({
           toggableElements: data.val()
         });
@@ -127,7 +171,7 @@ class PlaySpecContainer extends React.Component {
     elements
       .equalTo('card')
       .once('value')
-      .then(function(data) {
+      .then(function (data: firebase.database.DataSnapshot) {
         that.setState({
           cardElements: data.val()
         });
@@ -136,7 +180,7 @@ class PlaySpecContainer extends React.Component {
     elements
       .equalTo('dice')
       .once('value')
-      .then(function(data) {
+      .then(function (data: firebase.database.DataSnapshot) {
         that.setState({
           diceElements: data.val()
         });
@@ -145,7 +189,7 @@ class PlaySpecContainer extends React.Component {
     elements
       .equalTo('cardsDeck')
       .once('value')
-      .then(function(data) {
+      .then(function (data: firebase.database.DataSnapshot) {
         that.setState({
           cardsDeckElements: data.val()
         });
@@ -154,31 +198,31 @@ class PlaySpecContainer extends React.Component {
     elements
       .equalTo('piecesDeck')
       .once('value')
-      .then(function(data) {
+      .then(function (data: firebase.database.DataSnapshot) {
         that.setState({
           piecesDeckElements: data.val()
         });
       });
 
-    recentEles.once('value').then(function(data) {
+    recentEles.once('value').then(function (data: firebase.database.DataSnapshot) {
       that.setState({
         recentElements: data.val()
       });
     });
 
-    imagesDbRef.once('value').then(function(data) {
+    imagesDbRef.once('value').then(function (data: firebase.database.DataSnapshot) {
       that.setState({
         allImages: data.val()
       });
     });
 
-    specsRef.once('value').then(function(data) {
+    specsRef.once('value').then(function (data: firebase.database.DataSnapshot) {
       that.setState({
         allSpecs: data.val()
       });
     });
 
-    specsRef.once('value').then(function(data) {
+    specsRef.once('value').then(function (data: firebase.database.DataSnapshot) {
       that.setState({
         searchedSpec: data.val()
       });
@@ -197,27 +241,27 @@ class PlaySpecContainer extends React.Component {
     return this.state.deckCount;
   }
 
-  setDeckCount(deckCount) {
+  setDeckCount(deckCount: any) {
     this.setState({ deckCount });
   }
 
-  setItems(items) {
+  setItems(items: any) {
     this.setState({ items });
   }
 
-  setDecks(decks) {
+  setDecks(decks: any) {
     this.setState({ decks });
   }
 
-  setBoardSize(num) {
+  setBoardSize(num: number) {
     this.vars.boardSize = num;
   }
 
-  setInitialSpec(spec) {
+  setInitialSpec(spec: string) {
     this.vars.spec = spec;
   }
 
-  setSpecName(e, newValue) {
+  setSpecName(e: React.SyntheticEvent<{}>, newValue: string) {
     if (this.state.allSpecs && this.state.allSpecs[newValue]) {
       this.setState({
         specNameErrorText: constants.EXISTING_SPEC_NAME_ERROR,
@@ -231,7 +275,7 @@ class PlaySpecContainer extends React.Component {
     }
   }
 
-  setYoutube(e, newValue) {
+  setYoutube(e: React.FormEvent<{}>, newValue: string) {
     this.vars.tutorialYoutubeVideo = newValue;
   }
 
@@ -239,7 +283,7 @@ class PlaySpecContainer extends React.Component {
     return this.vars.tutorialYoutubeVideo;
   }
 
-  setWiki(e, newValue) {
+  setWiki(e: React.FormEvent<{}>, newValue: string) {
     this.vars.wikipediaUrl = newValue;
   }
 
@@ -247,16 +291,16 @@ class PlaySpecContainer extends React.Component {
     return this.vars.wikipediaUrl;
   }
 
-  handleSpecChange = e => {
+  handleSpecChange = (e: React.SyntheticEvent<{}>) => {
     // From 4 spaces to none
     try {
-      this.vars.spec = e.target.value;
+      this.vars.spec = (e.target as HTMLTextAreaElement).value;
     } catch (e) {
       this.notify(constants.JSON_MALFORMED_ERROR + e.message);
     }
-  };
+  }
 
-  setValue(val) {
+  setValue(val: number) {
     this.setState({
       value: val
     });
@@ -266,35 +310,36 @@ class PlaySpecContainer extends React.Component {
     return this.state.value;
   }
 
-  notify = message => {
+  notify = (message: string) => {
     this.vars.snackbarWarning = message;
     this.setState({ shouldDisplayWarningSnackBar: true });
-  };
+  }
 
-  updateStepIndex(stepIndex) {
+  updateStepIndex(stepIndex: number) {
     this.setState({
       stepIndex: stepIndex + 1,
       finished: stepIndex >= 3
     });
   }
 
-  handleGridTileClickBoard(key) {
+  handleGridTileClickBoard(key: string) {
     this.setState({
       selectedSpec: key
     });
   }
 
-  handleNameChange = (e, value) => {
+  handleNameChange = (e: React.SyntheticEvent<{}>, value: string) => {
     let specs = this.state.allSpecs;
     let result = {};
     for (let specKey in specs) {
-      if (specs[specKey].gameName.toLowerCase().indexOf(value) !== -1)
+      if (specs[specKey].gameName.toLowerCase().indexOf(value) !== -1) {
         result[specKey] = specs[specKey];
+      }
     }
     this.setState({ searchedSpec: result });
-  };
+  }
 
-  handleGameIcon50(key) {
+  handleGameIcon50(key: string) {
     this.setState({
       gameIcon50x50: key
     });
@@ -339,9 +384,14 @@ class PlaySpecContainer extends React.Component {
     }
 
     for (let key in map) {
+      if (!map.hasOwnProperty(key)) {
+        continue;
+      }
       let value = map[key];
       let len = value.length;
-      if (len < 1) continue;
+      if (len < 1) {
+        continue;
+      }
       while (len > 0) {
         len--;
         let current = Math.floor(Math.random() * (len + 1));
@@ -360,15 +410,15 @@ class PlaySpecContainer extends React.Component {
       itemList = itemList.concat(value);
     }
     this.setItems(itemList);
-  };
+  }
 
-  handleGameIcon512(key) {
+  handleGameIcon512(key: string) {
     this.setState({
       gameIcon512x512: key
     });
   }
 
-  setGameIcon50(key) {
+  setGameIcon50(key: string) {
     this.setState({
       gameIcon50x50: key
     });
@@ -382,13 +432,13 @@ class PlaySpecContainer extends React.Component {
     return this.state.gameIcon512x512;
   }
 
-  setGameIcon512(key) {
+  setGameIcon512(key: string) {
     this.setState({
       gameIcon512x512: key
     });
   }
 
-  getStepContent(stepIndex) {
+  getStepContent(stepIndex: number) {
     switch (stepIndex) {
       case 0: {
         return (
@@ -402,7 +452,7 @@ class PlaySpecContainer extends React.Component {
             <SpecList
               cellHeight={180}
               header="Specs"
-              handleGridTileClick={this.handleGridTileClickBoard.bind(this)}
+              handleGridTileClick={(key: string) => this.handleGridTileClickBoard(key)}
               data={this.state.searchedSpec}
               selectedKey={this.state.selectedSpec}
               images={this.state.allImages}
@@ -414,14 +464,14 @@ class PlaySpecContainer extends React.Component {
       case 1: {
         return (
           <GameSpecBuilder
-            notify={this.notify.bind(this)}
-            setBoardSize={this.setBoardSize.bind(this)}
-            setItems={this.setItems.bind(this)}
-            getItems={this.getItems.bind(this)}
-            setDecks={this.setDecks.bind(this)}
-            getDecks={this.getDecks.bind(this)}
-            setDeckCount={this.setDeckCount.bind(this)}
-            getDeckCount={this.getDeckCount.bind(this)}
+            notify={(msg: string) => this.notify(msg)}
+            setBoardSize={(size: number) => this.setBoardSize(size)}
+            setItems={(items: any) => this.setItems(items)}
+            getItems={() => this.getItems()}
+            setDecks={(decks: any) => this.setDecks(decks)}
+            getDecks={() => this.getDecks()}
+            setDeckCount={(count: any) => this.setDeckCount(count)}
+            getDeckCount={() => this.getDeckCount()}
             standardElements={this.state.standardElements}
             toggableElements={this.state.toggableElements}
             cardElements={this.state.cardElements}
@@ -431,18 +481,18 @@ class PlaySpecContainer extends React.Component {
             boardImage={this.state.allImages[this.vars.boardImage]}
             allImages={this.state.allImages}
             allElements={this.state.allElements}
-            setValue={this.setValue.bind(this)}
-            getValue={this.getValue.bind(this)}
+            setValue={(val: number) => this.setValue(val)}
+            getValue={() => this.getValue()}
             specType={this.state.specType}
             recentElements={this.state.recentElements}
             currentUserElements={this.state.currentUserElements}
-            handleClickShuffle={this.handleClickShuffle.bind(this)}
+            handleClickShuffle={() => this.handleClickShuffle()}
           />
         );
       }
 
       default: {
-        break;
+        return;
       }
     }
   }
@@ -453,7 +503,7 @@ class PlaySpecContainer extends React.Component {
       this.setState({ stepIndex: stepIndex - 1 });
       this.setDecks([]);
     }
-  };
+  }
 
   handleNext = () => {
     const { stepIndex } = this.state;
@@ -463,26 +513,26 @@ class PlaySpecContainer extends React.Component {
         return;
       } else {
         let specContent = this.state.allSpecs[this.state.selectedSpec];
-        this.vars.boardImage = specContent['board']['imageId'];
-        this.vars.tutorialYoutubeVideo = specContent['tutorialYoutubeVideo'];
-        this.vars.wikipediaUrl = specContent['wikipediaUrl'];
+        this.vars.boardImage = specContent.board.imageId;
+        this.vars.tutorialYoutubeVideo = specContent.tutorialYoutubeVideo;
+        this.vars.wikipediaUrl = specContent.wikipediaUrl;
         this.vars.selectedUid = specContent.uploaderUid;
         this.setGameIcon50(specContent.gameIcon50x50);
         this.setGameIcon512(specContent.gameIcon512x512);
         this.setState({ specName: specContent.gameName });
         let itemList = [];
-        let piecesList = specContent['pieces'];
+        let piecesList = specContent.pieces;
         let degree = 360;
         let deckCount = this.getDeckCount();
         for (let i = 0; i < piecesList.length; i++) {
-          let eleKey = piecesList[i]['pieceElementId'];
+          let eleKey = piecesList[i].pieceElementId;
           let element = this.state.allElements[eleKey];
-          let x = piecesList[i]['initialState']['x'] * 512 / 100;
-          let y = piecesList[i]['initialState']['y'] * 512 / 100;
+          let x = piecesList[i].initialState.x * 512 / 100;
+          let y = piecesList[i].initialState.y * 512 / 100;
           let offset = { x: x, y: y };
-          let currentImage = piecesList[i]['initialState']['currentImageIndex'];
+          let currentImage = piecesList[i].initialState.currentImageIndex;
           let parentDeck = -1;
-          let deckIndex = piecesList[i]['deckPieceIndex'];
+          let deckIndex = piecesList[i].deckPieceIndex;
           if (
             element.elementKind === 'cardsDeck' ||
             element.elementKind === 'piecesDeck'
@@ -502,17 +552,17 @@ class PlaySpecContainer extends React.Component {
           } else {
             if (
               element.elementKind === 'card' &&
-              piecesList[i]['deckPieceIndex'] !== -1
+              piecesList[i].deckPieceIndex !== -1
             ) {
               let decks = this.getDecks();
               for (let j = 0; j < decks.length; j++) {
                 if (
-                  piecesList[piecesList[i]['deckPieceIndex']].pieceElementId ===
+                  piecesList[piecesList[i].deckPieceIndex].pieceElementId ===
                   decks[j].eleKey
                 ) {
-                  let x = offset.x;
-                  let y = offset.y;
-                  let cardOffset = { x, y };
+                  let x1 = offset.x;
+                  let y1 = offset.y;
+                  let cardOffset = { x1, y1 };
                   decks[j].cardOffsets.push(cardOffset);
                 }
               }
@@ -535,10 +585,15 @@ class PlaySpecContainer extends React.Component {
       }
       let that = this;
       let userElements = elementsRef.orderByChild('uploaderUid');
+
+      if (!auth.currentUser) {
+        return;
+      }
+
       userElements
         .equalTo(auth.currentUser.uid)
         .once('value')
-        .then(function(data) {
+        .then(function (data: firebase.database.DataSnapshot) {
           that.setState({
             currentUserElements: data.val()
           });
@@ -547,7 +602,7 @@ class PlaySpecContainer extends React.Component {
     } else {
       this.updateStepIndex(stepIndex);
     }
-  };
+  }
 
   render() {
     const { stepIndex, finished } = this.state;
@@ -584,7 +639,7 @@ class PlaySpecContainer extends React.Component {
                   this.setState(this.initialState);
                   this.setState({ items: [] });
                   let that = this;
-                  specsRef.once('value').then(function(data) {
+                  specsRef.once('value').then(function(data: firebase.database.DataSnapshot) {
                     that.setState({
                       allSpecs: data.val()
                     });
@@ -593,26 +648,26 @@ class PlaySpecContainer extends React.Component {
               />
             </div>
           ) : (
-            <div>
-              <div style={{ overflowY: 'auto' }}>
-                {this.getStepContent(stepIndex)}
+              <div>
+                <div style={{ overflowY: 'auto' }}>
+                  {this.getStepContent(stepIndex)}
+                </div>
+                <div style={{ marginTop: 12 }}>
+                  <FlatButton
+                    label="Back"
+                    disabled={stepIndex === 0}
+                    onTouchTap={this.handlePrev}
+                    style={{ marginRight: 12 }}
+                  />
+                  <RaisedButton
+                    label={'Next'}
+                    disabled={stepIndex === 1}
+                    primary={true}
+                    onTouchTap={this.handleNext}
+                  />
+                </div>
               </div>
-              <div style={{ marginTop: 12 }}>
-                <FlatButton
-                  label="Back"
-                  disabled={stepIndex === 0}
-                  onTouchTap={this.handlePrev}
-                  style={{ marginRight: 12 }}
-                />
-                <RaisedButton
-                  label={'Next'}
-                  disabled={stepIndex === 1}
-                  primary={true}
-                  onTouchTap={this.handleNext}
-                />
-              </div>
-            </div>
-          )}
+            )}
         </div>
       </div>
     );
