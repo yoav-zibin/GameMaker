@@ -19,17 +19,17 @@ const flexElement = {
 } as React.CSSProperties;
 
 interface ElementCreatorProps {
-  images: any[];
-  searchedImages: any;
-  handleGridTileClick: (key: any) => void;
-  getSelectedImages: () => any;
-  setSelectedImages: (images: any) => void;
+  images: fbr.Images;
+  searchedImages: fbr.Images;
+  handleGridTileClick: (key: string) => void;
+  getSelectedImages: () => string[];
+  setSelectedImages: (images: string[]) => void;
   getElementKind: () => number;
-  getCardElements: () => any;
-  handleElementGridTileClickBoard: () => any;
-  getSelectedElements: () => any;
-  setSelectedElements: (elements: any) => void;
-  setSearchedImages: (images: any) => void;
+  getCardElements: () => fbr.Elements;
+  handleElementGridTileClickBoard: (key: string) => void;
+  getSelectedElements: () => string[];
+  setSelectedElements: (elements: string[]) => void;
+  setSearchedImages: (images: fbr.Images) => void;
 }
 
 const ElementCreator: React.StatelessComponent<ElementCreatorProps> = (props: ElementCreatorProps) => {
@@ -47,7 +47,7 @@ const ElementCreator: React.StatelessComponent<ElementCreatorProps> = (props: El
     setSearchedImages
   } = props;
 
-  const handleNameChange = (e: any, value: any) => {
+  const handleNameChange = (e: React.FormEvent<{}>, value: string) => {
     let Img = props.images;
     let result = {};
     for (let imgKey in Img) {

@@ -19,22 +19,22 @@ interface ElementCreatorContainerProps {
 }
 
 interface ElementCreatorContainerState {
-  selectedImages: any;
-  selectedElements: any;
+  selectedImages: string[];
+  selectedElements: string[];
   stepIndex: number;
   finished: boolean;
   shouldDisplayWarningSnackBar: boolean;
   elementKind: number;
-  images: any;
-  searchedImages: any;
-  cardElements: any;
+  images: fbr.Images;
+  searchedImages: fbr.Images;
+  cardElements: fbr.Elements;
 }
 
 class ElementCreatorContainer extends React.Component<ElementCreatorContainerProps, ElementCreatorContainerState> {
   
   vars: any;
   initialVars: any;
-  initialState: any;
+  initialState: ElementCreatorContainerState;
 
   constructor(props: ElementCreatorContainerProps) {
     super(props);
@@ -45,9 +45,9 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
       finished: false,
       shouldDisplayWarningSnackBar: false,
       elementKind: 0,
-      images: [],
-      searchedImages: [],
-      cardElements: []
+      images: {},
+      searchedImages: {},
+      cardElements: {}
     };
     this.state = Object.assign({}, this.initialState);
     this.initialVars = {
@@ -134,7 +134,7 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
     return this.state.selectedImages;
   }
 
-  setSelectedImages(images: any) {
+  setSelectedImages(images: string[]) {
     this.setState({ selectedImages: images });
   }
 
@@ -142,11 +142,11 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
     return this.state.selectedElements;
   }
 
-  setSelectedElements(eles: any) {
+  setSelectedElements(eles: string[]) {
     this.setState({ selectedElements: eles });
   }
 
-  setSearchedImages(imgs: any) {
+  setSearchedImages(imgs: fbr.Images) {
     this.setState({ searchedImages: imgs });
   }
 
@@ -161,8 +161,8 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
     });
   }
 
-  checkImageWidthAndHeight = (imgs: any) => {
-    let images: any = this.state.images;
+  checkImageWidthAndHeight = (imgs: string[]) => {
+    let images: fbr.Images = this.state.images;
     return new Promise((resolve, reject) => {
       let height = images[imgs[0]].height;
       let width = images[imgs[0]].width;
@@ -179,7 +179,7 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
     });
   }
 
-  handleGridTileClickBoard(key: any) {
+  handleGridTileClickBoard(key: string) {
     let selectedImg: any = this.getSelectedImages();
     if (selectedImg.indexOf(key) === -1) {
       selectedImg.push(key);
@@ -187,8 +187,8 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
     }
   }
 
-  handleElementGridTileClickBoard(key: any) {
-    let selectedEle: any = this.getSelectedElements();
+  handleElementGridTileClickBoard(key: string) {
+    let selectedEle: string[] = this.getSelectedElements();
     selectedEle.push(key);
     this.setSelectedElements(selectedEle);
   }
@@ -246,17 +246,15 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
           <ElementCreator
             images={this.state.images}
             searchedImages={this.state.searchedImages}
-            handleGridTileClick={(key: any) => { this.handleGridTileClickBoard(key); }}
+            handleGridTileClick={(key: string) => { this.handleGridTileClickBoard(key); }}
             getSelectedImages={() => this.getSelectedImages()}
-            setSelectedImages={(val: any) => this.setSelectedImages(val)}
+            setSelectedImages={(val: string[]) => this.setSelectedImages(val)}
             getElementKind={() => this.getElementKind()}
             getCardElements={() => this.getCardElements()}
-            handleElementGridTileClickBoard={this.handleElementGridTileClickBoard.bind(
-              this
-            )}
+            handleElementGridTileClickBoard={(key: string) => this.handleElementGridTileClickBoard(key)}
             getSelectedElements={() => this.getSelectedElements()}
-            setSelectedElements={(val: any) => this.setSelectedElements(val)}
-            setSearchedImages={(val: any) => this.setSearchedImages(val)}
+            setSelectedElements={(val: string[]) => this.setSelectedElements(val)}
+            setSearchedImages={(val: fbr.Images) => this.setSearchedImages(val)}
           />
         );
       }
