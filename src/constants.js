@@ -4,6 +4,7 @@ const constants = {
   IMAGE_PATH_IDENTIFIER: 'imagePath',
   IMAGE_UPLOAD_SUCCESSFUL: 'Image uploaded succesfully',
   IMAGE_UPLOAD_FAILED: 'Image upload failed',
+  IMAGE_NUMBER_LIMITED_EXCESS: 'Max of number for image uploading should be 10',
   CERTIFY_IMAGE_STATEMENT:
     'I certify that I have the rights to use this image in an open source project',
   NO_FILE_SELECTED_WARNING: 'No file selected',

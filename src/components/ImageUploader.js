@@ -11,7 +11,7 @@ import Snackbar from 'material-ui/Snackbar';
 import constants from '../constants';
 import styles from '../styles';
 
-import { imagesRef, imagesDbRef, auth } from '../firebase';
+import { imagesRef, imagesDbRef, specsRef, auth } from '../firebase';
 
 class ImageUploader extends React.Component {
   initialState = {
@@ -60,9 +60,13 @@ class ImageUploader extends React.Component {
           window.URL.revokeObjectURL(img.src);
 
           if (!that.vars.isBoardImage) {
-            that.vars.widths.push(width);
-            that.vars.heights.push(height);
-            resolve();
+            if (file.size >= 0 && file.size <= 2 * 1024 * 1024 && Math.max(width, height) <= 1024) {
+              that.vars.widths.push(width);
+              that.vars.heights.push(height);
+              resolve();
+            } else {
+              reject();
+            } 
           } else if (Math.max(width, height) === 1024) {
             that.vars.widths.push(width);
             that.vars.heights.push(height);
@@ -178,7 +182,7 @@ class ImageUploader extends React.Component {
       });
     }
   };
-
+ 
   handlePrev = () => {
     const { stepIndex } = this.state;
     if (stepIndex > 0) {
@@ -193,46 +197,48 @@ class ImageUploader extends React.Component {
         let imageLabels = '';
         let imageNames = [];
         let paths = [];
-        for (let i = 0; i < files.length; i++) {
-          let imageLabel = files[i].name.split('/').pop();
-          let imageName = imageLabel.split('.');
-
-          let extension = imageName.pop().toLowerCase();
-          imageLabels += imageLabel;
-          if (i < files.length - 1) {
-            imageLabels += ',';
+        let fileLength = files.length;
+        if (fileLength > 10) {
+          this.notify(constants.IMAGE_NUMBER_LIMITED_EXCESS);
+        } else {
+          for (let i = 0; i < files.length; i++) {
+            let imageLabel = files[i].name.split('/').pop();
+            let imageName = imageLabel.split('.');
+  
+            let extension = imageName.pop().toLowerCase();
+            imageLabels += imageLabel;
+            if (i < files.length - 1) {
+              imageLabels += ',';
+            }
+            paths.push(files[i].name);
+            imageNames.push(imageName[0]);
+  
+            if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
+              this.vars.snackbarWarning =
+                constants.PROPER_FORMAT_ACCEPTED_WARNING +
+                constants.ACCEPTED_IMAGE_FORMATS;
+              this.setState({ shouldDisplayWarningSnackBar: true });
+              return;
+            }
           }
-          paths.push(files[i].name);
-          imageNames.push(imageName[0]);
+          this.vars.imageLabel = imageLabels;
+          this.state.imageNames = imageNames;
+          this.setState({
+            // imagePath: file.name,
+            imagePaths: paths,
+            files: files
+            // imageName: imageName.join('.')
+            //imageNames: imageNames
+          });
+          break;
 
-          if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
-            this.vars.snackbarWarning =
-              constants.PROPER_FORMAT_ACCEPTED_WARNING +
-              constants.ACCEPTED_IMAGE_FORMATS;
-            this.setState({ shouldDisplayWarningSnackBar: true });
-            return;
-          }
         }
-        this.vars.imageLabel = imageLabels;
-        this.state.imageNames = imageNames;
-        this.setState({
-          // imagePath: file.name,
-          imagePaths: paths,
-          files: files
-          // imageName: imageName.join('.')
-          //imageNames: imageNames
-        });
-        break;
       }
 
       case constants.IS_BOARD_IMAGE_IDENTIFIER: {
         this.vars.isBoardImage = newValue;
         break;
       }
-
-      console.log("newValue ");
-      console.log(newValue);
-      console.log(imageIndex);
 
       case constants.IMAGE_ID_IDENTIFIER: {
         var imageNames = this.state.imageNames;
@@ -275,11 +281,57 @@ class ImageUploader extends React.Component {
     }
   }
 
+  //this button is used to set screenShootImageId for gamespec
+  handleUploadClick = (e) => {
+    let resFile = e.target.files[0];
+    let reader = new FileReader();
+    let resText = '';
+    let map = new Map();
+    let spRef = specsRef;
+    reader.onload = function(e) {
+      resText = e.target.result;
+      console.log(resText);
+      var lines = resText.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        i++;
+        let gameSpecId = lines[i];
+        i++;
+        let screenShootId = lines[i];
+        if (map.has(gameSpecId)) {
+          console.log("we already have" + gameSpecId);
+        } else {
+          map.set(gameSpecId, screenShootId);
+        }
+        spRef.child(gameSpecId).child('screenShootImageId').set(screenShootId);
+        //spRef.child(gameSpecId).set({screenShootImageId : screenShootId});
+      }
+      console.log(map);
+    }
+    reader.readAsText(resFile);
+  }
+
+
   render() {
     const { finished, stepIndex } = this.state;
 
     return (
       <div style={{ ...styles.container, ...styles.containerWidth700 }}>
+
+        {/* this button now hidden.
+        It is used to set screenShootImageId for gamespec. 
+        select the resOut.txt which is already in valid format,
+        the corresponding imageId will be set as screenShootImageId of gamespec */}
+        {/* <RaisedButton 
+          onChange={e => {
+            this.handleUploadClick(e);
+          }}
+          >
+          <input
+            type="file"
+            >
+        </input>
+        </RaisedButton> */}
+
         <Snackbar
           open={this.state.shouldDisplayWarningSnackBar}
           message={this.vars.snackbarWarning}

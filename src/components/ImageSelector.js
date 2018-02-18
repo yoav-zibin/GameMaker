@@ -8,8 +8,8 @@ import styles from '../styles';
 import './ImageSelector.css';
 
 const ImageSelector = props => {
-  var TextFieldHolder = [];
-  var length = props.imageNames.length;
+  let TextFieldHolder = [];
+  let length = props.imageNames.length;
   for (let i = 0; i < length; i++) {
     TextFieldHolder.push(
       <div>
