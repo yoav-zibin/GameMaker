@@ -45,19 +45,8 @@ const ImageSelector = props => {
         </RaisedButton>
       </div>
       <div>{TextFieldHolder}</div>
-      {/* <div>
-        <TextField
-          floatingLabelText={constants.IMAGE_ID_FLOATING_LABEL}
-          floatingLabelFixed={true}
-          hintText={constants.IMAGE_ID_HINT_TEXT}
-          errorText={props.imageIdErrorText}
-          value={props.label}
-          onChange={(e, newValue) => {
-            props.handleChange(constants.IMAGE_ID_IDENTIFIER, e, newValue);
-          }}
-        />
-      </div> */}
       <div>
+      {props.imageNames.length <= 1 && (
         <Toggle
           label={constants.BOARD_IMAGE_TOGGLE_LABEL}
           onToggle={(e, newValue) => {
@@ -68,6 +57,7 @@ const ImageSelector = props => {
             );
           }}
         />
+      )}      
       </div>
     </div>
   );

@@ -20,11 +20,11 @@ class ImageUploader extends React.Component {
     imagePaths: [],
     imageNames: [],
     shouldDisplayWarningSnackBar: false,
-    files: false
+    files: []
   };
 
   initialVars = {
-    imageLabel: 'Select image',
+    imageLabels: '',
     errorText: '',
     isBoardImage: false,
     isImageCertified: false,
@@ -41,9 +41,21 @@ class ImageUploader extends React.Component {
     this.setState({ shouldDisplayWarningSnackBar: true });
   };
 
+  notifyFail = (images) => {
+    let message = "";
+    for (let i = 0; i < images.length; i++) {
+      let name = this.state.files[images[i]].name.split("/").pop();
+      message = message + name + " ";
+    }
+    
+    this.vars.snackbarWarning = "Image " + message + " in wrong size";
+    this.setState({ shouldDisplayWarningSnackBar: true });
+  };
+
   checkImageDimensions = files => {
     let that = this;
     let promises = [];
+    //let values = [];
 
     for (let i = 0; i < files.length; i++) {
 
@@ -59,24 +71,36 @@ class ImageUploader extends React.Component {
 
           window.URL.revokeObjectURL(img.src);
 
+          //here if we use push, the sequence in widths and heights cannot be matched to the sequence in files
+          //I don't know why
           if (!that.vars.isBoardImage) {
-            if (file.size >= 0 && file.size <= 2 * 1024 * 1024 && Math.max(width, height) <= 1024) {
-              that.vars.widths.push(width);
-              that.vars.heights.push(height);
-              resolve();
+            if (file.size >= 100 && file.size <= 2 * 1024 * 1024 && Math.max(width, height) <= 1024 && Math.min(width, height) >= 10) {
+              // that.vars.widths.push(width);
+              // that.vars.heights.push(height);
+              that.vars.widths[i] = width; 
+              that.vars.heights[i] = height; 
+              resolve("success");
             } else {
-              reject();
+              //reject();
+              // that.vars.widths.push(0);
+              // that.vars.heights.push(0);
+              that.vars.widths[i] = 0; 
+              that.vars.heights[i] = 0; 
+              resolve("error");
             } 
           } else if (Math.max(width, height) === 1024) {
-            that.vars.widths.push(width);
-            that.vars.heights.push(height);
-            resolve();
-          } else if (file.size >= 0 && file.size <= 2 * 1024 * 1024) {
-            that.vars.widths.push(width);
-            that.vars.heights.push(height);
-            resolve();
+            // that.vars.widths.push(width);
+            // that.vars.heights.push(height);
+            that.vars.widths[i] = width; 
+            that.vars.heights[i] = height; 
+            resolve("success");
           } else {
-            reject();
+            //reject();
+            // that.vars.widths.push(0);
+            // that.vars.heights.push(0);
+            that.vars.widths[i] = 0; 
+            that.vars.heights[i] = 0; 
+            resolve("error");
           }
         };
       });
@@ -87,12 +111,12 @@ class ImageUploader extends React.Component {
     return promises;
   };
 
-  handleUpload = (stepIndex, widths, heights) => {
+  handleUpload = (stepIndex, widths, heights, i) => {
     let that = this;
     let ref = imagesRef;
     let dbRef = imagesDbRef;
-    let fileNames = this.vars.imageLabel.split(',');
-    for (let i = 0; i < this.state.files.length; i++) {
+    let fileNames = this.vars.imageLabels.split(',');
+    //for (let i = 0; i < this.state.files.length; i++) {
       let extension = fileNames[i]
         .split('.')
         .pop()
@@ -146,7 +170,7 @@ class ImageUploader extends React.Component {
             this.notify(constants.IMAGE_UPLOAD_FAILED);
           }
         );
-    }
+    //}
     that.vars.snackbarWarning = constants.IMAGE_UPLOAD_SUCCESSFUL;
     that.setState({
       shouldDisplayWarningSnackBar: true,
@@ -166,14 +190,35 @@ class ImageUploader extends React.Component {
           this.notify(constants.NO_FILE_SELECTED_WARNING);
         }
 
+        // Promise.all(this.checkImageDimensions(this.state.files)).then(
+        //   () => {
+        //     this.handleUpload(stepIndex, this.vars.widths, this.vars.heights);
+        //   },
+        //   () => {
+        //     this.notify(constants.MAX_WIDTH_HEIGHT_WARNING);
+        //   }
+        // );
+
         Promise.all(this.checkImageDimensions(this.state.files)).then(
-          () => {
-            this.handleUpload(stepIndex, this.vars.widths, this.vars.heights);
+          (values) => {
+            let failedImages = [];
+            for (let i = 0; i < values.length; i++) {
+              if (values[i] == "success") {
+                this.handleUpload(stepIndex, this.vars.widths, this.vars.heights, i);
+              } 
+              else {
+                failedImages.push(i);
+              }
+            }
+            if (failedImages.length > 0) {
+              this.notifyFail(failedImages);
+            }
           },
           () => {
             this.notify(constants.MAX_WIDTH_HEIGHT_WARNING);
           }
         );
+
       }
     } else {
       this.setState({
@@ -203,15 +248,16 @@ class ImageUploader extends React.Component {
         } else {
           for (let i = 0; i < files.length; i++) {
             let imageLabel = files[i].name.split('/').pop();
-            let imageName = imageLabel.split('.');
+            let imageNameArray = imageLabel.split('.');
+            let extension = imageNameArray.pop().toLowerCase();
+            let imageName = imageNameArray.join(".");
   
-            let extension = imageName.pop().toLowerCase();
             imageLabels += imageLabel;
             if (i < files.length - 1) {
               imageLabels += ',';
             }
             paths.push(files[i].name);
-            imageNames.push(imageName[0]);
+            imageNames.push(imageName);
   
             if (constants.ACCEPTED_IMAGE_FORMATS.indexOf(extension) === -1) {
               this.vars.snackbarWarning =
@@ -221,13 +267,12 @@ class ImageUploader extends React.Component {
               return;
             }
           }
-          this.vars.imageLabel = imageLabels;
+          this.vars.imageLabels = imageLabels;
           this.state.imageNames = imageNames;
           this.setState({
-            // imagePath: file.name,
             imagePaths: paths,
             files: files
-            // imageName: imageName.join('.')
+            //imageName: imageName.join('.')
             //imageNames: imageNames
           });
           break;
