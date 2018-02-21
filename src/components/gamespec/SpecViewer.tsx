@@ -28,6 +28,7 @@ const SpecViewer: React.StatelessComponent<SpecViewerProps> = (props: SpecViewer
       deckPieceIndex: item.deckIndex,
       initialState: {
         currentImageIndex: item.currentImage,
+        rotationDegrees: 360, // TODO: add rotationDegrees to the UI.
         x: Math.round(item.offset.x / props.boardSize * 10000) / 100,
         y: Math.round(item.offset.y / props.boardSize * 10000) / 100,
         zDepth: index + 1
