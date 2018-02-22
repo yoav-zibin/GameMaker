@@ -17,11 +17,11 @@ public class readJsonFile{
     public static void main(String[] args) {
 
         JSONParser parser = new JSONParser();
-        String fileNameImage="C:\\Users\\Angelina\\Desktop\\GamesScreenshots";
-        String fileName="C:\\Users\\Angelina\\Desktop\\output\\GameOut.txt";
-        String fileName2="C:\\Users\\Angelina\\Desktop\\output\\ImageOut.txt";
-        String fileName3="C:\\Users\\Angelina\\Desktop\\output\\resOut.txt";
-        String readPath = "C:\\Users\\Angelina\\Desktop\\universalgamemaker-export.json";
+        String fileNameImage="GamesScreenshots";
+        String fileName="output\\GameOut.txt";
+        String fileName2="output\\ImageOut.txt";
+        String fileName3="output\\resOut.txt";
+        String readPath = "universalgamemaker-export.json";
 
         try {
 
