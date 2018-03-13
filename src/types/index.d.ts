@@ -108,7 +108,7 @@ declare namespace fbr { // fbr stands for Fire Base Rules
     gameName: string;
     gameIcon50x50: string;
     gameIcon512x512: string;
-    screenShootImageId: string;
+    screenShotImageId: string;
     wikipediaUrl: string;
     tutorialYoutubeVideo: string;
     board: Board;
