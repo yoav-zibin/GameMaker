@@ -110,7 +110,7 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
         sizeInBytes: that.state.file.size,
         uploaderEmail: auth.currentUser.email
       },
-      cacheControl: "public, max-age=3600000",
+      cacheControl: "public, max-age=3600000"
     } as firebase.storage.SettableMetadata;
 
     let childKey = dbRef.push().key;
