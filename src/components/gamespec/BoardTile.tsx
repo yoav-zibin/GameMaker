@@ -21,7 +21,7 @@ const BoardTile: React.StatelessComponent<BoardTileProps> = (props: BoardTilePro
         selectedKey === keyProp ? blue500 : originalBackgroundTitle
       }
       title={image.name}
-      onTouchTap={e => {
+      onClick={e => {
         handleGridTileClick(keyProp, image);
       }}
     >

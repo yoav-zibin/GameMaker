@@ -656,14 +656,14 @@ class PlaySpecContainer extends React.Component<PlaySpecContainerProps, PlaySpec
                   <FlatButton
                     label="Back"
                     disabled={stepIndex === 0}
-                    onTouchTap={this.handlePrev}
+                    onClick={this.handlePrev}
                     style={{ marginRight: 12 }}
                   />
                   <RaisedButton
                     label={'Next'}
                     disabled={stepIndex === 1}
                     primary={true}
-                    onTouchTap={this.handleNext}
+                    onClick={this.handleNext}
                   />
                 </div>
               </div>

@@ -21,11 +21,15 @@ const ImageSelector: React.StatelessComponent<ImageSelectorProps> = (props: Imag
         <RaisedButton
           containerElement="label"
           label={props.label}
-          onClick={(e: React.MouseEvent<{}>) => {
-            props.handleChange(constants.IMAGE_PATH_IDENTIFIER, e);
-          }}
         >
-          <input type="file" style={{ display: 'none' }} accept="image/*" />
+          <input
+            type="file"
+            style={{ display: 'none' }}
+            accept="image/*"
+            onChange={(e: React.ChangeEvent<{}>) => {
+              props.handleChange(constants.IMAGE_PATH_IDENTIFIER, e);
+            }}
+          />
         </RaisedButton>
       </div>
       <div>

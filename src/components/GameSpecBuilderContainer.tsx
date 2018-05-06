@@ -626,13 +626,13 @@ class GameSpecBuilderContainer extends React.Component<GameSpecBuilderContainerP
                   <FlatButton
                     label="Back"
                     disabled={stepIndex === 0}
-                    onTouchTap={this.handlePrev}
+                    onClick={this.handlePrev}
                     style={{ marginRight: 12 }}
                   />
                   <RaisedButton
                     label={stepIndex === 3 ? 'Upload' : 'Next'}
                     primary={true}
-                    onTouchTap={this.handleNext}
+                    onClick={this.handleNext}
                   />
                 </div>
               </div>

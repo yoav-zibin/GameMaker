@@ -110,7 +110,7 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
         sizeInBytes: that.state.file.size,
         uploaderEmail: auth.currentUser.email
       },
-      cacheControl: "public, max-age=3600000"
+      cacheControl: 'public, max-age=3600000'
     } as firebase.storage.SettableMetadata;
 
     let childKey = dbRef.push().key;
@@ -190,7 +190,15 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
   handleImageUploaderChange = (element: string, e: React.SyntheticEvent<{}>, newValue: string) => {
     switch (element) {
       case constants.IMAGE_PATH_IDENTIFIER: {
-        let file = (e.target as HTMLInputElement).files![0];
+        let files = (e.target as HTMLInputElement).files;
+        if (!files) {
+          return;
+        }
+        let file = files![0];
+
+        if (!file) {
+          return;
+        }
         let imageLabel = file.name.split('/').pop();
         let imageName = imageLabel!.split('.');
         let extension = imageName.pop()!.toLowerCase();
@@ -238,7 +246,7 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
           <ImageSelector
             label={this.vars.imageLabel}
             imageName={this.state.imageName}
-            handleChange={(ele: string, e: React.SyntheticEvent<{}>, val: string) => 
+            handleChange={(ele: string, e: React.SyntheticEvent<{}>, val: string) =>
             this.handleImageUploaderChange(ele, e, val)}
           />
         );
@@ -297,13 +305,13 @@ class ImageUploader extends React.Component<ImageUploaderProps, ImageUploaderSta
                   <FlatButton
                     label="Back"
                     disabled={stepIndex === 0}
-                    onTouchTap={this.handlePrev}
+                    onClick={this.handlePrev}
                     style={{ marginRight: 12 }}
                   />
                   <RaisedButton
                     label={stepIndex === 1 ? 'Upload' : 'Next'}
                     primary={true}
-                    onTouchTap={this.handleNext}
+                    onClick={this.handleNext}
                   />
                 </div>
               </div>

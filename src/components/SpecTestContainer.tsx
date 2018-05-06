@@ -105,7 +105,8 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
       spec: [],
       tutorialYoutubeVideo: constants.YOUTUBE_VIDEO,
       wikipediaUrl: constants.WIKI_URL,
-      selectedUid: ''
+      selectedUid: '',
+      screenShotImageId: ''
     };
 
     this.state = Object.assign({}, this.initialState, this.initialBoardState);
@@ -492,6 +493,7 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
         this.vars.tutorialYoutubeVideo = specContent.tutorialYoutubeVideo;
         this.vars.wikipediaUrl = specContent.wikipediaUrl;
         this.vars.selectedUid = specContent.uploaderUid;
+        this.vars.screenShotImageId = specContent.screenShotImageId || specContent.board.imageId;
         this.setGameIcon50(specContent.gameIcon50x50);
         this.setGameIcon512(specContent.gameIcon512x512);
         this.setState({ specName: specContent.gameName });
@@ -533,9 +535,9 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
         return;
       }
 
-      if (auth.currentUser.uid !== this.vars.selectedUid) {
-        this.notify(constants.SPEC_UPLOAD_SAME_UID);
-      }
+      // if (auth.currentUser.uid !== this.vars.selectedUid) {
+      //   this.notify(constants.SPEC_UPLOAD_SAME_UID);
+      // }
       let that = this;
       let userElements = elementsRef.orderByChild('uploaderUid');
       userElements
@@ -592,7 +594,8 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
         pieces: this.vars.spec,
         uploaderUid: auth.currentUser.uid,
         createdOn: firebase.database.ServerValue.TIMESTAMP,
-        wikipediaUrl: this.vars.wikipediaUrl
+        wikipediaUrl: this.vars.wikipediaUrl,
+        screenShotImageId: this.vars.screenShotImageId
       };
 
       let key = this.state.selectedSpec;
@@ -672,17 +675,17 @@ class SpecTestContainer extends React.Component<SpecTestContainerProps, SpecTest
                   <FlatButton
                     label="Back"
                     disabled={stepIndex === 0}
-                    onTouchTap={this.handlePrev}
+                    onClick={this.handlePrev}
                     style={{ marginRight: 12 }}
                   />
                   <RaisedButton
                     label={stepIndex === 3 ? 'Upload' : 'Next'}
                     disabled={
-                      stepIndex === 1 && (auth.currentUser !== null) &&
-                      auth.currentUser.uid !== this.vars.selectedUid
+                      stepIndex === 1 && (auth.currentUser === null)
+                      // && auth.currentUser.uid !== this.vars.selectedUid
                     }
                     primary={true}
-                    onTouchTap={this.handleNext}
+                    onClick={this.handleNext}
                   />
                 </div>
               </div>

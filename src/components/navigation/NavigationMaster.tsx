@@ -80,7 +80,7 @@ class NavigationMaster extends React.Component<NavigationMasterProps, Navigation
     return (
       <div>
         <AppBar
-          onLeftIconButtonTouchTap={this.handleTouchTapLeftIconButton}
+          onLeftIconButtonClick={this.handleTouchTapLeftIconButton}
           title={constants.TITLE_TEXT}
           zDepth={0}
           iconElementRight={

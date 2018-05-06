@@ -42,102 +42,105 @@ interface GameSpecBuilderProps {
   recentElements: any;
 }
 
-const GameSpecBuilder: React.StatelessComponent<GameSpecBuilderProps> = (props: GameSpecBuilderProps) => {
-  let {
-    standardElements,
-    toggableElements,
-    cardElements,
-    diceElements,
-    cardsDeckElements,
-    piecesDeckElements,
-    currentUserElements,
-    setItems,
-    setBoardSize,
-    getItems,
-    boardImage,
-    allImages,
-    allElements,
-    specType,
-    setDecks,
-    getDecks,
-    handleClickShuffle,
-    setDeckCount,
-    getDeckCount
-  } = props;
+class GameSpecBuilder extends React.Component<GameSpecBuilderProps, {}> {
+  render() {
 
-  let elements = [
-    { key: 'My Uploads', data: currentUserElements },
-    { key: 'standard', data: standardElements },
-    { key: 'toggable', data: toggableElements },
-    { key: 'card', data: cardElements },
-    { key: 'dice', data: diceElements },
-    { key: 'cardsDeck', data: cardsDeckElements },
-    { key: 'piecesDeck', data: piecesDeckElements }
-  ];
+    let {
+      standardElements,
+      toggableElements,
+      cardElements,
+      diceElements,
+      cardsDeckElements,
+      piecesDeckElements,
+      currentUserElements,
+      setItems,
+      setBoardSize,
+      getItems,
+      boardImage,
+      allImages,
+      allElements,
+      specType,
+      setDecks,
+      getDecks,
+      handleClickShuffle,
+      setDeckCount,
+      getDeckCount
+    } = this.props;
 
-  if (props.specType !== 'PlaySpec') {
-    return (
-      <div style={flexStyle}>
-        <div style={flexElement}>
-          <PieceList
-            header="Your Uploads"
-            data={elements[props.getValue()].data}
+    let elements = [
+      { key: 'My Uploads', data: currentUserElements },
+      { key: 'standard', data: standardElements },
+      { key: 'toggable', data: toggableElements },
+      { key: 'card', data: cardElements },
+      { key: 'dice', data: diceElements },
+      { key: 'cardsDeck', data: cardsDeckElements },
+      { key: 'piecesDeck', data: piecesDeckElements }
+    ];
+
+    if (this.props.specType !== 'PlaySpec') {
+      return (
+        <div style={flexStyle}>
+          <div style={flexElement}>
+            <PieceList
+              header="Your Uploads"
+              data={elements[this.props.getValue()].data}
+            />
+          </div>
+          <Board
+            setBoardSize={setBoardSize}
+            setItems={setItems}
+            getItems={getItems}
+            boardImage={boardImage}
+            allImages={allImages}
+            allElements={allElements}
+            specType={specType}
+            setDecks={setDecks}
+            getDecks={getDecks}
+            setDeckCount={setDeckCount}
+            getDeckCount={getDeckCount}
           />
+          <div>
+            <RaisedButton
+              label="shuffle"
+              disabled={specType !== 'PlaySpec'}
+              primary={true}
+              onClick={event => {
+                handleClickShuffle();
+              }}
+            />
+          </div>
         </div>
-        <Board
-          setBoardSize={setBoardSize}
-          setItems={setItems}
-          getItems={getItems}
-          boardImage={boardImage}
-          allImages={allImages}
-          allElements={allElements}
-          specType={specType}
-          setDecks={setDecks}
-          getDecks={getDecks}
-          setDeckCount={setDeckCount}
-          getDeckCount={getDeckCount}
-        />
-        <div>
-          <RaisedButton
-            label="shuffle"
-            disabled={specType !== 'PlaySpec'}
-            primary={true}
-            onClick={event => {
-              handleClickShuffle();
-            }}
+      );
+    } else {
+      return (
+        <div style={flexStyle}>
+          <Board
+            setBoardSize={setBoardSize}
+            setItems={setItems}
+            getItems={getItems}
+            boardImage={boardImage}
+            allImages={allImages}
+            allElements={allElements}
+            specType={specType}
+            setDecks={setDecks}
+            getDecks={getDecks}
+            setDeckCount={setDeckCount}
+            getDeckCount={getDeckCount}
           />
+          <div>
+            <RaisedButton
+              label="shuffle"
+              disabled={specType !== 'PlaySpec'}
+              primary={true}
+              onClick={event => {
+                handleClickShuffle();
+              }}
+            />
+          </div>
         </div>
-      </div>
-    );
-  } else {
-    return (
-      <div style={flexStyle}>
-        <Board
-          setBoardSize={setBoardSize}
-          setItems={setItems}
-          getItems={getItems}
-          boardImage={boardImage}
-          allImages={allImages}
-          allElements={allElements}
-          specType={specType}
-          setDecks={setDecks}
-          getDecks={getDecks}
-          setDeckCount={setDeckCount}
-          getDeckCount={getDeckCount}
-        />
-        <div>
-          <RaisedButton
-            label="shuffle"
-            disabled={specType !== 'PlaySpec'}
-            primary={true}
-            onClick={event => {
-              handleClickShuffle();
-            }}
-          />
-        </div>
-      </div>
-    );
+      );
+    }
   }
-};
+}
 
 export default withDragDropContext(GameSpecBuilder);

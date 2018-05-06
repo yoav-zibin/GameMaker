@@ -31,7 +31,7 @@ interface ElementCreatorContainerState {
 }
 
 class ElementCreatorContainer extends React.Component<ElementCreatorContainerProps, ElementCreatorContainerState> {
-  
+
   vars: any;
   initialVars: any;
   initialState: ElementCreatorContainerState;
@@ -493,13 +493,13 @@ class ElementCreatorContainer extends React.Component<ElementCreatorContainerPro
                 <FlatButton
                   label="Back"
                   disabled={stepIndex === 0}
-                  onTouchTap={this.handlePrev}
+                  onClick={this.handlePrev}
                   style={{ marginRight: 12 }}
                 />
                 <RaisedButton
                   label={stepIndex === 1 ? 'Create' : 'Next'}
                   primary={true}
-                  onTouchTap={this.handleNext}
+                  onClick={this.handleNext}
                 />
               </div>
             </div>

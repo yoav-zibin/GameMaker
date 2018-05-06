@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { DropTargetSpec, 
-  DropTarget, 
-  DropTargetConnector, 
+import { DropTargetSpec,
+  DropTarget,
+  DropTargetConnector,
   DropTargetMonitor,
   ConnectDropTarget } from 'react-dnd';
 import ItemTypes from './ItemTypes';
-import { Layer, Stage, Image } from 'react-konva';
+import { Layer, Stage } from 'react-konva';
 import { imagesDbRef } from '../../firebase';
 import CanvasImage from './CanvasImage';
 
@@ -162,9 +162,9 @@ class Board extends React.Component<BoardProps, BoardState> {
     let items = this.props.getItems();
     let item = items[index];
 
-    let position = ((this.refs[
+    let position = (this.refs[
       'canvasImage' + index
-    ] as CanvasImage).refs.image as Image).getNativeNode().getAbsolutePosition();
+    ] as CanvasImage).imageNode.getAbsolutePosition();
 
     // this.refs['canvasImage' + index].refs.image.cache();
     // this.refs['canvasImage' + index].refs.image.drawHitFromCache();
@@ -311,7 +311,6 @@ class Board extends React.Component<BoardProps, BoardState> {
                   onClick={() => {
                     this.handleClickOn(index);
                   }}
-                  item={item}
                   width={
                     this.props.allImages[
                       item.element.images[item.currentImage].imageId

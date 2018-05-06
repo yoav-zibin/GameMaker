@@ -1,36 +1,35 @@
-import * as Konva from 'react-konva';
+import { Image, KonvaNodeProps } from 'react-konva';
 import * as React from 'react';
-
-// global Window class doesn't come with Image()
-// so we have to add it ourselves
-declare global {
-  interface Window {
-    Image: {   
-        prototype: HTMLImageElement;
-        new (): HTMLImageElement;
-    };
-  }
-}
+import * as Konva from 'konva';
 
 // try drag& drop rectangle
-interface CanvasImageProps {
+interface CanvasImageProps extends KonvaNodeProps {
   src: string;
   width: number;
   height: number;
+  offsetX?: number;
+  offsetY?: number;
   onClick?: (e: React.MouseEvent<{}>) => void;
+  onTouchStart?: (e: React.TouchEvent<{}>) => void;
+  onTouchEnd?: (e: React.TouchEvent<{}>) => void;
   x?: number;
   y?: number;
   rotation?: number;
   draggable?: boolean;
+  onDragStart?: (e: React.SyntheticEvent<{}>) => void;
   onDragEnd?: (e: React.SyntheticEvent<{}>) => void;
-  item?: any;
 }
 
 interface CanvasImageState {
   image: any;
 }
 
+declare global {
+  interface Window { Image: any; }
+}
+
 class CanvasImage extends React.Component<CanvasImageProps, CanvasImageState> {
+  imageNode: Konva.Image = null as any;
 
   constructor(props: CanvasImageProps) {
     super(props);
@@ -46,27 +45,42 @@ class CanvasImage extends React.Component<CanvasImageProps, CanvasImageState> {
   componentWillReceiveProps(nextProps: CanvasImageProps) {
     const image = new window.Image();
     image.crossOrigin = 'Anonymous';
-    image.src = nextProps.src;
     image.onload = () => {
       this.setState({
         image: image
       });
+      this.imageNode.cache();
+      this.imageNode.drawHitFromCache(0);
     };
+    image.src = nextProps.src;
   }
 
   setImage = () => {
     const image = new window.Image();
-    image.src = this.props.src;
     image.crossOrigin = 'Anonymous';
+    image.src = this.props.src;
     image.onload = () => {
       this.setState({
         image: image
       });
+      this.imageNode.cache();
+      this.imageNode.drawHitFromCache(0);
     };
   }
 
   render() {
-    return <Konva.Image ref={() => 'image'} {...this.props} image={this.state.image} />;
+    return (
+      <Image
+        ref={(node: any) => {
+          if (node !== null) {
+            this.imageNode = node;
+          }
+          return 'image';
+        }}
+        {...this.props}
+        image={this.state.image}
+      />
+    );
   }
 }
 

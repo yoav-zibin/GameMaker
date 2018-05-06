@@ -32,7 +32,7 @@ const ElementTile: React.StatelessComponent<ElementTileProps> = (props: ElementT
         selectedKey === keyProp ? blue500 : originalBackgroundTitle
       }
       title={showName(image)}
-      onTouchTap={e => {
+      onClick={e => {
         handleGridTileClick(keyProp, image);
       }}
     >
