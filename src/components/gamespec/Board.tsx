@@ -51,7 +51,7 @@ const boxTarget: DropTargetSpec<BoardProps> = {
       item = monitor.getItem() as any;
 
     let items = props.getItems();
-    let rect = (component.refs.stage as Stage)
+    let rect = (component.stageRef as Stage)
       .getStage()
       .container()
       .getBoundingClientRect();
@@ -131,6 +131,7 @@ class Board extends React.Component<BoardProps, BoardState> {
   height: number = 512;
   imageWidthRatio = 1;
   imageHeightRatio = 1;
+  stageRef: Stage;
 
   constructor(props: BoardProps) {
     super(props);
@@ -294,7 +295,7 @@ class Board extends React.Component<BoardProps, BoardState> {
       this.props.boardImage.height / this.height;
     return connectDropTarget(
       <div style={flexElement}>
-        <Stage ref={() => 'stage'} width={this.width} height={this.height}>
+        <Stage ref={node => this.stageRef = node!} width={this.width} height={this.height}>
           <Layer>
             <CanvasImage
               width={this.width}

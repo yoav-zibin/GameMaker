@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as firebase from 'firebase';
 
 import styles from '../styles';
 import constants from '../constants';
